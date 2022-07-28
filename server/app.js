@@ -1,8 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-
 import connectDb from "./db/database.js";
+import config from "./config/config.js";
 dotenv.config();
 
 const app = express();
@@ -23,7 +23,7 @@ app.use((err, req, res, next) => {
   res.sendStatus(500);
 });
 
-const port = process.env.PORT || 4000;
+const port = config.port || 4000;
 connectDb();
 
 app.listen(port, () => {
