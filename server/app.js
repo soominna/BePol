@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import connectDb from "./db/database.js";
 import config from "./config/config.js";
+import postsRouter from './routes/posts.js';
 dotenv.config();
 
 const app = express();
@@ -10,9 +11,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.use("/", (req, res, next) => {
-  res.send("API Server!!");
-});
+app.use("/posts", postsRouter);
 
 app.use((req, res, next) => {
   res.sendStatus(404);
