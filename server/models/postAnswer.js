@@ -6,11 +6,11 @@ const newSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  post_id: {
+  postId: {
     type: mongoose.Schema.Types.Object,
     required: true,
   },
-  user_id: {
+  userId: {
     type: mongoose.Schema.Types.Object,
     required: true,
   },
