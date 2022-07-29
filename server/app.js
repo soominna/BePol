@@ -1,6 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import userRouter from "./routes/users.js";
+import commentRouter from "./routes/comments.js";
 
 import connectDb from "./db/database.js";
 dotenv.config();
@@ -13,6 +15,9 @@ app.use(cors());
 app.use("/", (req, res, next) => {
   res.send("API Server!!");
 });
+
+app.use("/user", userRouter);
+app.use("/comment", commentRouter);
 
 app.use((req, res, next) => {
   res.sendStatus(404);
