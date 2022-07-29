@@ -20,5 +20,4 @@ export const modalSlice = createSlice({
 });
 
 export const { showLoginModal, showStaticModal } = modalSlice.actions;
-
 export default modalSlice.reducer;
