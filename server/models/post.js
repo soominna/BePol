@@ -54,5 +54,37 @@ const newSchema = mongoose.Schema(
   }
 );
 
+export const addAgrees = async (postId) => {
+  return Post.findOne({ _id: postId }, { user_id: false })
+    .then(post => {
+      post.agrees++;
+      return post.save();
+    });
+}
+
+export const addDisagrees = async (postId) => {
+  return Post.findOne({ _id: postId }, { user_id: false })
+    .then(post => {
+      post.disagrees++;
+      return post.save();
+    })
+}
+
+export const substractAgrees = async (postId) => {
+  return Post.findOne({ _id: postId }, { user_id: false })
+    .then(post => {
+      post.agrees--;
+      return post.save();
+    });
+}
+
+export const substractDisagrees = async (postId) => {
+  return Post.findOne({ _id: postId }, { user_id: false })
+    .then(post => {
+      post.disagrees--;
+      return post.save();
+    });
+}
+
 const Post = mongoose.model("Post", newSchema);
 export default Post;

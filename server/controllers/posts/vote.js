@@ -1,4 +1,5 @@
 import * as postAnswerRepository from "../../models/postAnswer.js";
+import * as postRepository from "../../models/post.js";
 
 export const voteToPost = async (req, res, next) => {
     /**
@@ -30,24 +31,50 @@ export const voteToPost = async (req, res, next) => {
     const userIdAnswered = await postAnswerRepository.getUserIdAnswered(userId, agree);
 
     if (userIdAnswered) { // 재투표
-        if (userIdAnswered.answer === agree) { // 같은거 또 누른 경우 (찬성 -> 찬성)
+        if (userIdAnswered.answer === agree) { // 같은거 또 누른 경우 (찬성 -> 찬성)            
             await postAnswerRepository.deleteAnswer(userId);
-
-            return res.status(204).send("deleted");
+            await (
+                agree === true ?
+                postRepository.substractAgrees(postId) :
+                postRepository.substractDisagrees(postId)
+            );
+            return res.sendStatus(204);
         } else { // 다른 거 또 누른 경우 (찬성 -> 반대)
             const changedAnswer = await postAnswerRepository.changeAnswer(agree, userId);
 
-            return res.status(201).json({
-                message: "Vote is changed to the other option successfully",
-                agree: changedAnswer.answer
-            })
+            if (changedAnswer) {
+                await (
+                    agree === true ?
+                    postRepository.substractDisagrees(postId) :
+                    postRepository.substractAgrees(postId)
+                );
+                await (
+                    agree === true ?
+                    postRepository.addAgrees(postId) :
+                    postRepository.addDisagrees(postId)
+                );
+
+                return res.status(201).json({
+                    message: "Vote is changed to the other option successfully",
+                    agree: changedAnswer.answer
+                })
+            }
         }
     } else { // 첫 투표
         const data = await postAnswerRepository.addAnswer(postId, userId, agree);
 
-        return res.status(201).json({
-            message: "Voted successfully",
-            "agree": data.answer,
-        });
+        if (data) {
+            // post collection - agrees, disagrees 적용
+            await (
+                agree === true ?
+                postRepository.addAgrees(postId) :
+                postRepository.addDisagrees(postId)
+            );
+    
+            return res.status(201).json({
+                message: "Voted successfully",
+                "agree": data.answer,
+            });
+        }
     }
 }

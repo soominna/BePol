@@ -24,7 +24,6 @@ const Post_answers = mongoose.model("Post_answers", newSchema);
 
 export const getUserIdAnswered = async (userId, agree) => {
   return Post_answers.findOne({ user_id: userId });
-  
 }
 
 export const deleteAnswer = async (userId) => {
