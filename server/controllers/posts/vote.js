@@ -10,7 +10,8 @@ export const voteToPost = async (req, res, next) => {
      * postAnswer에 이미 찬성이나 반대를 누른 유저 o (user_id 비교)
      * >> 같은거(찬성 -> 찬성) 한번 더 누르면 취소 ✔︎
      * >> 반대거(찬성 -> 반대) 한번 더 누르면 변경 ✔︎
-     * 📌 게시물 agrees, disagrees 반영
+     * 📌 게시물 agrees, disagrees 반영 ✔︎
+     * 📌 로그인 적용 ❌ (소셜로그인 부분 merge 후 진행할 계획!)
      */
 
     /**
