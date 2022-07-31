@@ -5,4 +5,6 @@ const router = express.Router();
 
 router.post("/vote/:postId", voteController.voteToPost);
 
+router.put("/vote/:postId", voteController.voteDeleteToPost);
+
 export default router;
