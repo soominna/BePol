@@ -8,7 +8,7 @@ export const voteToPost = async (req, res, next) => {
    * 📌 게시물 agrees, disagrees 반영 ✔︎
    * 📌 예외 처리 - unauthorized user, 이미 투표한 사람 ✔︎
    * 📌 로그인 적용 ❌ (소셜로그인 부분 merge 후 진행할 계획!)
-   * 📌 트랜잭션 처리
+   * 📌 트랜잭션 처리 ✔︎
    */
 
   /**
@@ -48,6 +48,7 @@ export const voteDeleteToPost = async (req, res, next) => {
    * 📌 게시물 agrees, disagrees 반영 ✔︎
    * 📌 예외 처리 - unauthorized user, postAnser 컬렉션에 해당 유저가 없는 사람 (투표 안함) ✔︎
    * 📌 로그인 적용 ❌ (소셜로그인 부분 merge 후 진행할 계획!)
+   * 📌 트랜잭션 처리 ✔︎
    */
 
   /**
