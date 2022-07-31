@@ -1,16 +1,17 @@
 "use strict";
 import mongoose from "mongoose";
+import Post from "./post.js";
 
 const newSchema = mongoose.Schema({
   id: {
     type: String,
     required: true,
   },
-  post_id: {
+  postId: {
     type: mongoose.Schema.Types.Object,
     required: true,
   },
-  user_id: {
+  userId: {
     type: mongoose.Schema.Types.Object,
     required: true,
   },
@@ -22,27 +23,56 @@ const newSchema = mongoose.Schema({
 
 const Post_answers = mongoose.model("Post_answers", newSchema);
 
-export const getUserIdAnswered = async (userId, agree) => {
-  return Post_answers.findOne({ user_id: userId });
-}
-
-export const deleteAnswer = async (userId) => {
-  return Post_answers.deleteOne({ user_id: userId });
-}
-
-export const changeAnswer = async (agree, userId) => {
-  await Post_answers.updateOne({ user_id: userId }, { answer: agree })
-  
-  return Post_answers.findOne({ user_id: userId });
+export const getUserIdAnswered = async (userId) => {
+  return Post_answers.findOne({ userId });
 }
 
 export const addAnswer = async (postId, userId, agree) => {
+  /**
+   * 기능: Post_answer collection에 
+   */
   return Post_answers.create({
     id: postId + userId,
-    post_id: postId,
-    user_id: userId,
+    postId,
+    userId,
     answer: agree
   });
+}
+
+export const addAgrees = async (postId) => {
+  return Post.findOne({ id: postId }, { userId: false })
+    .then(post => {
+      post.agrees++;
+      return post.save();
+    });
+}
+
+export const addDisagrees = async (postId) => {
+  return Post.findOne({ id: postId }, { userId: false })
+    .then(post => {
+      post.disagrees++;
+      return post.save();
+    })
+}
+
+export const deleteAnswer = async (postId, userId) => {
+  return Post_answers.deleteOne({ id: postId + userId })
+}
+
+export const substractAgrees = async (postId) => {
+  return Post.findOne({ id: postId }, { userId: false })
+    .then(post => {
+      post.agrees--;
+      return post.save();
+    });
+}
+
+export const substractDisagrees = async (postId) => {
+  return Post.findOne({ id: postId }, { userId: false })
+    .then(post => {
+      post.disagrees--;
+      return post.save();
+    });
 }
 
 export default Post_answers;

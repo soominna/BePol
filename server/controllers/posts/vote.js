@@ -1,16 +1,12 @@
 import * as postAnswerRepository from "../../models/postAnswer.js";
-import * as postRepository from "../../models/post.js";
 
 export const voteToPost = async (req, res, next) => {
     /**
      * 기능: 발의문 찬반투표 & 투표 취소 기능
      * 작성자: 이승연
      * 📌 투표 기능 ✔︎
-     * 📌 투표 취소 기능 ✔︎
-     * postAnswer에 이미 찬성이나 반대를 누른 유저 o (user_id 비교)
-     * >> 같은거(찬성 -> 찬성) 한번 더 누르면 취소 ✔︎
-     * >> 반대거(찬성 -> 반대) 한번 더 누르면 변경 ✔︎
      * 📌 게시물 agrees, disagrees 반영 ✔︎
+     * 📌 예외 처리 - unauthorized user, 이미 투표한 사람 ✔︎
      * 📌 로그인 적용 ❌ (소셜로그인 부분 merge 후 진행할 계획!)
      */
 
@@ -23,59 +19,75 @@ export const voteToPost = async (req, res, next) => {
     const { postId } = req.params;
     const userId = "62e1eb6f6cc8d5e6d3bfac2d"; // 소셜로그인 구현되면 변경
 
-    if (!accesstoken) { // 소셜로그인 구현되면 변경
+    if (!accesstoken) { // user 정보 불일치시 error
         res.status(401).json({
             message: "Unauthorized user",
         });
     }
 
-    const userIdAnswered = await postAnswerRepository.getUserIdAnswered(userId, agree);
+    const votedUser = await postAnswerRepository.getUserIdAnswered(userId);
 
-    if (userIdAnswered) { // 재투표
-        if (userIdAnswered.answer === agree) { // 같은거 또 누른 경우 (찬성 -> 찬성)            
-            await postAnswerRepository.deleteAnswer(userId);
-            await (
-                agree === true ?
-                postRepository.substractAgrees(postId) :
-                postRepository.substractDisagrees(postId)
-            );
-            return res.sendStatus(204);
-        } else { // 다른 거 또 누른 경우 (찬성 -> 반대)
-            const changedAnswer = await postAnswerRepository.changeAnswer(agree, userId);
-
-            if (changedAnswer) {
-                await (
-                    agree === true ?
-                    postRepository.substractDisagrees(postId) :
-                    postRepository.substractAgrees(postId)
-                );
-                await (
-                    agree === true ?
-                    postRepository.addAgrees(postId) :
-                    postRepository.addDisagrees(postId)
-                );
-
-                return res.status(201).json({
-                    message: "Vote is changed to the other option successfully",
-                    agree: changedAnswer.answer
-                })
-            }
-        }
-    } else { // 첫 투표
-        const data = await postAnswerRepository.addAnswer(postId, userId, agree);
-
-        if (data) {
-            // post collection - agrees, disagrees 적용
-            await (
-                agree === true ?
-                postRepository.addAgrees(postId) :
-                postRepository.addDisagrees(postId)
-            );
-    
-            return res.status(201).json({
-                message: "Voted successfully",
-                "agree": data.answer,
-            });
-        }
+    if (votedUser) { // 이미 투표한 경우
+        return res.status(403).json({
+            message: "Already voted user!",
+        });
     }
+
+    const data = await postAnswerRepository.addAnswer(postId, userId, agree);
+
+    if (data) {
+        // post collection - agrees, disagrees 적용
+        await (
+            agree === true ?
+            postAnswerRepository.addAgrees(postId) :
+            postAnswerRepository.addDisagrees(postId)
+        );
+
+        return res.status(201).json({
+            message: "Voted successfully",
+            "agree": data.answer,
+        });
+    }
+}
+
+export const voteDeleteToPost = async (req, res, next) => {
+    /**
+     * 기능: 찬반투표 취소
+     * 작성자: 이승연
+     * 📌 투표 취소 기능 ✔︎
+     * 📌 게시물 agrees, disagrees 반영 ✔︎
+     * 📌 예외 처리 - unauthorized user, postAnser 컬렉션에 해당 유저가 없는 사람 (투표 안함) ✔︎
+     * 📌 로그인 적용 ❌ (소셜로그인 부분 merge 후 진행할 계획!)
+     */
+
+    const { agree } = req.body;
+    const { accesstoken } = req.headers;
+    const { postId } = req.params;
+    const userId = "62e1eb6f6cc8d5e6d3bfac2d"; // 소셜로그인 구현되면 변경
+
+    if (!accesstoken) { // user 정보 불일치시 error
+        res.status(401).json({
+            message: "Unauthorized user",
+        });
+    }
+
+    const votedUser = await postAnswerRepository.getUserIdAnswered(userId);
+
+    if (!votedUser) { // 투표 안한 경우
+        return res.status(403).json({
+            message: "No vote record of this user!!",
+        });
+    }
+
+    await postAnswerRepository.deleteAnswer(postId, userId);
+
+    await (
+        agree === true ?
+        postAnswerRepository.substractAgrees(postId) :
+        postAnswerRepository.substractDisagrees(postId)
+    );
+
+    return res.status(200).json({
+        message: "Vote is deleted!!",
+    })
 }
