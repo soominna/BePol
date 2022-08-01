@@ -60,11 +60,12 @@ export const addAnswerTransaction = async (postId, userId, agree) => {
   try {
     session.startTransaction();
 
-    await addAnswer(postId, userId, agree);
-    await (agree === true ? addAgrees(postId) : addDisagrees(postId));
+    const answer = await addAnswer(postId, userId, agree);
+    const agrees = await (agree === true ? addAgrees(postId) : addDisagrees(postId));
 
     await session.commitTransaction();
     session.endSession();
+    return answer, agrees;
   } catch (err) {
     await session.abortTransaction();
     session.endSession();
@@ -102,11 +103,12 @@ export const deleteAnswerTransaction = async (postId, userId, answer) => {
   try {
     session.startTransaction();
 
-    await deleteAnswer(postId, userId);
-    await (answer === true ? substractAgrees(postId) : substractDisagrees(postId));
+    const answer = await deleteAnswer(postId, userId);
+    const agree = await (answer === true ? substractAgrees(postId) : substractDisagrees(postId));
 
     await session.commitTransaction();
     session.endSession();
+    return answer, agree;
   } catch (err) {
     await session.abortTransaction();
     session.endSession();

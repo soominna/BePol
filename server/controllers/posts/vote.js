@@ -32,11 +32,17 @@ export const voteToPost = async (req, res, next) => {
       message: "Already voted user!",
     });
   } else {
-    postAnswerRepository.addAnswerTransaction(postId, userId, agree);
+    const data = await postAnswerRepository.addAnswerTransaction(postId, userId, agree);
 
-    return res.status(201).json({
-      message: "Voted successfully",
-    });
+    if (!data) {
+      return res.status(500).json({
+        message: "Server Error!",
+      });
+    } else {
+      return res.status(201).json({
+        message: "Voted successfully",
+      });
+    }
   }
 };
 
@@ -60,7 +66,6 @@ export const voteDeleteToPost = async (req, res, next) => {
   const { postId } = req.params;
   const userId = "62e1eb6f6cc8d5e6d3bfac2d"; // 소셜로그인 구현되면 변경
   const userPostAnswer = await postAnswerRepository.findUserAnswer(userId);
-  const { answer } = userPostAnswer;
   const votedUser = await postAnswerRepository.getUserIdAnswered(userId);
 
   if (!accesstoken) {
@@ -74,10 +79,16 @@ export const voteDeleteToPost = async (req, res, next) => {
       message: "No vote record of this user!!",
     });
   } else {
-    postAnswerRepository.deleteAnswerTransaction(postId, userId, answer);
-
-    return res.status(200).json({
-      message: "Vote is deleted!!",
-    });
+    const data = postAnswerRepository.deleteAnswerTransaction(postId, userId, userPostAnswer.answer);
+    
+    if (!data) {
+      return res.status(500).json({
+        message: "Server Error!",
+      });
+    } else {
+      return res.status(200).json({
+        message: "Vote is deleted!!",
+      });
+    }
   }
 };
