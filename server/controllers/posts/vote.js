@@ -81,8 +81,8 @@ export const voteDeleteToPost = async (req, res, next) => {
       message: "No vote record of this user!!",
     });
   } else {
-    const data = postAnswerRepository.deleteAnswerTransaction(postId, userId, userPostAnswer.answer);
-    
+    const data = await postAnswerRepository.deleteAnswerTransaction(postId, userId, userPostAnswer.answer);
+
     if (!data) {
       return res.status(500).json({
         message: "Server Error!",
