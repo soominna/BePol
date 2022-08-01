@@ -1,4 +1,4 @@
-import * as postAnswerRepository from "../../models/postAnswer.js";
+import * as postAnswerRepository from "../../services/postAnswer.js";
 
 export const voteToPost = async (req, res, next) => {
   /**
@@ -7,6 +7,7 @@ export const voteToPost = async (req, res, next) => {
    * 📌 투표 기능 ✔︎
    * 📌 게시물 agrees, disagrees 반영 ✔︎
    * 📌 예외 처리 - unauthorized user, 이미 투표한 사람 ✔︎
+   * 📌 유저 정보에 맞게 통계 적용 ✔︎
    * 📌 로그인 적용 ❌ (소셜로그인 부분 merge 후 진행할 계획!)
    * 📌 트랜잭션 처리 ✔︎
    */
@@ -18,7 +19,7 @@ export const voteToPost = async (req, res, next) => {
   const { agree } = req.body;
   const { accesstoken } = req.headers;
   const { postId } = req.params;
-  const userId = "62e1eb6f6cc8d5e6d3bfac2d"; // 소셜로그인 구현되면 변경
+  const userId = "62e72e8bd16b26b038686b66"; // 소셜로그인 구현되면 변경
   const votedUser = await postAnswerRepository.getUserIdAnswered(userId);
 
   if (!accesstoken) {
@@ -53,6 +54,7 @@ export const voteDeleteToPost = async (req, res, next) => {
    * 📌 투표 취소 기능 ✔︎
    * 📌 게시물 agrees, disagrees 반영 ✔︎
    * 📌 예외 처리 - unauthorized user, postAnser 컬렉션에 해당 유저가 없는 사람 (투표 안함) ✔︎
+   * 📌 유저 정보에 맞게 통계 적용 ✔︎
    * 📌 로그인 적용 ❌ (소셜로그인 부분 merge 후 진행할 계획!)
    * 📌 트랜잭션 처리 ✔︎
    */
@@ -64,7 +66,7 @@ export const voteDeleteToPost = async (req, res, next) => {
    */
   const { accesstoken } = req.headers;
   const { postId } = req.params;
-  const userId = "62e1eb6f6cc8d5e6d3bfac2d"; // 소셜로그인 구현되면 변경
+  const userId = "62e72e8bd16b26b038686b66"; // 소셜로그인 구현되면 변경
   const userPostAnswer = await postAnswerRepository.findUserAnswer(userId);
   const votedUser = await postAnswerRepository.getUserIdAnswered(userId);
 
