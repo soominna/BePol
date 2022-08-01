@@ -331,3 +331,8 @@ export const deleteAnswerTransaction = async (postId, userId, answer) => {
     session.endSession();
   }
 };
+
+export const getPostStatistics = async (postId) => {
+  // 통계 조회
+  return Post_statistics.findOne({ postId });
+};
