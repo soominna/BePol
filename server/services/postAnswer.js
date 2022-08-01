@@ -2,9 +2,7 @@ import Post from "../models/post.js";
 import Post_answers from "../models/postAnswer.js";
 import User from "../models/user.js";
 import Post_statistics from "../models/postStatistics.js";
-import pkg from "mongoose";
 import mongoose from "mongoose";
-const { startSession } = pkg;
 
 export const getUserIdAnswered = async (userId) => {
   return Post_answers.findOne({ userId });
@@ -55,9 +53,10 @@ export const pushVoteStatistics = async (postId, userId, agree, session) => {
   if (!statisticData) {
     await Post_statistics.create({ postId });
   }
-  return Post_statistics.findOne({ postId })
-    .then(stat => {
-      if (gender === "XX") { // 여성
+  return Post_statistics.findOne({ postId }).then(
+    (stat) => {
+      if (gender === "XX") {
+        // 여성
         if (thisYearAge < 20) {
           if (agree === true) {
             stat.female["10"].agrees++;
@@ -145,7 +144,9 @@ export const pushVoteStatistics = async (postId, userId, agree, session) => {
         }
       }
       stat.save();
-    }, { session })
+    },
+    { session }
+  );
 };
 
 export const addAnswerTransaction = async (postId, userId, agree) => {
@@ -181,21 +182,27 @@ export const deleteAnswer = async (postId, userId, session) => {
 };
 
 export const substractAgrees = async (postId, session) => {
-  return Post.findOne({ id: postId }, { userId: false }).then((post) => {
-    if (post.agrees > 0) {
-      post.agrees--;
-      return post.save();
-    }
-  }, { session });
+  return Post.findOne({ id: postId }, { userId: false }).then(
+    (post) => {
+      if (post.agrees > 0) {
+        post.agrees--;
+        return post.save();
+      }
+    },
+    { session }
+  );
 };
 
 export const substractDisagrees = async (postId, session) => {
-  return Post.findOne({ id: postId }, { userId: false }).then((post) => {
-    if (post.disagrees > 0) {
-      post.disagrees--;
-      return post.save();
-    }
-  }, { session });
+  return Post.findOne({ id: postId }, { userId: false }).then(
+    (post) => {
+      if (post.disagrees > 0) {
+        post.disagrees--;
+        return post.save();
+      }
+    },
+    { session }
+  );
 };
 
 export const popVoteStatistics = async (postId, userId, agree, session) => {
@@ -205,9 +212,10 @@ export const popVoteStatistics = async (postId, userId, agree, session) => {
   const thisYearAge = thisYear - age + 1;
 
   // 성별, 나이에 맞게 통계 입력
-  return Post_statistics.findOne({ postId })
-    .then(stat => {
-      if (gender === "XX") { // 여성
+  return Post_statistics.findOne({ postId }).then(
+    (stat) => {
+      if (gender === "XX") {
+        // 여성
         if (thisYearAge < 20) {
           if (agree === true) {
             stat.female["10"].agrees--;
@@ -295,7 +303,9 @@ export const popVoteStatistics = async (postId, userId, agree, session) => {
         }
       }
       stat.save();
-    }, { session })
+    },
+    { session }
+  );
 };
 
 export const deleteAnswerTransaction = async (postId, userId, answer) => {
@@ -312,7 +322,7 @@ export const deleteAnswerTransaction = async (postId, userId, answer) => {
 
     await session.commitTransaction();
     session.endSession();
-    
+
     console.log("success!!");
     return agree;
   } catch (err) {
