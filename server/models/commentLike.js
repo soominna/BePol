@@ -7,18 +7,18 @@ const newSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    comment_id: {
+    commentId: {
       type: mongoose.Schema.Types.Object,
       required: true,
     },
-    user_id: {
+    userId: {
       type: mongoose.Schema.Types.Object,
       required: true,
     },
   },
   {
     timestamps: {
-      createdAt: "created_at",
+      createdAt: "createdAt",
     },
   }
 );

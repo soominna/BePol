@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 
 const newSchema = mongoose.Schema(
   {
-    post_id: {
+    postId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
@@ -70,7 +70,7 @@ const newSchema = mongoose.Schema(
   },
   {
     timestamps: {
-      createdAt: "created_at",
+      createdAt: "createdAt",
     },
   }
 );

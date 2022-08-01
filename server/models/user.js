@@ -22,7 +22,7 @@ const newSchema = mongoose.Schema(
   },
   {
     timestamps: {
-      createdAt: "created_at",
+      createdAt: "createdAt",
     },
   }
 );
