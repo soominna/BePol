@@ -23,5 +23,5 @@ const newSchema = mongoose.Schema(
   }
 );
 
-const User = mongoose.model("User", newSchema);
-export default User;
+const CommentLike = mongoose.model("CommentLike", newSchema);
+export default CommentLike;
