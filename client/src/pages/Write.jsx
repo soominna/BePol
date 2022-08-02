@@ -230,7 +230,7 @@ export default function Write() {
           <input
             id={"attached"}
             type={"file"}
-            accept={"image/png"} //! 파일유형 제기
+            accept={"image/png"} //! 파일유형 제한
             onChange={handleChangeFile}
             multiple={"multiple"}
           />
