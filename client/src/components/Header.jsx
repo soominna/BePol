@@ -24,6 +24,7 @@ export default function Header() {
           {/* <span>{username}님</span> */}
           <span>정치인 님</span>
           <img src="/images/writeIcon.png" alt="writing Icon" />
+          <Button>로그아웃</Button>
         </Buttons>
       ) : (
         <Link to="/login" style={{ textDecoration: "none" }}>
