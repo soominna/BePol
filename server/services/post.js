@@ -44,46 +44,56 @@ const getPostsList = async (page, search, sortOptions, pageSize) => {
 
 const getByCategory = async (postsList, categoryArr) => {
   // 카테고리 검색 함수 선언
-  return Promise.all(
-    postsList.map(async (post) => {
-      let posts;
-      const { category } = post;
-      for (let type of category) {
-        for (let category of categoryArr) {
-          if (type === category) {
-            posts = await Post.find(
-              {
-                category: {
-                  $in: type,
+  try {
+    return Promise.all(
+      postsList.map(async (post) => {
+        let posts;
+        const { category } = post;
+        for (let type of category) {
+          for (let category of categoryArr) {
+            if (type === category) {
+              posts = await Post.find(
+                {
+                  category: {
+                    $in: type,
+                  },
                 },
-              },
-              EXCEPT_OPTION
-            );
-            return posts;
-          } else {
-            return false;
+                EXCEPT_OPTION
+              );
+              return posts;
+            } else {
+              return false;
+            }
           }
         }
-      }
-    })
-  );
+      })
+    );
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 const getClosed = async (postsList, posts) => {
   // 마감된 발의문 분류 함수 선언
-  return Promise.all(
-    postsList.map(async (post) => {
-      const { updatedAt } = post;
-      const date = new Date(updatedAt);
-      const year = date.getFullYear();
-      const month = date.getMonth();
-      const day = date.getDate();
+  try {
+    return Promise.all(
+      postsList.map(async (post) => {
+        const { updatedAt } = post;
+        const date = new Date(updatedAt);
+        const year = date.getFullYear();
+        const month = date.getMonth();
+        const day = date.getDate();
 
-      const afterOneMonth = new Date(year, month + 1, day);
+        const afterOneMonth = new Date(year, month + 1, day);
 
-      afterOneMonth.getTime() < new Date().getTime() ? posts.push(post) : null;
-    })
-  );
+        afterOneMonth.getTime() < new Date().getTime()
+          ? posts.push(post)
+          : null;
+      })
+    );
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 export const getAllByCategory = async (categoryArr, search, sortby, page) => {
