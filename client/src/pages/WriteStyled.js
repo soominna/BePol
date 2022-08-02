@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const Body = styled.div`
-  width: 40%;
+  width: 50%;
   margin: auto;
 `;
 
@@ -21,20 +21,48 @@ export const DropMenuContainer = styled.div`
   display: flex;
   align-items: center;
   margin-top: 30px;
+  margin-bottom: ${(props) => props.marginBottom};
+  /* margin-bottom: 20px; */
 `;
 
 export const DropMenu = styled.div`
+  position: relative;
+`;
+
+export const DropTitle = styled.div`
   border: 1px solid #b1b1b1;
   background: #f1f1f1;
-  border-radius: 20px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: ${(props) => props.borderRadius};
+  border-bottom-right-radius: ${(props) => props.borderRadius};
   display: flex;
   width: 200px;
   height: 25px;
   justify-content: space-between;
   align-items: center;
   padding: 0 15px 0 10px;
-  margin: 0 10px 0 30px;
+  margin: 0 10px 0px 30px;
   cursor: pointer;
+`;
+
+export const DropOptions = styled.div`
+  position: absolute;
+  left: 0;
+  z-index: 1;
+  height: 300px;
+  margin-left: 30px;
+  label {
+    border: 1px solid #b1b1b1;
+    background: #f1f1f1;
+    display: inline-block;
+    width: 225px;
+    height: 25px;
+    padding-top: 5px;
+  }
+  input {
+    margin: 0 10px 0 5px;
+  }
 `;
 
 export const Category = styled.div`
@@ -53,10 +81,8 @@ export const InputField = styled.div`
   margin-top: 30px;
   border-bottom: 1px solid #a09e9e;
   div {
-    &:first-child {
-      font-size: 20px;
-      margin-left: 40px;
-    }
+    font-size: 20px;
+    margin-left: 40px;
   }
   input {
     width: 90%;
@@ -80,10 +106,16 @@ export const Textarea = styled.textarea`
 `;
 
 export const Length = styled.div`
-  text-align: right;
+  display: flex;
+  justify-content: flex-end;
   margin: 5px 5% 10px 0;
-  color: ${(props) => props.color};
-  font-size: 15px;
+  div {
+    font-size: 15px;
+    color: ${(props) => props.color};
+    &:last-child {
+      margin-left: 20px;
+    }
+  }
 `;
 
 export const AttachedField = styled.div`
