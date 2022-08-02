@@ -8,6 +8,7 @@ export const voteToPost = async (req, res, next) => {
    * 📌 게시물 agrees, disagrees 반영 ✔︎
    * 📌 예외 처리 - unauthorized user, 이미 투표한 사람 ✔︎
    * 📌 유저 정보에 맞게 통계 적용 ✔︎
+   * 📌 통계 정보에 적용 ✔︎
    * 📌 로그인 적용 ❌ (소셜로그인 부분 merge 후 진행할 계획!)
    * 📌 트랜잭션 처리 ✔︎
    */
@@ -20,30 +21,35 @@ export const voteToPost = async (req, res, next) => {
   const { accesstoken } = req.headers;
   const { postId } = req.params;
   const userId = "62e72e8bd16b26b038686b66"; // 소셜로그인 구현되면 변경
-  const votedUser = await postAnswerRepository.getUserIdAnswered(userId);
-
-  if (!accesstoken) {
-    // user 정보 불일치시 error
-    return res.status(401).json({
-      message: "Unauthorized user",
-    });
-  } else if (votedUser) {
-    // 이미 투표한 경우
-    return res.status(403).json({
-      message: "Already voted user!",
-    });
-  } else {
-    const data = await postAnswerRepository.addAnswerTransaction(postId, userId, agree);
-
-    if (!data) {
-      return res.status(500).json({
-        message: "Server Error!",
+  try {
+    const votedUser = await postAnswerRepository.getUserIdAnswered(userId);
+    if (!accesstoken) {
+      // user 정보 불일치시 error
+      return res.status(401).json({
+        message: "Unauthorized user",
+      });
+    } else if (votedUser) {
+      // 이미 투표한 경우
+      return res.status(403).json({
+        message: "Already voted user!",
       });
     } else {
-      return res.status(201).json({
-        message: "Voted successfully",
-      });
+      const data = await postAnswerRepository.addAnswerTransaction(postId, userId, agree);
+
+      if (!data) {
+        return res.status(500).json({
+          message: "Server Error!",
+        });
+      } else {
+        return res.status(201).json({
+          message: "Voted successfully",
+        });
+      }
     }
+  } catch (err) {
+    return res.status(500).json({
+      message: "Server Error!",
+    });
   }
 };
 
@@ -55,6 +61,7 @@ export const voteDeleteToPost = async (req, res, next) => {
    * 📌 게시물 agrees, disagrees 반영 ✔︎
    * 📌 예외 처리 - unauthorized user, postAnser 컬렉션에 해당 유저가 없는 사람 (투표 안함) ✔︎
    * 📌 유저 정보에 맞게 통계 적용 ✔︎
+   * 📌 통계 정보에 적용 ✔︎
    * 📌 로그인 적용 ❌ (소셜로그인 부분 merge 후 진행할 계획!)
    * 📌 트랜잭션 처리 ✔︎
    */
@@ -67,30 +74,36 @@ export const voteDeleteToPost = async (req, res, next) => {
   const { accesstoken } = req.headers;
   const { postId } = req.params;
   const userId = "62e72e8bd16b26b038686b66"; // 소셜로그인 구현되면 변경
-  const userPostAnswer = await postAnswerRepository.findUserAnswer(userId);
-  const votedUser = await postAnswerRepository.getUserIdAnswered(userId);
 
-  if (!accesstoken) {
-    // user 정보 불일치시 error
-    res.status(401).json({
-      message: "Unauthorized user",
-    });
-  } else if (!votedUser) {
-    // 투표 안한 경우
-    return res.status(403).json({
-      message: "No vote record of this user!!",
-    });
-  } else {
-    const data = await postAnswerRepository.deleteAnswerTransaction(postId, userId, userPostAnswer.answer);
-
-    if (!data) {
-      return res.status(500).json({
-        message: "Server Error!",
+  try {
+    const userPostAnswer = await postAnswerRepository.findUserAnswer(userId);
+    const votedUser = await postAnswerRepository.getUserIdAnswered(userId);
+    if (!accesstoken) {
+      // user 정보 불일치시 error
+      res.status(401).json({
+        message: "Unauthorized user",
+      });
+    } else if (!votedUser) {
+      // 투표 안한 경우
+      return res.status(403).json({
+        message: "No vote record of this user!!",
       });
     } else {
-      return res.status(200).json({
-        message: "Vote is deleted!!",
-      });
+      const data = await postAnswerRepository.deleteAnswerTransaction(postId, userId, userPostAnswer.answer);
+
+      if (!data) {
+        return res.status(500).json({
+          message: "Server Error!",
+        });
+      } else {
+        return res.status(200).json({
+          message: "Vote is deleted!!",
+        });
+      }
     }
+  } catch (err) {
+    return res.status(500).json({
+      message: "Server Error!",
+    });
   }
 };
