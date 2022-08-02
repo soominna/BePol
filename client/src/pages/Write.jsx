@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import {
   Body,
@@ -12,12 +13,14 @@ import {
   Textarea,
   Length,
   AttachedField,
+  AttachedInput,
   ButtonField,
 } from "./WriteStyled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
 
 export default function Write() {
+  const navigate = useNavigate();
   const allCategory = [
     { 0: "법률/사법" },
     { 1: "금융/경제" },
@@ -44,6 +47,8 @@ export default function Write() {
   // textarea 높이조절을 하기 위한 state
   const [purportHeight, setPurportHeight] = useState("150px");
   const [contentsHeight, setContentsHeight] = useState("200px");
+  const [filesName, setFilesName] = useState("");
+  const [files, setFiles] = useState([]);
   const textareaRef = useRef([]);
   const inputRef = useRef([]);
 
@@ -71,13 +76,46 @@ export default function Write() {
   };
 
   // 첨부파일 변경적용 함수
-  const handleChangeFile = () => {};
+  const handleChangeFile = (e) => {
+    // todo
+    //! 파일 갯수, 크기 제한 검사 추가
+    if (e.target.files.length) {
+      setFiles(e.target.files);
+      let fileName = "";
+      if (e.target.files.length === 1) {
+        fileName = e.target.files[0].name;
+      } else {
+        for (let i = 0; i < e.target.files.length; i++) {
+          fileName += `, ${e.target.files[i].name}`;
+        }
+      }
+      setFilesName(fileName);
+    } else return;
+  };
 
   // 취소버트늘 눌렀을 때 함수
-  const handleCancle = () => {};
+  const handleCancle = () => {
+    Swal.fire({
+      title: "등록을 취소하시겠습니까?",
+      text: "작성한 내용은 저장되지 않습니다.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        navigate("/");
+      }
+    });
+  };
 
   // 법안발의 등록버튼을 눌렀을 때 함수
-  const handleRegister = () => {};
+  const handleRegister = () => {
+    // todo
+    //! formdata 만들고 보내야하는 정보 append하기
+  };
 
   return (
     <Body>
@@ -184,26 +222,27 @@ export default function Write() {
       </InputField>
       <AttachedField>
         <div>첨부파일</div>
-        <label for={"attached"}>
+        <AttachedInput for={"attached"}>
           <div>
-            <span>파일이름</span>
+            <span>{filesName}</span>
             <span>첨부하기</span>
           </div>
           <input
             id={"attached"}
             type={"file"}
+            accept={"image/png"} //! 파일유형 제기
             onChange={handleChangeFile}
             multiple={"multiple"}
           />
-        </label>
+        </AttachedInput>
       </AttachedField>
       <ButtonField>
-        <button type={"button"} onClick={handleCancle}>
+        <div type={"button"} onClick={handleCancle}>
           취소하기
-        </button>
-        <button type={"button"} onClick={handleRegister}>
+        </div>
+        <div type={"button"} onClick={handleRegister}>
           등록하기
-        </button>
+        </div>
       </ButtonField>
     </Body>
   );

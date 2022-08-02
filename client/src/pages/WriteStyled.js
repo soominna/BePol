@@ -59,6 +59,10 @@ export const DropOptions = styled.div`
     width: 225px;
     height: 25px;
     padding-top: 5px;
+    &:hover {
+      background: #414144;
+      color: #ffffff;
+    }
   }
   input {
     margin: 0 10px 0 5px;
@@ -120,49 +124,66 @@ export const Length = styled.div`
 
 export const AttachedField = styled.div`
   margin-top: 20px;
-  border: 1px solid red;
   display: flex;
+  align-items: center;
   margin-left: 20px;
-  div {
+  div & {
     font-size: 20px;
     margin-left: 40px;
+    flex: 0.2 0 0;
   }
-  label {
-    border: 1px solid red;
+`;
+
+export const AttachedInput = styled.label`
+  flex: 0.8 0 0;
+  width: 100%;
+  height: 35px;
+  margin: auto;
+  div {
+    background: #f8f8f8;
     display: flex;
-    div {
-      background: #f8f8f8;
-      span {
-        &:first-child {
-          width: 200px;
-        }
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%;
+    span {
+      font-size: 15px;
+      &:first-child {
+        margin-left: 10px;
+      }
+      &:last-child {
+        background: #d9d9d9;
+        border-radius: 5px;
+        padding: 3px 10px 3px 10px;
+        margin-right: 10px;
       }
     }
-    input {
-      display: none;
-    }
+  }
+  input {
+    display: none;
   }
 `;
 
 export const ButtonField = styled.div`
+  margin-top: 30px;
   display: flex;
   justify-content: center;
-  button {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
+  div {
     background: #f5f5f5;
     cursor: pointer;
     border: none;
     font-size: 20px;
+    text-align: center;
     width: 100px;
     height: 30px;
     border-radius: 10px;
+    padding-top: 5px;
     &:first-child {
-      margin-right: 10px;
+      margin-right: 20px;
     }
     &:hover {
-      box-shadow: 5px 5px red;
+      background: #414144;
+      color: #ffffff;
     }
   }
 `;
