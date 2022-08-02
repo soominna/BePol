@@ -42,14 +42,14 @@ const newSchema = mongoose.Schema(
       default: 0,
       required: true,
     },
-    user_id: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
   },
   {
     timestamps: {
-      createdAt: "created_at",
+      createdAt: "createdAt",
     },
   }
 );

@@ -10,20 +10,25 @@ const newSchema = mongoose.Schema(
     likes: {
       type: Number,
       required: true,
+      default: 0,
     },
-    post_id: {
+    postId: {
       type: mongoose.Schema.Types.Object,
       required: true,
     },
-    user_id: {
+    userId: {
       type: mongoose.Schema.Types.Object,
+      required: true,
+    },
+    username: {
+      type: String,
       required: true,
     },
   },
   {
     timestamps: {
-      createdAt: "created_at",
-      updatedAt: "updated_at",
+      createdAt: "createdAt",
+      updatedAt: "updatedAt",
     },
   }
 );

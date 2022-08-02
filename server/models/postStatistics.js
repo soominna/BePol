@@ -3,77 +3,165 @@ import mongoose from "mongoose";
 
 const newSchema = mongoose.Schema(
   {
-    post_id: {
+    postId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
-    male10: {
-      type: Number,
-      default: 0,
-      required: true,
+    male: {
+      10: {
+        agrees: {
+          type: Number,
+          default: 0,
+          required: true,
+        },
+        disagrees: {
+          type: Number,
+          default: 0,
+          required: true,
+        },
+      },
+      20: {
+        agrees: {
+          type: Number,
+          default: 0,
+          required: true,
+        },
+        disagrees: {
+          type: Number,
+          default: 0,
+          required: true,
+        },
+      },
+      30: {
+        agrees: {
+          type: Number,
+          default: 0,
+          required: true,
+        },
+        disagrees: {
+          type: Number,
+          default: 0,
+          required: true,
+        },
+      },
+      40: {
+        agrees: {
+          type: Number,
+          default: 0,
+          required: true,
+        },
+        disagrees: {
+          type: Number,
+          default: 0,
+          required: true,
+        },
+      },
+      50: {
+        agrees: {
+          type: Number,
+          default: 0,
+          required: true,
+        },
+        disagrees: {
+          type: Number,
+          default: 0,
+          required: true,
+        },
+      },
+      60: {
+        agrees: {
+          type: Number,
+          default: 0,
+          required: true,
+        },
+        disagrees: {
+          type: Number,
+          default: 0,
+          required: true,
+        },
+      },
     },
-    male20: {
-      type: Number,
-      default: 0,
-      required: true,
-    },
-    male30: {
-      type: Number,
-      default: 0,
-      required: true,
-    },
-    male40: {
-      type: Number,
-      default: 0,
-      required: true,
-    },
-    male50: {
-      type: Number,
-      default: 0,
-      required: true,
-    },
-    male60: {
-      type: Number,
-      default: 0,
-      required: true,
-    },
-    female10: {
-      type: Number,
-      default: 0,
-      required: true,
-    },
-    female20: {
-      type: Number,
-      default: 0,
-      required: true,
-    },
-    female30: {
-      type: Number,
-      default: 0,
-      required: true,
-    },
-    female40: {
-      type: Number,
-      default: 0,
-      required: true,
-    },
-    female50: {
-      type: Number,
-      default: 0,
-      required: true,
-    },
-    female60: {
-      type: Number,
-      default: 0,
-      required: true,
+    female: {
+      10: {
+        agrees: {
+          type: Number,
+          default: 0,
+          required: true,
+        },
+        disagrees: {
+          type: Number,
+          default: 0,
+          required: true,
+        },
+      },
+      20: {
+        agrees: {
+          type: Number,
+          default: 0,
+          required: true,
+        },
+        disagrees: {
+          type: Number,
+          default: 0,
+          required: true,
+        },
+      },
+      30: {
+        agrees: {
+          type: Number,
+          default: 0,
+          required: true,
+        },
+        disagrees: {
+          type: Number,
+          default: 0,
+          required: true,
+        },
+      },
+      40: {
+        agrees: {
+          type: Number,
+          default: 0,
+          required: true,
+        },
+        disagrees: {
+          type: Number,
+          default: 0,
+          required: true,
+        },
+      },
+      50: {
+        agrees: {
+          type: Number,
+          default: 0,
+          required: true,
+        },
+        disagrees: {
+          type: Number,
+          default: 0,
+          required: true,
+        },
+      },
+      60: {
+        agrees: {
+          type: Number,
+          default: 0,
+          required: true,
+        },
+        disagrees: {
+          type: Number,
+          default: 0,
+          required: true,
+        },
+      },
     },
   },
   {
     timestamps: {
-      createdAt: "created_at",
+      createdAt: "createdAt",
     },
   }
 );
 
-const User = mongoose.model("User", newSchema);
-export default User;
+const Post_statistics = mongoose.model("Post_statistics", newSchema);
+export default Post_statistics;

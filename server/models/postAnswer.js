@@ -6,11 +6,11 @@ const newSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  post_id: {
+  postId: {
     type: mongoose.Schema.Types.Object,
     required: true,
   },
-  user_id: {
+  userId: {
     type: mongoose.Schema.Types.Object,
     required: true,
   },
@@ -21,4 +21,5 @@ const newSchema = mongoose.Schema({
 });
 
 const Post_answers = mongoose.model("Post_answers", newSchema);
+
 export default Post_answers;
