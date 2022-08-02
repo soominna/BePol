@@ -179,7 +179,7 @@ export const findUserAnswer = async (userId) => {
 };
 
 export const deleteAnswer = async (postId, userId, session) => {
-  return Post_answers.deleteOne({ _id: postId + userId }, { session });
+  return Post_answers.deleteOne({ id: postId + userId }, { session });
 };
 
 export const substractAgrees = async (postId, session) => {
