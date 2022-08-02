@@ -9,6 +9,7 @@ export default function Header() {
   const isLogin = useSelector((state) => state.login.isLogin);
   const accessToken = useSelector((state) => state.login.accessToken);
   const username = useSelector((state) => state.user.username);
+  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT}&response_type=code`;
 
   return (
     <Container>
@@ -27,7 +28,11 @@ export default function Header() {
       ) : (
         <Link to="/login" style={{ textDecoration: "none" }}>
           <Buttons>
-            <Button>로그인</Button>
+            <Button
+              onClick={() => (window.location.href = `${KAKAO_AUTH_URL}`)}
+            >
+              로그인
+            </Button>
           </Buttons>
         </Link>
       )}
