@@ -24,12 +24,12 @@ export default {
 
       if (response) {
         const data = await axios({
-          method: "get",
-          url: "https://www.googleapis.com/oauth2/v3/userinfo",
+          method: "post",
+          url: "https://kapi.kakao.com/v2/user/me",
           headers: {
-            accept: "application/json",
+            Authorization: `Bearer ${accessToken}`,
+            "Content-type": "application/x-www-form-urlencoded;charset=utf-8",
           },
-          params: { access_token: response.data.access_token },
         });
 
         if (data) {
