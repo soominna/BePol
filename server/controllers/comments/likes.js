@@ -1,4 +1,4 @@
-import * as commentLikeRepository from "../../service/commentLike.js";
+import * as commentLikeRepository from "../../Services/commentLike.js";
 
 export const postLike = async (req, res) => {
   /**
@@ -22,9 +22,9 @@ export const postLike = async (req, res) => {
     );
 
     if (updatedComment)
-      res.status(201).send({ likesCount: updatedComment.likes });
+      res.status(201).json({ likesCount: updatedComment.likes });
     else res.sendStatus(500);
-  } else res.status(409).send({ message: "You already liked the comment" });
+  } else res.status(409).json({ message: "You already liked the comment" });
 };
 
 export const deleteLike = async (req, res) => {
