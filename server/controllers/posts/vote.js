@@ -1,4 +1,4 @@
-import * as postAnswerRepository from "../../services/postAnswer.js";
+import * as postAnswerRepository from "../../Services/postAnswer.js";
 
 export const voteToPost = async (req, res, next) => {
   /**
@@ -34,7 +34,11 @@ export const voteToPost = async (req, res, next) => {
         message: "Already voted user!",
       });
     } else {
-      const data = await postAnswerRepository.addAnswerTransaction(postId, userId, agree);
+      const data = await postAnswerRepository.addAnswerTransaction(
+        postId,
+        userId,
+        agree
+      );
 
       if (!data) {
         return res.status(500).json({
@@ -89,7 +93,11 @@ export const voteDeleteToPost = async (req, res, next) => {
         message: "No vote record of this user!!",
       });
     } else {
-      const data = await postAnswerRepository.deleteAnswerTransaction(postId, userId, userPostAnswer.answer);
+      const data = await postAnswerRepository.deleteAnswerTransaction(
+        postId,
+        userId,
+        userPostAnswer.answer
+      );
 
       if (!data) {
         return res.status(500).json({

@@ -1,4 +1,4 @@
-import * as postAnswerRepository from "../../services/postAnswer.js";
+import * as postAnswerRepository from "../../Services/postAnswer.js";
 
 export const getVoteStatistics = async (req, res) => {
   /**
