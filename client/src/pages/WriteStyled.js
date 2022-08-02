@@ -1,12 +1,17 @@
 import styled from "styled-components";
 
+export const Body = styled.div`
+  width: 40%;
+  margin: auto;
+`;
+
 export const Title = styled.div`
-  border: 1px solid red;
   display: flex;
   font-weight: bold;
   font-size: 30px;
+  margin-top: 30px;
   img {
-    border: 1px solid red;
+    margin-left: 10px;
     width: 30px;
     height: 30px;
   }
@@ -14,6 +19,8 @@ export const Title = styled.div`
 
 export const DropMenuContainer = styled.div`
   display: flex;
+  align-items: center;
+  margin-top: 30px;
 `;
 
 export const DropMenu = styled.div`
@@ -26,25 +33,104 @@ export const DropMenu = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 0 15px 0 10px;
+  margin: 0 10px 0 30px;
+  cursor: pointer;
 `;
 
 export const Category = styled.div`
-  border: 1px solid red;
   display: flex;
+  border-bottom: 1px solid #a09e9e;
+  span {
+    margin: 10px 0 10px 30px;
+    background: #414144;
+    color: #ffffff;
+    border-radius: 15px;
+    padding: 5px 10px 5px 10px;
+  }
 `;
 
 export const InputField = styled.div`
-  border: 1px solid red;
+  margin-top: 30px;
+  border-bottom: 1px solid #a09e9e;
+  div {
+    &:first-child {
+      font-size: 20px;
+      margin-left: 40px;
+    }
+  }
+  input {
+    width: 90%;
+    font-size: 15px;
+    padding: 5px 0 5px 0;
+    margin-left: 40px;
+    border: none;
+    outline: none;
+  }
+`;
+
+export const Textarea = styled.textarea`
+  width: 90%;
+  height: ${(props) => props.height};
+  font-size: 15px;
+  padding: 5px 0 5px 0;
+  margin: 0 40px 0 40px;
+  resize: none;
+  border: none;
+  outline: none;
+`;
+
+export const Length = styled.div`
+  text-align: right;
+  margin: 5px 5% 10px 0;
+  color: ${(props) => props.color};
+  font-size: 15px;
 `;
 
 export const AttachedField = styled.div`
+  margin-top: 20px;
   border: 1px solid red;
   display: flex;
+  margin-left: 20px;
+  div {
+    font-size: 20px;
+    margin-left: 40px;
+  }
   label {
     border: 1px solid red;
     display: flex;
+    div {
+      background: #f8f8f8;
+      span {
+        &:first-child {
+          width: 200px;
+        }
+      }
+    }
     input {
       display: none;
+    }
+  }
+`;
+
+export const ButtonField = styled.div`
+  display: flex;
+  justify-content: center;
+  button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: #f5f5f5;
+    cursor: pointer;
+    border: none;
+    font-size: 20px;
+    width: 100px;
+    height: 30px;
+    border-radius: 10px;
+    &:first-child {
+      margin-right: 10px;
+    }
+    &:hover {
+      box-shadow: 5px 5px red;
     }
   }
 `;

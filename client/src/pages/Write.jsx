@@ -1,12 +1,16 @@
 // import Header from "./components/Header.jsx";
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import {
+  Body,
   Title,
   DropMenuContainer,
   DropMenu,
   Category,
   InputField,
+  Textarea,
+  Length,
   AttachedField,
+  ButtonField,
 } from "./WriteStyled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
@@ -17,19 +21,27 @@ export default function Write() {
   const [titleLength, setTitleLength] = useState(0);
   const [purport, setPurport] = useState("");
   const [purportLength, setPurportLength] = useState(0);
-  const [contentsL, setContents] = useState("");
+  const [contents, setContents] = useState("");
   const [contentsLength, setContentsLength] = useState(0);
+  // 줄 수를 계산해서 저장할 변수
+  const [purportHeight, setPurportHeight] = useState("150px");
+  const [contentsHeight, setContentsHeight] = useState("200px");
+  const purportTextareaRef = useRef(null);
+  const contentsTextareaRef = useRef(null);
 
   const isDropMenuModal = () => {}; // 카테고리 dropmenu 모달 함수
 
   const handleChangeFile = () => {}; // 첨부파일 변경적용 함수
 
+  const handleCancle = () => {}; // 취소버트늘 눌렀을 때 함수
+
+  const handleRegister = () => {}; // 법안발의 등록버튼을 눌렀을 때 함수
+
   return (
-    <>
-      {/* <Header/> */}
+    <Body>
       <Title>
         <div> 모의 법안 등록하기</div>
-        <img src={"img/writeIcon.png"} alt={"등록아이콘"}></img>
+        <img src={"images/writeIcon.png"} alt={"등록아이콘"}></img>
       </Title>
       <DropMenuContainer>
         <DropMenu onClick={isDropMenuModal}>
@@ -39,31 +51,71 @@ export default function Write() {
         <div>최대 3개까지 선택가능합니다.</div>
       </DropMenuContainer>
       <Category>
-        선택된 카테고리
+        <span>선택된 카테고리</span>
         {category.map((select) => (
-          <div>{select}</div>
+          <span>{select}</span>
         ))}
       </Category>
       <InputField>
         <div>제목</div>
-        <input type={"text"} placeholder={"제목을 입력해주세요."}></input>
-        <div>{titleLength}/150</div>
+        <input
+          value={title}
+          type={"text"}
+          placeholder={"제목을 입력해주세요."}
+          onChange={(e) => {
+            setTitle(e.target.value);
+            setTitleLength(e.target.value.length);
+          }}
+        ></input>
+        <Length color={titleLength > 150 ? "red" : "black"}>
+          {titleLength}/150
+        </Length>
       </InputField>
       <InputField>
         <div>법안 발의 취지</div>
-        <textarea placeholder={"취지를 입력해주세요."}></textarea>
-        <div>{titleLength}/3000</div>
+        <Textarea
+          ref={purportTextareaRef}
+          height={purportLength ? purportHeight : "150px"}
+          value={purport}
+          placeholder={"취지를 입력해주세요."}
+          onChange={(e) => {
+            setPurport(e.target.value);
+            setPurportLength(e.target.value.length);
+            setPurportHeight(
+              purportTextareaRef.current.scrollHeight - 10 + "px"
+            );
+          }}
+        ></Textarea>
+        <Length color={purportLength > 3000 ? "red" : "black"}>
+          {purportLength}/3000
+        </Length>
       </InputField>
       <InputField>
         <div>법안 발의 내용</div>
-        <textarea placeholder={"내용를 입력해주세요."}></textarea>
-        <div>{titleLength}/4000</div>
+        <Textarea
+          ref={contentsTextareaRef}
+          height={contentsLength ? contentsHeight : "200px"}
+          value={contents}
+          placeholder={"내용를 입력해주세요."}
+          onChange={(e) => {
+            setContents(e.target.value);
+            setContentsLength(e.target.value.length);
+            setContentsHeight(
+              contentsTextareaRef.current.scrollHeight - 10 + "px"
+            );
+          }}
+        ></Textarea>
+        <Length color={contentsLength > 4000 ? "red" : "black"}>
+          {contentsLength}/4000
+        </Length>
       </InputField>
       <AttachedField>
         <div>첨부파일</div>
         <label for={"attached"}>
-          <span>파일이름</span>
-          <span>첨부하기</span>
+          <div>
+            <span>파일이름</span>
+            <span>첨부하기</span>
+          </div>
           <input
             id={"attached"}
             type={"file"}
@@ -72,6 +124,14 @@ export default function Write() {
           />
         </label>
       </AttachedField>
-    </>
+      <ButtonField>
+        <button type={"button"} onClick={handleCancle}>
+          취소하기
+        </button>
+        <button type={"button"} onClick={handleRegister}>
+          등록하기
+        </button>
+      </ButtonField>
+    </Body>
   );
 }
