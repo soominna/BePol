@@ -34,7 +34,11 @@ export const voteToPost = async (req, res) => {
         message: "Already voted user!",
       });
     } else {
-      const data = await postAnswerRepository.addAnswerTransaction(postId, userId, agree);
+      const data = await postAnswerRepository.addAnswerTransaction(
+        postId,
+        userId,
+        agree
+      );
 
       if (!data) {
         return res.status(500).json({
@@ -43,6 +47,7 @@ export const voteToPost = async (req, res) => {
       } else {
         return res.status(201).json({
           message: "Voted successfully",
+          agree: data[0].answer,
         });
       }
     }
@@ -89,7 +94,11 @@ export const voteDeleteToPost = async (req, res) => {
         message: "No vote record of this user!!",
       });
     } else {
-      const data = await postAnswerRepository.deleteAnswerTransaction(postId, userId, userPostAnswer.answer);
+      const data = await postAnswerRepository.deleteAnswerTransaction(
+        postId,
+        userId,
+        userPostAnswer.answer
+      );
 
       if (!data) {
         return res.status(500).json({
