@@ -45,8 +45,8 @@ export default function Write() {
   const [contents, setContents] = useState("");
   const [contentsLength, setContentsLength] = useState(0);
   // textarea 높이조절을 하기 위한 state
-  const [purportHeight, setPurportHeight] = useState("150px");
-  const [contentsHeight, setContentsHeight] = useState("200px");
+  // const [purportHeight, setPurportHeight] = useState("150px");
+  // const [contentsHeight, setContentsHeight] = useState("200px");
   const [filesName, setFilesName] = useState("");
   const [files, setFiles] = useState([]);
   const textareaRef = useRef([]);
@@ -73,6 +73,7 @@ export default function Write() {
         selectedCategory.filter((el) => el !== e.target.value)
       );
     }
+    setIsDropdownMenu(false);
   };
 
   // 첨부파일 변경적용 함수
@@ -192,13 +193,13 @@ export default function Write() {
         <div>법안 발의 취지</div>
         <Textarea
           ref={(el) => (textareaRef.current[0] = el)}
-          height={purportLength ? purportHeight : "150px"}
+          height={"150px"}
           value={purport}
           placeholder={"취지를 입력해주세요."}
           onChange={(e) => {
             setPurport(e.target.value);
             setPurportLength(e.target.value.length);
-            setPurportHeight(textareaRef.current[0].scrollHeight - 10 + "px");
+            // setPurportHeight(textareaRef.current[0].scrollHeight - 10 + "px");
           }}
         ></Textarea>
         <Length color={purportLength > 3000 ? "red" : "black"}>
@@ -210,13 +211,13 @@ export default function Write() {
         <div>법안 발의 내용</div>
         <Textarea
           ref={(el) => (textareaRef.current[1] = el)}
-          height={contentsLength ? contentsHeight : "200px"}
+          height={"200px"}
           value={contents}
           placeholder={"내용를 입력해주세요."}
           onChange={(e) => {
             setContents(e.target.value);
             setContentsLength(e.target.value.length);
-            setContentsHeight(textareaRef.current[1].scrollHeight - 10 + "px");
+            // setContentsHeight(textareaRef.current[1].scrollHeight - 10 + "px");
           }}
         ></Textarea>
         <Length color={contentsLength > 4000 ? "red" : "black"}>
@@ -226,7 +227,7 @@ export default function Write() {
       </InputField>
       <AttachedField>
         <div>첨부파일</div>
-        <AttachedInput for={"attached"}>
+        <AttachedInput htmlFor={"attached"}>
           <div>
             <span>{filesName}</span>
             <span>첨부하기</span>

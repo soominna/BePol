@@ -73,7 +73,7 @@ export const Category = styled.div`
   display: flex;
   border-bottom: 1px solid #a09e9e;
   span {
-    margin: 10px 0 10px 30px;
+    margin: 10px 0 10px 15px;
     background: #414144;
     color: #ffffff;
     border-radius: 15px;
@@ -105,6 +105,7 @@ export const Textarea = styled.textarea`
   padding: 5px 0 5px 0;
   margin: 0 40px 0 40px;
   resize: none;
+  overflow: auto;
   border: none;
   outline: none;
 `;
