@@ -1,5 +1,5 @@
-import * as commentRepository from "../../service/comment.js";
-import * as userRepository from "../../service/user.js";
+import * as commentRepository from "../../Services/comment.js";
+import * as userRepository from "../../Services/user.js";
 
 export const postComment = async (req, res) => {
   /**
@@ -17,14 +17,14 @@ export const postComment = async (req, res) => {
       userId,
       username,
       (newComment) => {
-        res.status(201).send({ data: newComment });
+        res.status(201).json({ data: newComment });
       },
       (err) => {
-        res.status(500).send(err);
+        res.status(500).json(err);
       }
     );
   } catch (err) {
-    res.status(500).send(err);
+    res.status(500).json(err);
   }
 };
 
@@ -43,17 +43,17 @@ export const patchComment = async (req, res) => {
     );
 
     if (updatedComment) {
-      res.send({
+      res.json({
         message: "Comment modified!",
         data: {
           comment: updatedComment.contents,
         },
       });
     } else {
-      res.status(500).send();
+      res.status(500).json();
     }
   } catch (err) {
-    res.status(500).send(err);
+    res.status(500).json(err);
   }
 };
 
@@ -70,7 +70,7 @@ export const deleteComment = async (req, res) => {
     req.params.commentId
   );
 
-  if (deletedComment) res.status(204).send();
+  if (deletedComment) res.status(204).json();
   else res.sendStatus(500);
 };
 
@@ -93,7 +93,7 @@ export const getComments = async (req, res) => {
       req.query.page
     );
 
-    res.send({ data: commentList });
+    res.json({ data: commentList });
   } catch {
     res.sendStatus(500);
   }
