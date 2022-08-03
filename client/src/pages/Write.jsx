@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import Swal from "sweetalert2";
 import {
   Body,
@@ -48,6 +49,7 @@ export default function Write() {
   // const [purportHeight, setPurportHeight] = useState("150px");
   // const [contentsHeight, setContentsHeight] = useState("200px");
   const [filesName, setFilesName] = useState("");
+  const [filesVolume, setFilesVolume] = useState(0);
   const [files, setFiles] = useState([]);
   const textareaRef = useRef([]);
   const inputRef = useRef([]);
@@ -59,14 +61,6 @@ export default function Write() {
         setSelectedCategory([...selectedCategory, e.target.value]);
       } else {
         inputRef.current[idx].checked = false;
-        // 경고문이 나오게 하기
-        // Swal.fire({
-        //   position: "center",
-        //   icon: "warning",
-        //   title: "3개를 초과했습니다.",
-        //   showConfirmButton: true,
-        //   timer: 2000,
-        // });
       }
     } else if (!e.target.checked && selectedCategory.includes(e.target.value)) {
       setSelectedCategory(
@@ -78,24 +72,55 @@ export default function Write() {
 
   // 첨부파일 변경적용 함수
   const handleChangeFile = (e) => {
-    // todo
-    //! 파일 갯수, 크기 제한 검사 추가
-    if (e.target.files.length) {
-      setFiles(e.target.files);
-      let fileName = "";
+    // 2개의 파일가지 첨부가능
+    if (files.length + e.target.files.length > 2) {
+      Swal.fire({
+        position: "center",
+        icon: "warning",
+        title: "파일은 최대 2개까지 가능합니다.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    } else {
+      // 처음 넣은 파일이 1개인 경우
       if (e.target.files.length === 1) {
-        fileName = e.target.files[0].name;
-      } else {
-        for (let i = 0; i < e.target.files.length; i++) {
-          if (i === 0) {
-            fileName += e.target.files[i].name;
+        const name = e.target.files[0].name;
+        const volume = e.target.files[0].size;
+        if (filesVolume + volume > 5242880) {
+          Swal.fire({
+            position: "center",
+            icon: "warning",
+            title: "파일은 최대 5MB까지 가능합니다.",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        } else {
+          setFilesVolume(filesVolume + volume);
+          setFiles([...files, ...e.target.files]);
+          if (files.length) {
+            setFilesName(filesName + `, ${name}`);
           } else {
-            fileName += `, ${e.target.files[i].name}`;
+            setFilesName(name);
           }
         }
+      } else {
+        const name = e.target.files[0].name + ", " + e.target.files[1].name;
+        const volume = e.target.files[0].size + e.target.files[1].size;
+        if (volume > 5242880) {
+          Swal.fire({
+            position: "center",
+            icon: "warning",
+            title: "파일은 최대 5MB까지 가능합니다.",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        } else {
+          setFilesName(name);
+          setFilesVolume(volume);
+          setFiles([...files, ...e.target.files]);
+        }
       }
-      setFilesName(fileName);
-    } else return;
+    }
   };
 
   // 취소버트늘 눌렀을 때 함수
@@ -118,8 +143,52 @@ export default function Write() {
 
   // 법안발의 등록버튼을 눌렀을 때 함수
   const handleRegister = () => {
-    // todo
-    //! formdata 만들고 보내야하는 정보 append하기
+    if (
+      selectedCategory.length &&
+      title.length &&
+      purport.length &&
+      contents.length
+    ) {
+      Swal.fire({
+        title: "작성하신 법안을 등록하시겠습니까?",
+        text: "등록한 법안은 수정할 수 없습니다",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes",
+        cancelButtonText: "No",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const formData = new FormData();
+          if (files.length) {
+            for (let file of files) formData.append("attachments", file);
+          }
+          formData.append("category", selectedCategory);
+          formData.append("title", title);
+          formData.append("purport", purport);
+          formData.append("contents", contents);
+          const config = {
+            Headers: {
+              "content-type": "multipart/form-data",
+            },
+          };
+          axios
+            .post(`${process.env.REACT_APP_API_URL}/post`, formData, config)
+            .then((res) => {
+              navigate("/");
+            });
+        }
+      });
+    } else {
+      Swal.fire({
+        position: "center",
+        icon: "warning",
+        title: "필수입력사항을 확인해주세요.",
+        text: "필수입력사항은 카테고리, 제목, 취지, 내용입니다.",
+        showConfirmButton: true,
+      });
+    }
   };
 
   return (
@@ -229,13 +298,20 @@ export default function Write() {
         <div>첨부파일</div>
         <AttachedInput htmlFor={"attached"}>
           <div>
-            <span>{filesName}</span>
+            {files.length ? (
+              <span>{filesName}</span>
+            ) : (
+              <span>
+                ※ 첨부 가능한 파일은 이미지, PDF 입니다. 최대 5MB, 2개 파일까지
+                첨부 가능합니다.
+              </span>
+            )}
             <span>첨부하기</span>
           </div>
           <input
             id={"attached"}
             type={"file"}
-            accept={"image/png"} //! 파일유형 제한
+            accept={"image/*, .pdf"}
             onChange={handleChangeFile}
             multiple={"multiple"}
           />

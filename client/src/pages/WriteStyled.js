@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 export const Body = styled.div`
   width: 50%;
+  min-width: 880px;
   margin: auto;
 `;
 
@@ -22,7 +23,6 @@ export const DropMenuContainer = styled.div`
   align-items: center;
   margin-top: 30px;
   margin-bottom: ${(props) => props.marginBottom};
-  /* margin-bottom: 20px; */
 `;
 
 export const DropMenu = styled.div`
@@ -78,6 +78,9 @@ export const Category = styled.div`
     color: #ffffff;
     border-radius: 15px;
     padding: 5px 10px 5px 10px;
+    &:first-child {
+      margin-left: 30px;
+    }
   }
 `;
 
@@ -108,6 +111,16 @@ export const Textarea = styled.textarea`
   overflow: auto;
   border: none;
   outline: none;
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #414144;
+    border-radius: 5px;
+  }
+  &::-webkit-scrollbar-track {
+    background-color: #d9d9d9;
+  }
 `;
 
 export const Length = styled.div`
