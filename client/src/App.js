@@ -8,6 +8,7 @@ import Header from "./components/Header.jsx";
 import Modal from "./components/Modal.jsx";
 import LoginModal from "./components/LoginModal.jsx";
 
+
 function App() {
   const isLogin = useSelector((state) => state.login.isLogin);
   const { loginModal, staticModal } = useSelector((state) => state.modal);
