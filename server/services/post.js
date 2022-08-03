@@ -7,9 +7,9 @@ const setSortOptions = async (sortby) => {
   try {
     let sortOptions;
     if (sortby === "최신순") {
-      sortOptions = { updatedAt: -1 };
+      sortOptions = { createdAt: -1 };
     } else if (sortby === "마감임박순") {
-      sortOptions = { updatedAt: 1 };
+      sortOptions = { createdAt: 1 };
     } else if (sortby === "찬성순") {
       sortOptions = { agrees: -1 };
     } else if (sortby === "반대순") {
