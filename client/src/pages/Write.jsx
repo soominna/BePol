@@ -86,7 +86,11 @@ export default function Write() {
         fileName = e.target.files[0].name;
       } else {
         for (let i = 0; i < e.target.files.length; i++) {
-          fileName += `, ${e.target.files[i].name}`;
+          if (i === 0) {
+            fileName += e.target.files[i].name;
+          } else {
+            fileName += `, ${e.target.files[i].name}`;
+          }
         }
       }
       setFilesName(fileName);
