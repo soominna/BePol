@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
@@ -15,12 +15,17 @@ import {
   Length,
   AttachedField,
   AttachedInput,
+  AttachedFile,
   ButtonField,
 } from "./WriteStyled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCaretDown,
+  faCaretUp,
+  faRectangleXmark,
+} from "@fortawesome/free-solid-svg-icons";
 
-export default function Write() {
+export default function Write({ history }) {
   const navigate = useNavigate();
   const allCategory = [
     { 0: "법률/사법" },
@@ -48,7 +53,6 @@ export default function Write() {
   // textarea 높이조절을 하기 위한 state
   // const [purportHeight, setPurportHeight] = useState("150px");
   // const [contentsHeight, setContentsHeight] = useState("200px");
-  const [filesName, setFilesName] = useState("");
   const [filesVolume, setFilesVolume] = useState(0);
   const [files, setFiles] = useState([]);
   const textareaRef = useRef([]);
@@ -84,7 +88,6 @@ export default function Write() {
     } else {
       // 처음 넣은 파일이 1개인 경우
       if (e.target.files.length === 1) {
-        const name = e.target.files[0].name;
         const volume = e.target.files[0].size;
         if (filesVolume + volume > 5242880) {
           Swal.fire({
@@ -97,14 +100,8 @@ export default function Write() {
         } else {
           setFilesVolume(filesVolume + volume);
           setFiles([...files, ...e.target.files]);
-          if (files.length) {
-            setFilesName(filesName + `, ${name}`);
-          } else {
-            setFilesName(name);
-          }
         }
       } else {
-        const name = e.target.files[0].name + ", " + e.target.files[1].name;
         const volume = e.target.files[0].size + e.target.files[1].size;
         if (volume > 5242880) {
           Swal.fire({
@@ -115,11 +112,20 @@ export default function Write() {
             timer: 1500,
           });
         } else {
-          setFilesName(name);
           setFilesVolume(volume);
           setFiles([...files, ...e.target.files]);
         }
       }
+    }
+  };
+
+  // 파일삭제 버튼을 눌렀을 때 함수
+  const handleRemoveFile = (idx) => {
+    if (files.length === 1) {
+      setFiles([]);
+    } else {
+      const filelist = [...files].splice(idx - 1, 1);
+      setFiles(filelist);
     }
   };
 
@@ -190,6 +196,19 @@ export default function Write() {
       });
     }
   };
+
+  const preventClose = (e) => {
+    e.preventDefault();
+    e.returnValue = ""; //Chrome에서 동작하도록;
+  };
+  useEffect(() => {
+    (() => {
+      window.addEventListener("beforeunload", preventClose);
+    })();
+    return () => {
+      window.removeEventListener("beforeunload", preventClose);
+    };
+  });
 
   return (
     <Body>
@@ -298,14 +317,10 @@ export default function Write() {
         <div>첨부파일</div>
         <AttachedInput htmlFor={"attached"}>
           <div>
-            {files.length ? (
-              <span>{filesName}</span>
-            ) : (
-              <span>
-                ※ 첨부 가능한 파일은 이미지, PDF 입니다. 최대 5MB, 2개 파일까지
-                첨부 가능합니다.
-              </span>
-            )}
+            <span>
+              ※ 첨부 가능한 파일은 이미지, PDF 입니다. 최대 5MB, 2개 파일까지
+              첨부 가능합니다.
+            </span>
             <span>첨부하기</span>
           </div>
           <input
@@ -317,6 +332,18 @@ export default function Write() {
           />
         </AttachedInput>
       </AttachedField>
+      <AttachedFile>
+        {" "}
+        {files.map((file, idx) => (
+          <div key={idx}>
+            {file.name}
+            <FontAwesomeIcon
+              icon={faRectangleXmark}
+              onClick={() => handleRemoveFile(idx)}
+            ></FontAwesomeIcon>
+          </div>
+        ))}
+      </AttachedFile>
       <ButtonField>
         <div type={"button"} onClick={handleCancle}>
           취소하기

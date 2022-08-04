@@ -4,6 +4,7 @@ export const Body = styled.div`
   width: 50%;
   min-width: 880px;
   margin: auto;
+  margin-top: 120px;
 `;
 
 export const Title = styled.div`
@@ -175,6 +176,20 @@ export const AttachedInput = styled.label`
   }
   input {
     display: none;
+  }
+`;
+
+export const AttachedFile = styled.div`
+  min-height: 60px;
+  margin-left: 220px;
+  margin-top: 10px;
+  div {
+    &:first-child {
+      margin-bottom: 10px;
+    }
+    svg {
+      margin-left: 5px;
+    }
   }
 `;
 
