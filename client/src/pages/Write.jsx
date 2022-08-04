@@ -180,7 +180,7 @@ export default function Write({ history }) {
             },
           };
           axios
-            .post(`${process.env.REACT_APP_API_URL}/post`, formData, config)
+            .post(`${process.env.REACT_APP_API_URI}/post`, formData, config)
             .then((res) => {
               navigate("/");
             });
@@ -318,8 +318,8 @@ export default function Write({ history }) {
         <AttachedInput htmlFor={"attached"}>
           <div>
             <span>
-              ※ 첨부 가능한 파일은 이미지, PDF 입니다. 최대 5MB, 2개 파일까지
-              첨부 가능합니다.
+              ※ 첨부 가능한 파일은 이미지, PDF이고 최대 5MB, 2개 파일까지 첨부
+              가능합니다.
             </span>
             <span>첨부하기</span>
           </div>
