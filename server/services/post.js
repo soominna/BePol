@@ -159,77 +159,87 @@ export const getClosedSearchedTitleBySorting = async (search, sortby, page) => {
 };
 
 export const setThreePopularPosts = async () => {
-  const allPosts = await Post.find(
-    {},
-    { purport: 0, contents: 0, attachments: 0, updatedAt: 0 }
-  );
-  const hotPosts = [];
-  const voteDESC = [];
+  try {
+    const allPosts = await Post.find(
+      {},
+      { purport: 0, contents: 0, attachments: 0, updatedAt: 0 }
+    );
+    const hotPosts = [];
 
-  Promise.all(
-    allPosts.map(async (post) => {
-      const { agrees, disagrees } = post;
-      // 찬반 비율 차이 구하기 Math.abs
-      const agreesProportion = (
-        parseFloat(agrees / (agrees + disagrees)) * 100
-      ).toFixed(3);
-      const disagreesProportion = (
-        parseFloat(disagrees / (agrees + disagrees)) * 100
-      ).toFixed(3);
+    Promise.all(
+      allPosts.map(async (post) => {
+        const { agrees, disagrees } = post;
+        // 찬반 비율 차이 구하기 Math.abs
+        const agreesProportion = (
+          parseFloat(agrees / (agrees + disagrees)) * 100
+        ).toFixed(3);
+        const disagreesProportion = (
+          parseFloat(disagrees / (agrees + disagrees)) * 100
+        ).toFixed(3);
 
-      if (Math.abs(agreesProportion - disagreesProportion) < 10) {
-        if (hotPosts.length < 3) {
-          hotPosts.push(post);
-        } else {
-          return;
+        if (Math.abs(agreesProportion - disagreesProportion) < 10) {
+          if (hotPosts.length < 3) {
+            hotPosts.push(post);
+          } else {
+            return;
+          }
         }
-      }
-    })
-  );
+      })
+    );
 
-  return Promise.all(
-    hotPosts.map(async (post) => {
-      const { title, username, agrees, disagrees, comments, createdAt } = post;
-      await Hot_posts.deleteMany();
+    return Promise.all(
+      hotPosts.map(async (post) => {
+        const { title, username, agrees, disagrees, comments, createdAt } =
+          post;
+        await Hot_posts.deleteMany();
 
-      return await Hot_posts.create({
-        title,
-        username,
-        agrees,
-        disagrees,
-        comments,
-        createdAt,
-      });
-    })
-  );
+        return await Hot_posts.create({
+          title,
+          username,
+          agrees,
+          disagrees,
+          comments,
+          createdAt,
+        });
+      })
+    );
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 export const getThreePopularPosts = async () => {
-  // return Hot_posts.find();
-  const hotPosts = await Hot_posts.find();
-  const voteDESC = [];
-  let flag = false;
+  try {
+    const hotPosts = await Hot_posts.find(
+      {},
+      { purport: 0, contents: 0, attachments: 0, updatedAt: 0 }
+    );
+    const voteDESC = [];
+    let flag = false;
 
-  hotPosts.map((post) => {
-    const { agrees, disagrees } = post;
-    const voteCnt = agrees + disagrees;
-    voteDESC.push(voteCnt);
-  });
+    hotPosts.map((post) => {
+      const { agrees, disagrees } = post;
+      const voteCnt = agrees + disagrees;
+      voteDESC.push(voteCnt);
+    });
 
-  for (let i = voteDESC.length; i > 0; i--) {
-    for (let j = 0; j < i; j++) {
-      if (voteDESC[j] < voteDESC[j + 1]) {
-        let tmp = hotPosts[j];
-        hotPosts[j] = hotPosts[j + 1];
-        hotPosts[j + 1] = tmp;
-        flag = true;
+    for (let i = voteDESC.length; i > 0; i--) {
+      for (let j = 0; j < i; j++) {
+        if (voteDESC[j] < voteDESC[j + 1]) {
+          let tmp = hotPosts[j];
+          hotPosts[j] = hotPosts[j + 1];
+          hotPosts[j + 1] = tmp;
+          flag = true;
+        }
       }
+      if (!flag) {
+        break;
+      }
+      voteDESC.length--;
     }
-    if (!flag) {
-      break;
-    }
-    voteDESC.length--;
-  }
 
-  return hotPosts;
+    return hotPosts;
+  } catch (err) {
+    console.log(err);
+  }
 };

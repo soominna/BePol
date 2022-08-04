@@ -82,19 +82,25 @@ export const getThreePopularPostsList = async (req, res, next) => {
    */
 
   // 매일 밤 11시 59분에 업데이트
-  cron.schedule("59 23 1-31 * *", async () => {
-    await postRepsitory.setThreePopularPosts();
-  });
-
-  const data = await postRepsitory.getThreePopularPosts();
-
-  if (!data) {
-    return res.status(404).json({
-      message: "Data is not found!",
+  try {
+    cron.schedule("59 23 1-31 * *", async () => {
+      await postRepsitory.setThreePopularPosts();
     });
-  } else {
-    return res.status(200).json({
-      data,
+
+    const data = await postRepsitory.getThreePopularPosts();
+
+    if (!data) {
+      return res.status(404).json({
+        message: "Data is not found!",
+      });
+    } else {
+      return res.status(200).json({
+        data,
+      });
+    }
+  } catch (err) {
+    return res.status(500).json({
+      message: "Server Error!",
     });
   }
 };
