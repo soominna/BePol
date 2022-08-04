@@ -1,6 +1,6 @@
-import { verifyToken } from "../controllers/functions/authentication/js";
+import { verifyToken } from "../controllers/functions/authentication.js";
 
-export default (req, res, next) => {
+export const checkAuth = (req, res, next) => {
   const accessToken = req.headers["access-token"];
   if (!accessToken) {
     res.status(401).send({ message: "Unauthorized user" });
