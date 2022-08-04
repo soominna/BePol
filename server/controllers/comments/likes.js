@@ -1,4 +1,4 @@
-import * as commentLikeRepository from "../../Services/commentLike.js";
+import * as commentLikeRepository from "../../services/commentLike.js";
 
 export const postLike = async (req, res) => {
   /**

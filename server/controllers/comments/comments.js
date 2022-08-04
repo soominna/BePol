@@ -1,5 +1,5 @@
-import * as commentRepository from "../../Services/comment.js";
-import * as userRepository from "../../Services/user.js";
+import * as commentRepository from "../../services/comment.js";
+import * as userRepository from "../../services/user.js";
 
 export const postComment = async (req, res) => {
   /**

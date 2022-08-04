@@ -1,6 +1,6 @@
 import axios from "axios";
 import dotenv from "dotenv";
-import * as userRepository from "../../Services/user.js";
+import * as userRepository from "../../services/user.js";
 import { encodeToken } from "../functions/authentication.js";
 dotenv.config();
 

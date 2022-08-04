@@ -14,12 +14,16 @@ export const findUser = async (code) => {
     const user = await User.findOne({ code });
     if (user) return user;
     else return { _id: null };
-  } catch (err) {}
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 export const createUser = async (code, username, gender, age) => {
   try {
     const newUser = await User.create({ code, username, gender, age });
     return newUser.toObject();
-  } catch (err) {}
+  } catch (err) {
+    console.log(err);
+  }
 };
