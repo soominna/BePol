@@ -2,31 +2,17 @@ import mongoose from "mongoose";
 import Comment from "../models/comment.js";
 import * as commentLikeRepository from "./commentLike.js";
 
-export const createComment = (
-  contents,
-  postId,
-  userId,
-  username,
-  cb,
-  errcb
-) => {
-  Comment.create(
-    {
+export const createComment = async (contents, postId, userId, username) => {
+  try {
+    const newComment = await Comment.create({
       contents,
       postId: mongoose.Types.ObjectId(postId),
       userId: mongoose.Types.ObjectId(userId),
       username,
-    },
-    (err, doc) => {
-      if (err) errcb(err);
-      else {
-        const { postId, userId, updatedAt, __v, ...commentInfo } =
-          doc.toObject();
+    });
 
-        cb(commentInfo);
-      }
-    }
-  );
+    return newComment;
+  } catch (err) {}
 };
 
 export const modifyComment = async (userId, commentId, contents) => {
