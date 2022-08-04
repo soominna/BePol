@@ -1,6 +1,6 @@
 import axios from "axios";
 import dotenv from "dotenv";
-import * as userRepository from "../../Services/user.js";
+import * as userRepository from "../../services/user.js";
 import { encodeToken } from "../functions/authentication.js";
 dotenv.config();
 
@@ -36,23 +36,28 @@ export const login = async (req, res) => {
       });
 
       if (data) {
-        const { created, doc } = await userRepository.findOrCreateUser(
-          data.kakao_account.profile.nickname,
-          req.body.gender,
-          req.body.age,
-          data.data.id
-        );
+        const user = await userRepository.findUser(data.data.id);
 
-        if (doc) {
-          const accessToken = encodeToken({ id: doc._id });
-          res.header("access-token", `Bearer ${accessToken}`);
+        if (user) {
+          if (user._id) {
+            const accessToken = encodeToken({ id: user._id });
+            res.header("access-token", `Bearer ${accessToken}`);
 
-          const status = created ? 201 : 200;
-
-          res.status(status).json({
-            message: "Logged in successfully!",
-            data: { id: doc._id, username: doc.username },
-          });
+            res.json({
+              message: "Logged in successfully!",
+              isUser: true,
+              data: { id: user._id, username: user.username },
+            });
+          } else {
+            res.json({
+              message: "You should sign up",
+              isUser: false,
+              data: {
+                subId: data.data.id,
+                username: data.kakao_account.profile.nickname,
+              },
+            });
+          }
         } else {
           res.sendStatus(500);
         }
@@ -70,4 +75,27 @@ export const login = async (req, res) => {
 export const logout = (req, res) => {
   delete req.headers["access-token"];
   res.status(200).json({ message: "Logged out!!" });
+};
+
+export const signup = async (req, res) => {
+  try {
+    const { subId, username, gender, age } = req.body;
+    const newUser = await userRepository.createUser(
+      subId,
+      username,
+      gender,
+      age
+    );
+    if (newUser)
+      res.json({
+        message: "Account created",
+        data: {
+          id: newUser._id,
+          username: newUser.username,
+        },
+      });
+    else res.sendStatus(500);
+  } catch (err) {
+    res.sendStatus(500);
+  }
 };

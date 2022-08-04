@@ -9,16 +9,21 @@ export const getUsername = async (userId) => {
   }
 };
 
-export const findOrCreateUser = async (username, gender, age, code) => {
+export const findUser = async (code) => {
   try {
     const user = await User.findOne({ code });
-    if (user) {
-      return { created: false, doc: user };
-    } else {
-      await User.create({ username, gender, age, code });
-      return { created: false, doc: user };
-    }
+    if (user) return user;
+    else return { _id: null };
   } catch (err) {
-    return { created: false, doc: null };
+    console.log(err);
+  }
+};
+
+export const createUser = async (code, username, gender, age) => {
+  try {
+    const newUser = await User.create({ code, username, gender, age });
+    return newUser.toObject();
+  } catch (err) {
+    console.log(err);
   }
 };
