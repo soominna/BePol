@@ -14,7 +14,7 @@ import rootReducer from "./../reducers/rootReducer";
 const persistConfig = {
   key: "root",
   storage,
-  // blacklist: ["modal"], // 새로고침시 state초기화 O
+  blacklist: ["modal"], // 새로고침시 state초기화 O
   // whitelist: [], // 새로고침시 state초기화 X
 };
 
