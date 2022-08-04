@@ -13,4 +13,6 @@ router.get("/record/:postId", recordController.getVoteStatistics);
 
 router.get("/", postController.getPostsList);
 
+router.get("/popular", postController.getThreePopularPostsList);
+
 export default router;

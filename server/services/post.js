@@ -1,4 +1,5 @@
 import Post from "../models/post.js";
+import Hot_posts from '../models/hotPost.js';
 
 const EXCEPT_OPTION = { purport: 0, contents: 0, attachments: 0, comments: 0 }; // 필요없는 컬럼 삭제하기 위한 변수
 
@@ -155,4 +156,58 @@ export const getClosedSearchedTitleBySorting = async (search, sortby, page) => {
   } catch (err) {
     console.log(err);
   }
+};
+
+export const setThreePopularPosts = async () => {
+  const allPosts = await Post.find(
+    {},
+    { purport: 0, contents: 0, attachments: 0, updatedAt: 0 }
+  );
+  const hotPosts = [];
+  Promise.all(
+    allPosts.map(async (post, idx) => {
+      const { agrees, disagrees } = post;
+      // 찬반 비율 차이 구하기 Math.abs
+      const agreesProportion = (
+        parseFloat(agrees / (agrees + disagrees)) * 100
+      ).toFixed(3);
+      const disagreesProportion = (
+        parseFloat(disagrees / (agrees + disagrees)) * 100
+      ).toFixed(3);
+      const voteCnt = agrees + disagrees;
+
+      // if (postsArr.length)
+      if (Math.abs(agreesProportion - disagreesProportion) < 10) {
+        if (hotPosts.length < 3) {
+          hotPosts.push(post);
+        } else {
+          return;
+        }
+      }
+    })
+  );
+
+  // if (hotPosts.length < 3) { // 기준 잡는게 너무 애매함
+
+  // }
+
+  return Promise.all(
+    hotPosts.map(async (post) => {
+      const { title, username, agrees, disagrees, comments, createdAt } = post;
+      await Hot_posts.deleteMany();
+
+      return await Hot_posts.create({
+        title,
+        username,
+        agrees,
+        disagrees,
+        comments,
+        createdAt,
+      });
+    })
+  );
+};
+
+export const getThreePopularPosts = async () => {
+  return Hot_posts.find();
 };

@@ -1,4 +1,5 @@
 import * as postRepsitory from "../../services/post.js";
+import cron from "node-cron";
 
 export const getPostsList = async (req, res, next) => {
   /**
@@ -66,5 +67,31 @@ export const getPostsList = async (req, res, next) => {
     return res.status(500).json({
       message: "Server Error!",
     });
+  }
+};
+
+export const getThreePopularPostsList = async (req, res, next) => {
+  /**
+   * 기능: 게시판 hot3 리스트 조회 기능
+   * 작성자: 이승연
+   * - 메인페이지 hot3 게시글 기준 → 
+   * 찬성 반대 비율 차이가 10퍼센트 미만인 글들 중에서 투표수가 많은 기준으로 3개 선정,
+   * 만족하는 글이 3개 미만이면 비율 차이를 수정해서 다시 검색
+   * db에 저장해 놓고 10분마다 업데이트(node-cron 라이브러리)
+   */
+   cron.schedule("59 23 1-31 * *", async () => {
+    await postRepsitory.setThreePopularPosts();
+  });
+
+  const data = await postRepsitory.getThreePopularPosts();
+  
+  if (!data) {
+    return res.status(404).json({
+      message: "Data is not found!",
+    });
+  } else {
+    return res.status(200).json({
+      data,
+    })
   }
 };
