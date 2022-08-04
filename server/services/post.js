@@ -1,5 +1,5 @@
 import Post from "../models/post.js";
-import Hot_posts from '../models/hotPost.js';
+import Hot_posts from "../models/hotPost.js";
 
 const EXCEPT_OPTION = { purport: 0, contents: 0, attachments: 0, comments: 0 }; // 필요없는 컬럼 삭제하기 위한 변수
 
@@ -164,8 +164,10 @@ export const setThreePopularPosts = async () => {
     { purport: 0, contents: 0, attachments: 0, updatedAt: 0 }
   );
   const hotPosts = [];
+  const voteDESC = [];
+
   Promise.all(
-    allPosts.map(async (post, idx) => {
+    allPosts.map(async (post) => {
       const { agrees, disagrees } = post;
       // 찬반 비율 차이 구하기 Math.abs
       const agreesProportion = (
@@ -174,9 +176,7 @@ export const setThreePopularPosts = async () => {
       const disagreesProportion = (
         parseFloat(disagrees / (agrees + disagrees)) * 100
       ).toFixed(3);
-      const voteCnt = agrees + disagrees;
 
-      // if (postsArr.length)
       if (Math.abs(agreesProportion - disagreesProportion) < 10) {
         if (hotPosts.length < 3) {
           hotPosts.push(post);
@@ -186,10 +186,6 @@ export const setThreePopularPosts = async () => {
       }
     })
   );
-
-  // if (hotPosts.length < 3) { // 기준 잡는게 너무 애매함
-
-  // }
 
   return Promise.all(
     hotPosts.map(async (post) => {
@@ -209,5 +205,31 @@ export const setThreePopularPosts = async () => {
 };
 
 export const getThreePopularPosts = async () => {
-  return Hot_posts.find();
+  // return Hot_posts.find();
+  const hotPosts = await Hot_posts.find();
+  const voteDESC = [];
+  let flag = false;
+
+  hotPosts.map((post) => {
+    const { agrees, disagrees } = post;
+    const voteCnt = agrees + disagrees;
+    voteDESC.push(voteCnt);
+  });
+
+  for (let i = voteDESC.length; i > 0; i--) {
+    for (let j = 0; j < i; j++) {
+      if (voteDESC[j] < voteDESC[j + 1]) {
+        let tmp = hotPosts[j];
+        hotPosts[j] = hotPosts[j + 1];
+        hotPosts[j + 1] = tmp;
+        flag = true;
+      }
+    }
+    if (!flag) {
+      break;
+    }
+    voteDESC.length--;
+  }
+
+  return hotPosts;
 };
