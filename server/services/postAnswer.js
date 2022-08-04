@@ -158,15 +158,17 @@ export const addAnswerTransaction = async (postId, userId, agree) => {
   try {
     session.startTransaction(); // 트랜잭션 시작
 
-    await addAnswer(postId, userId, agree, session); // Post_answer 컬렉션에 도큐먼트 추가
-    await (agree === true ? addAgrees(postId, session) : addDisagrees(postId, session)); // 찬성, 반대 여부에 맞게 Post 컬렉션 수정
+    const answer = await addAnswer(postId, userId, agree, session); // Post_answer 컬렉션에 도큐먼트 추가
+    await (agree === true
+      ? addAgrees(postId, session)
+      : addDisagrees(postId, session)); // 찬성, 반대 여부에 맞게 Post 컬렉션 수정
     await pushVoteStatistics(postId, userId, agree, session); // 통계 결과 입력
 
     await session.commitTransaction();
     session.endSession();
 
     console.log("Transaction success!!");
-    return "success";
+    return answer;
   } catch (err) {
     console.error(err, "Transaction error!!!");
     await session.abortTransaction();
@@ -319,7 +321,9 @@ export const deleteAnswerTransaction = async (postId, userId, answer) => {
     session.startTransaction(); // 트랜잭션 시작
 
     await deleteAnswer(postId, userId, session); // Post_answer 컬렉션에서 해당 도큐먼트 삭제
-    await (answer === true ? substractAgrees(postId, session) : substractDisagrees(postId, session)); // Post 컬렉션에서 찬성 반대 여부에 맞게 수정
+    await (answer === true
+      ? substractAgrees(postId, session)
+      : substractDisagrees(postId, session)); // Post 컬렉션에서 찬성 반대 여부에 맞게 수정
     await popVoteStatistics(postId, userId, answer, session); // 통계 결과 입력
 
     await session.commitTransaction();
@@ -336,5 +340,8 @@ export const deleteAnswerTransaction = async (postId, userId, answer) => {
 
 export const getPostStatistics = async (postId) => {
   // 통계 조회
-  return Post_statistics.findOne({ postId });
+  return Post_statistics.findOne(
+    { postId },
+    { _id: 0, postId: 0, createdAt: 0, updatedAt: 0, __v: 0 }
+  );
 };

@@ -1,6 +1,6 @@
 import * as postAnswerRepository from "../../services/postAnswer.js";
 
-export const voteToPost = async (req, res, next) => {
+export const voteToPost = async (req, res) => {
   /**
    * 기능: 발의문 찬반투표 & 투표 취소 기능
    * 작성자: 이승연
@@ -47,6 +47,7 @@ export const voteToPost = async (req, res, next) => {
       } else {
         return res.status(201).json({
           message: "Voted successfully",
+          agree: data[0].answer,
         });
       }
     }
@@ -57,7 +58,7 @@ export const voteToPost = async (req, res, next) => {
   }
 };
 
-export const voteDeleteToPost = async (req, res, next) => {
+export const voteDeleteToPost = async (req, res) => {
   /**
    * 기능: 찬반투표 취소
    * 작성자: 이승연
