@@ -30,7 +30,7 @@ export const login = async (req, res) => {
         method: "post",
         url: "https://kapi.kakao.com/v2/user/me",
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${response.data.access_token}`,
           "Content-type": "application/x-www-form-urlencoded;charset=utf-8",
         },
       });
@@ -40,7 +40,10 @@ export const login = async (req, res) => {
 
         if (user) {
           if (user._id) {
-            const accessToken = encodeToken({ id: user._id });
+            const accessToken = encodeToken({
+              id: user._id,
+              username: user.username,
+            });
             res.header("access-token", `Bearer ${accessToken}`);
 
             res.json({
@@ -54,7 +57,7 @@ export const login = async (req, res) => {
               isUser: false,
               data: {
                 subId: data.data.id,
-                username: data.kakao_account.profile.nickname,
+                username: data.data.properties.nickname,
               },
             });
           }
@@ -67,7 +70,8 @@ export const login = async (req, res) => {
     } else {
       res.status(401).json({ message: "Invalid authorization code" });
     }
-  } catch {
+  } catch (err) {
+    console.log(err);
     res.sendStatus(500);
   }
 };
@@ -86,7 +90,12 @@ export const signup = async (req, res) => {
       gender,
       age
     );
-    if (newUser)
+    if (newUser) {
+      const accessToken = encodeToken({
+        id: newUser._id,
+        username: newUser.username,
+      });
+      res.header("access-token", `Bearer ${accessToken}`);
       res.json({
         message: "Account created",
         data: {
@@ -94,7 +103,7 @@ export const signup = async (req, res) => {
           username: newUser.username,
         },
       });
-    else res.sendStatus(500);
+    } else res.sendStatus(500);
   } catch (err) {
     res.sendStatus(500);
   }
