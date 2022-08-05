@@ -28,6 +28,13 @@ export const Buttons = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 10px;
+  & > span {
+    font-size: 1rem;
+  }
+  & > img {
+    width: 2vw;
+    height: 2vh;
+  }
 `;
 
 export const Button = styled.button`
@@ -36,8 +43,7 @@ export const Button = styled.button`
   flex-shrink: 0;
   justify-content: center;
   /* padding: 0.8rem 2rem; */
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
+  margin: 0 1rem;
   cursor: pointer;
   font-size: 1rem;
   font-weight: 700;
