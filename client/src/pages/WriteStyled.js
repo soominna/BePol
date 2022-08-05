@@ -4,6 +4,7 @@ export const Body = styled.div`
   width: 50%;
   min-width: 880px;
   margin: auto;
+  margin-top: 120px;
 `;
 
 export const Title = styled.div`
@@ -152,7 +153,7 @@ export const AttachedInput = styled.label`
   flex: 0.8 0 0;
   width: 100%;
   height: 35px;
-  margin: auto;
+  margin-left: 100px;
   div {
     background: #f8f8f8;
     display: flex;
@@ -161,7 +162,7 @@ export const AttachedInput = styled.label`
     width: 100%;
     height: 100%;
     span {
-      font-size: 15px;
+      font-size: 13px;
       &:first-child {
         margin-left: 10px;
       }
@@ -175,6 +176,20 @@ export const AttachedInput = styled.label`
   }
   input {
     display: none;
+  }
+`;
+
+export const AttachedFile = styled.div`
+  min-height: 60px;
+  margin-top: 10px;
+  margin-left: 210px;
+  div {
+    &:first-child {
+      margin-bottom: 10px;
+    }
+    svg {
+      margin-left: 5px;
+    }
   }
 `;
 
