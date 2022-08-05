@@ -6,6 +6,8 @@ import config from "./config/config.js";
 import postsRouter from "./routes/posts.js";
 import userRouter from "./routes/users.js";
 import commentRouter from "./routes/comments.js";
+import cron from "node-cron";
+import * as postRepsitory from "./services/post.js";
 dotenv.config();
 
 const app = express();
@@ -35,4 +37,8 @@ connectDb();
 
 app.listen(port, () => {
   console.log(`SERVER Started on ${port} port`);
+});
+
+cron.schedule("59 23 1-31 * *", async () => {
+  await postRepsitory.setThreePopularPosts();
 });

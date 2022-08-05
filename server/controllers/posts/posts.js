@@ -83,10 +83,6 @@ export const getThreePopularPostsList = async (req, res, next) => {
 
   // 매일 밤 11시 59분에 업데이트
   try {
-    cron.schedule("59 23 1-31 * *", async () => {
-      await postRepsitory.setThreePopularPosts();
-    });
-
     const data = await postRepsitory.getThreePopularPosts();
 
     if (!data) {
