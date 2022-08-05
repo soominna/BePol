@@ -180,7 +180,7 @@ export default function Write({ history }) {
             },
           };
           axios
-            .post(`${process.env.REACT_APP_API_URI}/post`, formData, config)
+            .post(`${process.env.REACT_APP_API_URI}/posts`, formData, config)
             .then((res) => {
               navigate("/");
             });
