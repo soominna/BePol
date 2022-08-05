@@ -289,6 +289,10 @@ export const setThreePopularPosts = async () => {
         });
       })
     );
+  } catch (err) {
+    console.log(err);
+  }
+}
 
 export const getThreePopularPosts = async () => {
   try {
