@@ -1,28 +1,25 @@
 import * as commentRepository from "../../services/comment.js";
-import * as userRepository from "../../services/user.js";
+import { verifyToken } from "../functions/authentication.js";
 
 export const postComment = async (req, res) => {
   /**
    * 기능: 댓글 작성
    * 작성자: 나수민
-   * 📌 로그인 적용 ❌ (소셜로그인 부분 merge 후 진행할 계획!)
    */
-  const userId = "62e209aa1e2cdd5ad2280f81"; //access token 해독해서 사용할 예정.
   try {
-    const username = await userRepository.getUsername(userId);
-
-    commentRepository.createComment(
+    const user = verifyToken(req.headers["access-token"].split(" ")[1]);
+    const newComment = await commentRepository.createComment(
       req.body.commentContent,
       req.params.postId,
-      userId,
-      username,
-      (newComment) => {
-        res.status(201).json({ data: newComment });
-      },
-      (err) => {
-        res.status(500).json(err);
-      }
+      user.id,
+      user.username
     );
+    if (newComment) {
+      const { postId, userId, updatedAt, __v, ...commentInfo } =
+        newComment.toObject();
+
+      res.status(201).json({ data: commentInfo });
+    } else res.sendStatus(500);
   } catch (err) {
     res.status(500).json(err);
   }
@@ -32,12 +29,11 @@ export const patchComment = async (req, res) => {
   /**
    * 기능: 댓글 수정
    * 작성자: 나수민
-   * 📌 로그인 적용 ❌ (소셜로그인 부분 merge 후 진행할 계획!)
    */
-  const userId = "62e209aa1e2cdd5ad2280f81"; //access token 해독해서 사용할 예정
+  const user = verifyToken(req.headers["access-token"].split(" ")[1]); //access token 해독해서 사용할 예정
   try {
     const updatedComment = await commentRepository.modifyComment(
-      userId,
+      user.id,
       req.params.commentId,
       req.body.commentContent
     );
@@ -63,38 +59,41 @@ export const deleteComment = async (req, res) => {
    * 작성자: 나수민
    * 📌 로그인 적용 ❌ (소셜로그인 부분 merge 후 진행할 계획!)
    */
-  const userId = "62e209aa1e2cdd5ad2280f81";
+  try {
+    const user = verifyToken(req.headers["access-token"].split(" ")[1]);
 
-  const deletedComment = await commentRepository.deleteComment(
-    userId,
-    req.params.commentId
-  );
+    const deletedComment = await commentRepository.deleteComment(
+      user.id,
+      req.params.commentId
+    );
 
-  if (deletedComment) res.status(204).json();
-  else res.sendStatus(500);
+    if (deletedComment) res.status(204).json();
+    else res.sendStatus(500);
+  } catch (err) {
+    res.status(500).json(err);
+  }
 };
 
 export const getComments = async (req, res) => {
   /**
    * 기능: 댓글 목록 조회
    * 작성자: 나수민
-   * 📌 로그인 적용 ❌ (소셜로그인 부분 merge 후 진행할 계획!)
    * 📌 시드 데이터 추가한 후 다시 성능 테스트 필요
    * 추후 수정을 위해 refer : https://stackoverflow.com/questions/28105009/implementing-pagination-in-mongodb
    */
 
-  const userId = "62e209aa1e2cdd5ad2280f81"; //access token 해독해서 사용할 예정
-
   try {
+    const user = verifyToken(req.headers["access-token"].split(" ")[1]); //access token 해독해서 사용할 예정
+
     const commentList = await commentRepository.getCommentList(
-      userId,
+      user.id,
       req.params.postId,
       req.query.sortby,
       req.query.page
     );
 
     res.json({ data: commentList });
-  } catch {
-    res.sendStatus(500);
+  } catch (err) {
+    res.status(500).json(err);
   }
 };
