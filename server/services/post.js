@@ -1,4 +1,7 @@
+import mongoose from "mongoose";
 import Post from "../models/post.js";
+import PostAnswer from "../models/postAnswer.js";
+import { deleteS3File } from "../controllers/functions/file.js";
 
 const EXCEPT_OPTION = { purport: 0, contents: 0, attachments: 0, comments: 0 }; // 필요없는 컬럼 삭제하기 위한 변수
 
@@ -152,6 +155,89 @@ export const getClosedSearchedTitleBySorting = async (search, sortby, page) => {
     await getClosed(postsList, posts);
 
     return posts;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const createPost = async (
+  userId,
+  username,
+  title,
+  category,
+  purport,
+  contents,
+  files
+) => {
+  const attachments = files.map((file) => {
+    return {
+      fileName: file.key,
+      filePath: file.location,
+    };
+  });
+  try {
+    const newPost = await Post.create({
+      username,
+      title,
+      category,
+      purport,
+      contents,
+      userId: mongoose.Types.ObjectId(userId),
+      attachments,
+    });
+
+    return newPost;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const deletePost = async (userId, postId) => {
+  try {
+    const postToDelete = await Post.findOne({
+      userId: mongoose.Types.ObjectId(userId),
+      _id: mongoose.Types.ObjectId(postId),
+    });
+
+    if (postToDelete) {
+      if (postToDelete.attachments) {
+        postToDelete.attachments.map((file) => {
+          deleteS3File(file.fileName);
+        });
+      }
+    }
+
+    const deletedPost = await Post.deleteOne({ _id: postToDelete._id });
+
+    return deletedPost;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const getPost = async (postId) => {
+  try {
+    return await Post.findById(mongoose.Types.ObjectId(postId));
+  } catch (err) {}
+};
+
+export const getPostAnswer = async (postId, userId) => {
+  try {
+    const answer = await PostAnswer.findOne({
+      postId: mongoose.Types.ObjectId(postId),
+      userId: mongoose.Types.ObjectId(userId),
+    });
+    if (answer) {
+      return answer.answer;
+    }
+  } catch {}
+};
+
+export const getFileName = async (postId, fileIndex) => {
+  try {
+    const post = await getPost(postId);
+    if (post.attachments[fileIndex])
+      return post.attachments[fileIndex].fileName;
   } catch (err) {
     console.log(err);
   }
