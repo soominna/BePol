@@ -55,7 +55,7 @@ export const pushVoteStatistics = async (postId, userId, agree, session) => {
   }
   return Post_statistics.findOne({ postId }).then(
     (stat) => {
-      if (gender === "XX") {
+      if (gender === "female") {
         // 여성
         if (thisYearAge < 20) {
           if (agree === true) {
@@ -99,7 +99,7 @@ export const pushVoteStatistics = async (postId, userId, agree, session) => {
             stat.female["60"].disagrees++;
           }
         }
-      } else {
+      } else if (gender === "male") {
         // 남성
         if (thisYearAge < 20) {
           if (agree === true) {
