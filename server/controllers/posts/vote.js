@@ -1,4 +1,5 @@
 import * as postAnswerRepository from "../../services/postAnswer.js";
+import { verifyToken } from "../functions/authentication.js";
 
 export const voteToPost = async (req, res) => {
   /**
@@ -17,12 +18,13 @@ export const voteToPost = async (req, res) => {
    * agree === false -> 반대
    * agree === true -> 찬성
    */
-  const { agree } = req.body;
-  const { accesstoken } = req.headers;
-  const { postId } = req.params;
-  const userId = "62e72e8bd16b26b038686b66"; // 소셜로그인 구현되면 변경
   try {
-    const votedUser = await postAnswerRepository.getUserIdAnswered(userId);
+    const { agree } = req.body;
+    const { accesstoken } = req.headers;
+    const { postId } = req.params;
+    const user = verifyToken(req.headers["access-token"].split(" ")[1]);
+
+    const votedUser = await postAnswerRepository.getUserIdAnswered(user.id);
     if (!accesstoken) {
       // user 정보 불일치시 error
       return res.status(401).json({
@@ -36,7 +38,7 @@ export const voteToPost = async (req, res) => {
     } else {
       const data = await postAnswerRepository.addAnswerTransaction(
         postId,
-        userId,
+        user.id,
         agree
       );
 
@@ -76,13 +78,14 @@ export const voteDeleteToPost = async (req, res) => {
    * 1. postAnswer에서 해당 유저아이디에 일치하는 answer값 가져오기
    * 2. 이 answer값을 지우는것
    */
-  const { accesstoken } = req.headers;
-  const { postId } = req.params;
-  const userId = "62e72e8bd16b26b038686b66"; // 소셜로그인 구현되면 변경
 
   try {
-    const userPostAnswer = await postAnswerRepository.findUserAnswer(userId);
-    const votedUser = await postAnswerRepository.getUserIdAnswered(userId);
+    const { accesstoken } = req.headers;
+    const { postId } = req.params;
+    const user = verifyToken(req.headers["access-token"].split(" ")[1]);
+
+    const userPostAnswer = await postAnswerRepository.findUserAnswer(user.id);
+    const votedUser = await postAnswerRepository.getUserIdAnswered(user.id);
     if (!accesstoken) {
       // user 정보 불일치시 error
       res.status(401).json({
@@ -96,7 +99,7 @@ export const voteDeleteToPost = async (req, res) => {
     } else {
       const data = await postAnswerRepository.deleteAnswerTransaction(
         postId,
-        userId,
+        user.id,
         userPostAnswer.answer
       );
 

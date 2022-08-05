@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Post from "../models/post.js";
+import Hot_posts from "../models/hotPost.js";
 import PostAnswer from "../models/postAnswer.js";
 import { deleteS3File } from "../controllers/functions/file.js";
 
@@ -192,29 +193,6 @@ export const createPost = async (
   }
 };
 
-export const deletePost = async (userId, postId) => {
-  try {
-    const postToDelete = await Post.findOne({
-      userId: mongoose.Types.ObjectId(userId),
-      _id: mongoose.Types.ObjectId(postId),
-    });
-
-    if (postToDelete) {
-      if (postToDelete.attachments) {
-        postToDelete.attachments.map((file) => {
-          deleteS3File(file.fileName);
-        });
-      }
-    }
-
-    const deletedPost = await Post.deleteOne({ _id: postToDelete._id });
-
-    return deletedPost;
-  } catch (err) {
-    console.log(err);
-  }
-};
-
 export const getPost = async (postId) => {
   try {
     return await Post.findById(mongoose.Types.ObjectId(postId));
@@ -238,6 +216,111 @@ export const getFileName = async (postId, fileIndex) => {
     const post = await getPost(postId);
     if (post.attachments[fileIndex])
       return post.attachments[fileIndex].fileName;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const deletePost = async (userId, postId) => {
+  try {
+    const postToDelete = await Post.findOne({
+      userId: mongoose.Types.ObjectId(userId),
+      _id: mongoose.Types.ObjectId(postId),
+    });
+
+    if (postToDelete) {
+      if (postToDelete.attachments) {
+        postToDelete.attachments.map((file) => {
+          deleteS3File(file.fileName);
+        });
+      }
+    }
+
+    const deletedPost = await Post.deleteOne({ _id: postToDelete._id });
+
+    return deletedPost;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const setThreePopularPosts = async () => {
+  try {
+    const allPosts = await Post.find(
+      {},
+      { purport: 0, contents: 0, attachments: 0, updatedAt: 0 }
+    );
+    const hotPosts = [];
+
+    Promise.all(
+      allPosts.map(async (post) => {
+        const { agrees, disagrees } = post;
+        // 찬반 비율 차이 구하기 Math.abs
+        const agreesProportion = (
+          parseFloat(agrees / (agrees + disagrees)) * 100
+        ).toFixed(3);
+        const disagreesProportion = (
+          parseFloat(disagrees / (agrees + disagrees)) * 100
+        ).toFixed(3);
+
+        if (Math.abs(agreesProportion - disagreesProportion) < 10) {
+          if (hotPosts.length < 3) {
+            hotPosts.push(post);
+          } else {
+            return;
+          }
+        }
+      })
+    );
+
+    return Promise.all(
+      hotPosts.map(async (post) => {
+        const { title, username, agrees, disagrees, comments, createdAt } =
+          post;
+        await Hot_posts.deleteMany();
+
+        return await Hot_posts.create({
+          title,
+          username,
+          agrees,
+          disagrees,
+          comments,
+          createdAt,
+        });
+      })
+    );
+
+export const getThreePopularPosts = async () => {
+  try {
+    const hotPosts = await Hot_posts.find(
+      {},
+      { purport: 0, contents: 0, attachments: 0, updatedAt: 0 }
+    );
+    const voteDESC = [];
+    let flag = false;
+
+    hotPosts.map((post) => {
+      const { agrees, disagrees } = post;
+      const voteCnt = agrees + disagrees;
+      voteDESC.push(voteCnt);
+    });
+
+    for (let i = voteDESC.length; i > 0; i--) {
+      for (let j = 0; j < i; j++) {
+        if (voteDESC[j] < voteDESC[j + 1]) {
+          let tmp = hotPosts[j];
+          hotPosts[j] = hotPosts[j + 1];
+          hotPosts[j + 1] = tmp;
+          flag = true;
+        }
+      }
+      if (!flag) {
+        break;
+      }
+      voteDESC.length--;
+    }
+
+    return hotPosts;
   } catch (err) {
     console.log(err);
   }
