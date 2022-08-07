@@ -7,6 +7,8 @@ import postsRouter from "./routes/posts.js";
 import userRouter from "./routes/users.js";
 import commentRouter from "./routes/comments.js";
 import cron from "node-cron";
+import nodemailer from "nodemailer";
+import { sendMailStats } from "./middleware/sendMailStats.js";
 import * as postRepsitory from "./services/post.js";
 dotenv.config();
 
@@ -39,6 +41,9 @@ app.listen(port, () => {
   console.log(`SERVER Started on ${port} port`);
 });
 
+// hot3 게시판 매일 23시 59분에 업데이트 자동화 설정
 cron.schedule("59 23 1-31 * *", async () => {
   await postRepsitory.setThreePopularPosts();
 });
+
+await sendMailStats();
