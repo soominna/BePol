@@ -69,11 +69,11 @@ export default function Detail() {
           <ContentsFiled>
             <Contents>
               <div>법안 발의 취지</div>
-              <div>{postInfo.purport}</div>
+              <div className={"purport"}>{postInfo.purport}</div>
             </Contents>
             <Contents>
               <div>법안 발의 내용</div>
-              <div>{postInfo.contents}</div>
+              <div className={"contents"}>{postInfo.contents}</div>
             </Contents>
             <AttachedField>
               <div>첨부파일</div>

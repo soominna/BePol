@@ -60,6 +60,12 @@ export const Contents = styled.div`
     &:last-child {
       margin-bottom: 30px;
     }
+    &.purport {
+      min-height: 60px;
+    }
+    &.contents {
+      min-height: 180px;
+    }
   }
 `;
 
