@@ -184,6 +184,8 @@ export const AttachedFile = styled.div`
   margin-top: 10px;
   margin-left: 210px;
   div {
+    width: 600px;
+    word-break: break-all;
     &:first-child {
       margin-bottom: 10px;
     }

@@ -77,6 +77,7 @@ export default function Write({ history }) {
   // 첨부파일 변경적용 함수
   const handleChangeFile = (e) => {
     // 2개의 파일가지 첨부가능
+    if (!e.target.files.length) return;
     if (files.length + e.target.files.length > 2) {
       Swal.fire({
         position: "center",
@@ -170,7 +171,8 @@ export default function Write({ history }) {
           if (files.length) {
             for (let file of files) formData.append("attachments", file);
           }
-          formData.append("category", selectedCategory);
+          for (let category of selectedCategory)
+            formData.append("category", category);
           formData.append("title", title);
           formData.append("purport", purport);
           formData.append("contents", contents);
