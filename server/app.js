@@ -7,8 +7,7 @@ import postsRouter from "./routes/posts.js";
 import userRouter from "./routes/users.js";
 import commentRouter from "./routes/comments.js";
 import cron from "node-cron";
-import nodemailer from "nodemailer";
-import { sendMailStats } from "./middleware/sendMailStats.js";
+import { sendMailStats } from "./services/sendMailStats.js";
 import * as postRepsitory from "./services/post.js";
 dotenv.config();
 
