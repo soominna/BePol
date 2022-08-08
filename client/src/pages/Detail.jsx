@@ -26,7 +26,8 @@ export default function Detail() {
   const [postInfo, setPostInfo] = useState(null);
   const [comment, setComment] = useState("");
   const [sortBy, setSortBy] = useState("recent");
-  const [commentList, setCommentList] = useState(null);
+  const [commentList, setCommentList] = useState([]);
+  const [update, isUpdate] = useState(false);
   const [page, setPage] = useState(1);
 
   // 삭제하기 버튼 클릭 함수
@@ -65,6 +66,7 @@ export default function Detail() {
 
   // 댓글작성 버튼 눌렀을 때 함수
   const handleCreateComment = () => {
+    setComment("");
     const data = {
       commentContent: comment,
     };
@@ -73,32 +75,70 @@ export default function Detail() {
         "access-token": accessToken,
       },
     };
-    axios.post(
-      `${process.env.REACT_APP_API_URI}/comments/62ec940c45211fbed89261fe`,
-      data,
-      config
-    );
+    axios
+      .post(
+        `${process.env.REACT_APP_API_URI}/comments/62ec940c45211fbed89261fe`,
+        data,
+        config
+      )
+      .then((result) => console.log(result.data));
   };
 
+  // 댓글들을 요청하는 함수
+  const requestComments = () => {
+    console.log("222222");
+    isUpdate(true);
+    axios
+      .get(
+        `${process.env.REACT_APP_API_URI}/comments/62ec940c45211fbed89261fe?sortby=${sortBy}&page=${page}`
+      )
+      .then((result) => {
+        setCommentList([...commentList, ...result.data.data]);
+        setPage((preState) => preState + 1);
+        isUpdate(false);
+      });
+  };
+
+  // 페이지 이동시 처음 post 정보 가져오기
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_API_URI}/posts/62ec940c45211fbed89261fe`)
       .then((result) => setPostInfo(result.data));
   }, []);
 
+  // 댓글 정보 불러오기
   useEffect(() => {
-    axios
-      .get(
-        `${process.env.REACT_APP_API_URI}/comments/62ec940c45211fbed89261fe?sortBy=${sortBy}&page=${page}`
-      )
-      .then((result) => setCommentList(result.data.data));
-  }, []);
+    console.log("11111");
+    window.onbeforeunload = function scrolltop() {
+      window.scrollTo(0, 0);
+    };
+    requestComments();
+  }, [sortBy]);
+
   // console.log(postInfo);
-  console.log(commentList);
+  // console.log(commentList);
+
+  // 스크롤 이벤트 함수
+  const handleScroll = () => {
+    const scrollHeight = document.documentElement.scrollHeight;
+    const scrollTop = document.documentElement.scrollTop;
+    const clientHeight = document.documentElement.clientHeight;
+    console.log(scrollHeight, scrollTop, clientHeight);
+    if (scrollTop + clientHeight + 100 > scrollHeight && !update) {
+      requestComments();
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  });
 
   return (
     <>
-      {postInfo !== null && commentList !== null ? (
+      {postInfo !== null && commentList.length ? (
         <Body>
           <Title>
             {postInfo.category.map((category, idx) => (
@@ -152,14 +192,22 @@ export default function Detail() {
           <SortBy>
             <Sort
               bold={sortBy === "recent" ? "bold" : "none"}
-              onClick={() => setSortBy("recent")}
+              onClick={() => {
+                setPage(1);
+                setCommentList([]);
+                setSortBy("recent");
+              }}
             >
               최신순
             </Sort>
             <span> | </span>
             <Sort
               bold={sortBy === "likes" ? "bold" : "none"}
-              onClick={() => setSortBy("likes")}
+              onClick={() => {
+                setPage(1);
+                setCommentList([]);
+                setSortBy("likes");
+              }}
             >
               공감순
             </Sort>
@@ -169,8 +217,12 @@ export default function Detail() {
               <Comment key={comment._id} comment={comment}></Comment>
             ))}
           </CommentsField>
+          {/* TODO: 추가적인 댓글 불러온다는 것을 나타내기 */}
         </Body>
-      ) : null}
+      ) : (
+        //TODO: 로딩페이지 대체에정
+        <div>asasdsdf</div>
+      )}
     </>
   );
 }

@@ -119,9 +119,9 @@ export const InputField = styled.div`
 `;
 
 export const SortBy = styled.div`
-  border: 1px solid red;
   width: 90%;
   margin: auto;
+  margin-top: 5px;
 `;
 
 export const Sort = styled.span`
@@ -130,5 +130,7 @@ export const Sort = styled.span`
 `;
 
 export const CommentsField = styled.div`
-  border: 1px solid red;
+  width: 90%;
+  margin: auto;
+  margin-top: 30px;
 `;
