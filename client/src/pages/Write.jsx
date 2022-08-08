@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import axios from "axios";
 import Swal from "sweetalert2";
 import {
@@ -27,6 +28,7 @@ import {
 
 export default function Write({ history }) {
   const navigate = useNavigate();
+  const accessToken = useSelector((state) => state.login.accessToken);
   const allCategory = [
     { 0: "법률/사법" },
     { 1: "금융/경제" },
@@ -179,6 +181,7 @@ export default function Write({ history }) {
           const config = {
             Headers: {
               "content-type": "multipart/form-data",
+              "access-token": accessToken,
             },
           };
           axios

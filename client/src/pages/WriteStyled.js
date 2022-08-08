@@ -11,7 +11,6 @@ export const Title = styled.div`
   display: flex;
   font-weight: bold;
   font-size: 30px;
-  margin-top: 30px;
   img {
     margin-left: 10px;
     width: 30px;
