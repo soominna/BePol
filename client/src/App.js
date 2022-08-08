@@ -19,7 +19,10 @@ function App() {
         <Route path="/" element={<Main />} />
         {/* 카드 클릭했을 때 상세페이지 이동 경로 => useNavigator 사용 */}
         {/* <Route path="/detail/:postId" element={<Detail />} /> */}
-        <Route path="/write" element={<Write />} />
+        <Route
+          path="/write"
+          element={isLogin ? <Write /> : <Navigate to="/" />}
+        />
         <Route
           path="/login"
           element={isLogin ? <Navigate to="/" /> : <Login />}

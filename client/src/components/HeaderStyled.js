@@ -32,6 +32,7 @@ export const Buttons = styled.div`
     font-size: 1rem;
   }
   & > img {
+    cursor: pointer;
     width: 2vw;
     height: 2vh;
   }

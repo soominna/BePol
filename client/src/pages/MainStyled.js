@@ -28,6 +28,7 @@ export const Text = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
   & > img {
     width: 2.5rem;
     height: 2.5rem;

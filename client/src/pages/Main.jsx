@@ -1,4 +1,5 @@
 import axios from "axios";
+import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import TopCard from "../components/TopCard";
@@ -7,13 +8,29 @@ import ListCard from "../components/ListCard";
 import { MainSection, Section, Text, SearchCategory } from "./MainStyled.js";
 
 export default function Main() {
+  /*
+   * 기능: 메인 페이지
+   * 작성자: 송혜원
+   * 📌 Top3 게시글 보이기 ✔︎
+   * 📌 write 페이지와 연결 ✔︎
+   * 📌 카테고리별 게시글 보이기
+   * 📌 검색 및 정렬방식 선택
+   * 📌 마감된 게시글 포함해서 보이기
+   * 📌 게시글 카드 무한 스크롤로 보이기
+   */
   const navigate = useNavigate();
   const viewList = ["최신순", "마감임박순", "찬성순", "반대순"];
 
   const isLogin = useSelector((state) => state.login.isLogin);
 
   //로그인 안한 회원에게 알림창 안내
-  const handleLoginAlert = () => {};
+  const handleLoginAlert = () => {
+    Swal.fire({
+      title: "로그인이 필요한 서비스 입니다",
+      text: "로그인 후 사용해주세요",
+      icon: "warning",
+    });
+  };
   const handleSearchInput = () => {};
 
   return (

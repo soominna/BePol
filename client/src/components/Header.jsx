@@ -1,18 +1,17 @@
 import axios from "axios";
 import { persistor } from "../store/store";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../reducers/loginSlice";
 import { Container, Logo, Buttons, Button } from "./HeaderStyled";
 
 export default function Header() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const isLogin = useSelector((state) => state.login.isLogin);
   const accessToken = useSelector((state) => state.login.accessToken);
   const user = useSelector((state) => state.user.userInfo);
   const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT}&response_type=code`;
-
-  console.log(accessToken);
 
   const purge = async () => {
     await persistor.purge();
@@ -33,7 +32,6 @@ export default function Header() {
 
   return (
     <Container>
-      {/* <img src="/images/logo.png" alt="Bepol logo" /> */}
       <Link to="/">
         <Logo>
           <img src="/images/logo.png" alt="Bepol logo" />
@@ -42,7 +40,11 @@ export default function Header() {
       {isLogin ? (
         <Buttons>
           <span>{user.userInfo.username}님</span>
-          <img src="/images/writeHeaderIcon.png" alt="writing Icon" />
+          <img
+            src="/images/writeHeaderIcon.png"
+            alt="writing Icon"
+            onClick={() => navigate("/write")}
+          />
           <Button onClick={handleLogout}>로그아웃</Button>
         </Buttons>
       ) : (
