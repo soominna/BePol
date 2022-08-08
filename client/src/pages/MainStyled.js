@@ -1,8 +1,8 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
-export const MainSection = styled.section`
+export const MainSection = styled.div`
   width: 100vw;
-  position: fixed;
+  /* position: fixed; */
   top: 5rem;
   left: -0.01rem;
 `;
@@ -18,6 +18,34 @@ export const Section = styled.section`
     height: 2.5rem;
     margin-top: 1rem;
   }
+  ${(props) => {
+    if (props.display === "grid") {
+      //grid일 때 적용할 스타일
+      return css`
+        margin: 0 2rem;
+        & > h2 {
+          margin: 0 0.2rem;
+          font-size: 2rem;
+          font-weight: 700;
+        }
+      `;
+    } else if (props.backgroundColor === "dark") {
+      //flex일 때 && 모의법안 작성 버튼 적용할 스타일
+      return css`
+        flex-direction: row;
+        justify-content: center;
+        color: red;
+      `;
+    } else {
+      //flex일 때
+      return css`
+        margin: 0 2rem;
+        flex-direction: row;
+        justify-content: flex-start;
+        color: pink;
+      `;
+    }
+  }}
 `;
 
 export const Text = styled.div`
