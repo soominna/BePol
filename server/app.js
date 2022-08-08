@@ -7,7 +7,8 @@ import postsRouter from "./routes/posts.js";
 import userRouter from "./routes/users.js";
 import commentRouter from "./routes/comments.js";
 import cron from "node-cron";
-import { sendMailStats } from "./services/sendMailStats.js";
+import fsExtra from "fs-extra";
+import * as sendMailStatusRepository from "./services/sendMailStats.js";
 import * as postRepsitory from "./services/post.js";
 dotenv.config();
 
@@ -45,4 +46,12 @@ cron.schedule("59 23 1-31 * *", async () => {
   await postRepsitory.setThreePopularPosts();
 });
 
-await sendMailStats();
+// 투표 현황 메일 - 매주 월요일
+cron.schedule("59 23 * * 0", async () => {
+  await sendMailStatusRepository.sendMailStats();
+});
+
+// 월요일에 메일 보낸 후 imgs 폴더 비워주기
+cron.schedule("59 0 * * 1", async () => {
+  fsExtra.emptyDirSync("imgs/");
+});
