@@ -9,8 +9,8 @@ export const Card = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
-  width: 90vw;
-  height: 13vw;
+  width: 100%;
+  height: 100%;
   cursor: pointer;
   border: none;
   border-radius: 15px;

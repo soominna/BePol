@@ -1,15 +1,17 @@
 import styled, { css } from "styled-components";
 
 export const MainSection = styled.div`
-  width: 100vw;
+  width: 70%;
+  min-width: 880px;
+  margin: auto;
   /* position: fixed; */
-  top: 5rem;
-  left: -0.01rem;
+  /* top: 5rem;
+  left: -0.01rem; */
 `;
 
 //flex에 따라, grid에 따라 if문 걸어서 따로 쓸 수 있는지 문법 확인
 export const Section = styled.section`
-  width: 100vw;
+  width: 100%;
   padding: 1rem 0;
   display: ${(props) => (props.display ? "grid" : "flex")};
   background-color: ${(props) => (props.backgroundColor ? "#414144" : "white")};
@@ -22,11 +24,19 @@ export const Section = styled.section`
     if (props.display === "grid") {
       //grid일 때 적용할 스타일
       return css`
-        margin: 0 2rem;
+        /* margin: 0 2rem; */
         & > h2 {
           margin: 0 0.2rem;
           font-size: 2rem;
           font-weight: 700;
+        }
+        & > h3 {
+          margin: 3rem;
+          padding: 5rem;
+          background-color: #f5f5f5;
+          border-radius: 20px;
+          font-size: 1.5rem;
+          text-align: center;
         }
       `;
     } else if (props.backgroundColor === "dark") {
@@ -34,7 +44,6 @@ export const Section = styled.section`
       return css`
         flex-direction: row;
         justify-content: center;
-        color: red;
       `;
     } else {
       //flex일 때

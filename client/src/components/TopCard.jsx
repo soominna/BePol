@@ -15,6 +15,9 @@ export default function TopCard({ info }) {
   const handleGetCardId = (e) => {
     navigate("/detail", { state: { postId: e.currentTarget.id } });
   };
+  const sliceTitleStr = (str) => {
+    return str.slice(0, 75);
+  };
   return (
     <>
       <TopCardSection>
@@ -22,9 +25,15 @@ export default function TopCard({ info }) {
           {/* D-day 정보 받아오면 사용 */}
           {/* <CardDay>{info.date}</CardDay> */}
           <CardDay>D-10</CardDay>
-          <CardTitle>
-            <h3>{info.title}</h3>
-          </CardTitle>
+          {info.title.length > 75 ? (
+            <CardTitle>
+              <h3>{sliceTitleStr(info.title)}... </h3>
+            </CardTitle>
+          ) : (
+            <CardTitle>
+              <h3>{info.title}</h3>
+            </CardTitle>
+          )}
           <CardDetail>
             <CardButton>
               <CardIcon>
