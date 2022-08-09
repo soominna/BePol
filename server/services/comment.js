@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Comment from "../models/comment.js";
+import PostAnswer from "../models/postAnswer.js";
 import * as commentLikeRepository from "./commentLike.js";
 
 export const createComment = async (contents, postId, userId, username) => {
@@ -63,7 +64,14 @@ export const getCommentList = async (userId, postId, sortby, page) => {
           comment._id,
           userId
         );
-        return commentLike ? { ...comment.toObject(), isliked: true } : comment;
+        const postAnswer = await PostAnswer.find({
+          id: comment.postId + comment.userId,
+        });
+        return {
+          ...comment.toObject(),
+          isliked: commentLike ? true : false,
+          answer: postAnswer ? postAnswer.answer : undefined,
+        };
       })
     );
   } catch (err) {
