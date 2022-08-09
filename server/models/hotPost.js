@@ -3,11 +3,11 @@ import mongoose from "mongoose";
 
 const newSchema = mongoose.Schema(
   {
-    title: {
-      type: String,
+    postId: {
+      type: mongoose.Schema.Types.Object,
       required: true,
     },
-    username: {
+    title: {
       type: String,
       required: true,
     },
