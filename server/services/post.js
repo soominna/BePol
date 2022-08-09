@@ -4,7 +4,13 @@ import Hot_posts from "../models/hotPost.js";
 import PostAnswer from "../models/postAnswer.js";
 import { deleteS3File } from "../controllers/functions/file.js";
 
-const EXCEPT_OPTION = { purport: 0, contents: 0, attachments: 0, comments: 0 }; // 필요없는 컬럼 삭제하기 위한 변수
+const EXCEPT_OPTION = {
+  purport: 0,
+  contents: 0,
+  attachments: 0,
+  comments: 0,
+  sendEmailStatus: 0,
+}; // 필요없는 컬럼 삭제하기 위한 변수
 
 const setSortOptions = async (sortby) => {
   // sortby 조건에 따라 옵션 설정
@@ -77,13 +83,13 @@ const getByCategory = async (postsList, categoryArr) => {
   }
 };
 
-const getClosed = async (postsList, posts) => {
+const getClosed = async (postsList, posts, openedPosts) => {
   // 마감된 발의문 분류 함수 선언
   try {
     return Promise.all(
       postsList.map(async (post) => {
-        const { updatedAt } = post;
-        const date = new Date(updatedAt);
+        const { createdAt } = post;
+        const date = new Date(createdAt);
         const year = date.getFullYear();
         const month = date.getMonth();
         const day = date.getDate();
@@ -92,7 +98,7 @@ const getClosed = async (postsList, posts) => {
 
         afterOneMonth.getTime() < new Date().getTime()
           ? posts.push(post)
-          : null;
+          : openedPosts.push(post);
       })
     );
   } catch (err) {
@@ -106,7 +112,12 @@ export const getAllByCategory = async (categoryArr, search, sortby, page) => {
     const sortOptions = await setSortOptions(sortby);
     const postsList = await getPostsList(page, search, sortOptions, pageSize);
 
-    return await getByCategory(postsList, categoryArr);
+    const listWithCategory = await getByCategory(postsList, categoryArr);
+    const filteredList = listWithCategory.filter(
+      (el) => el !== false && el !== undefined
+    );
+
+    return filteredList;
   } catch (err) {
     console.log(err);
   }
@@ -125,9 +136,10 @@ export const getClosedAllByCategory = async (
     const postsList = await getPostsList(page, search, sortOptions, pageSize);
 
     const listWithCategory = await getByCategory(postsList, categoryArr);
-    const filteredList = listWithCategory.filter((el) => el !== false);
-
-    await getClosed(filteredList[0], posts);
+    const filteredList = listWithCategory.filter(
+      (el) => el !== false && el !== undefined
+    );
+    await getClosed(filteredList[0], posts, []);
 
     return posts;
   } catch (err) {
@@ -153,12 +165,31 @@ export const getClosedSearchedTitleBySorting = async (search, sortby, page) => {
     const sortOptions = await setSortOptions(sortby);
     const postsList = await getPostsList(page, search, sortOptions, pageSize);
 
-    await getClosed(postsList, posts);
+    await getClosed(postsList, posts, []);
 
     return posts;
   } catch (err) {
     console.log(err);
   }
+};
+
+export const getDday = (data, dDayList) => {
+  data.forEach((post) => {
+    const { _id, createdAt, postId } = post;
+    const date = new Date(createdAt);
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const day = date.getDate();
+
+    const dDay = new Date(year, month + 1, day);
+    const today = new Date();
+    if (dDay.getTime() > new Date().getTime()) {
+      const diff = Math.floor((dDay - today) / (1000 * 60 * 60 * 24));
+      postId
+        ? dDayList.push({ postId, dDay: diff })
+        : dDayList.push({ postId: _id, dDay: diff });
+    }
+  });
 };
 
 export const createPost = async (
@@ -248,22 +279,35 @@ export const setThreePopularPosts = async () => {
   try {
     const allPosts = await Post.find(
       {},
-      { purport: 0, contents: 0, attachments: 0, updatedAt: 0 }
+      {
+        purport: 0,
+        contents: 0,
+        attachments: 0,
+        sendEmailStatus: 0,
+        category: 0,
+        username: 0,
+      }
     );
-    const hotPosts = [];
+    let hotPosts = [];
+    let openedPosts = [];
+
+    await getClosed(allPosts, [], openedPosts);
 
     Promise.all(
-      allPosts.map(async (post) => {
+      openedPosts.map(async (post) => {
         const { agrees, disagrees } = post;
         // 찬반 비율 차이 구하기 Math.abs
         const agreesProportion = (
           parseFloat(agrees / (agrees + disagrees)) * 100
         ).toFixed(3);
-        const disagreesProportion = (
-          parseFloat(disagrees / (agrees + disagrees)) * 100
-        ).toFixed(3);
+        const disagreesProportion = parseFloat(100 - agreesProportion).toFixed(
+          3
+        );
 
-        if (Math.abs(agreesProportion - disagreesProportion) < 10) {
+        if (
+          Math.abs(agreesProportion - disagreesProportion) < 10 &&
+          agrees + disagrees > 50
+        ) {
           if (hotPosts.length < 3) {
             hotPosts.push(post);
           } else {
@@ -275,13 +319,12 @@ export const setThreePopularPosts = async () => {
 
     return Promise.all(
       hotPosts.map(async (post) => {
-        const { title, username, agrees, disagrees, comments, createdAt } =
-          post;
+        const { _id, title, agrees, disagrees, comments, createdAt } = post;
         await Hot_posts.deleteMany();
 
         return await Hot_posts.create({
+          postId: _id,
           title,
-          username,
           agrees,
           disagrees,
           comments,
@@ -292,14 +335,11 @@ export const setThreePopularPosts = async () => {
   } catch (err) {
     console.log(err);
   }
-}
+};
 
 export const getThreePopularPosts = async () => {
   try {
-    const hotPosts = await Hot_posts.find(
-      {},
-      { purport: 0, contents: 0, attachments: 0, updatedAt: 0 }
-    );
+    const hotPosts = await Hot_posts.find({});
     const voteDESC = [];
     let flag = false;
 
