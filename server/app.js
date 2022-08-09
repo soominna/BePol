@@ -1,6 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import morgan from "morgan";
+import helmet from "helmet";
 import connectDb from "./db/database.js";
 import config from "./config/config.js";
 import postsRouter from "./routes/posts.js";
@@ -15,7 +17,9 @@ dotenv.config();
 const app = express();
 
 app.use(express.json());
+app.use(helmet());
 app.use(cors());
+app.use(morgan("tiny"));
 
 app.use("/posts", postsRouter);
 app.use("/users", userRouter);
