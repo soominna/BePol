@@ -7,6 +7,8 @@ import postsRouter from "./routes/posts.js";
 import userRouter from "./routes/users.js";
 import commentRouter from "./routes/comments.js";
 import cron from "node-cron";
+import fsExtra from "fs-extra";
+import * as sendMailStatusRepository from "./services/sendMailStats.js";
 import * as postRepsitory from "./services/post.js";
 dotenv.config();
 
@@ -39,6 +41,17 @@ app.listen(port, () => {
   console.log(`SERVER Started on ${port} port`);
 });
 
+// hot3 게시판 매일 23시 59분에 업데이트 자동화 설정
 cron.schedule("59 23 1-31 * *", async () => {
   await postRepsitory.setThreePopularPosts();
+});
+
+// 투표 현황 메일 - 매일 오전 9시
+cron.schedule("59 8 1-31 * *", async () => {
+  await sendMailStatusRepository.sendMailStats();
+});
+
+// 메일 보낸 후 imgs 폴더 비워주기
+cron.schedule("59 9 1-31 * *", async () => {
+  fsExtra.emptyDirSync("imgs/");
 });
