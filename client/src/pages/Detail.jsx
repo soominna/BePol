@@ -35,7 +35,7 @@ export default function Detail() {
   // 삭제하기 버튼 클릭 함수
   const handleRemoveButton = () => {
     axios
-      .delete(`${process.env.REACT_APP_API_URI}/posts/62f1e3c5940b05c41f85c58a`)
+      .delete(`${process.env.REACT_APP_API_URI}/posts/62f246602d115f4e6e41903b`)
       .then((result) => {
         Swal.fire({
           title: "법안을 삭제하시겠습니까?",
@@ -76,7 +76,7 @@ export default function Detail() {
   const handleDownloadFile = (idx) => {
     axios
       .get(
-        `${process.env.REACT_APP_API_URI}/posts/download/62f1e3c5940b05c41f85c58a?fileIndex=${idx}`
+        `${process.env.REACT_APP_API_URI}/posts/download/62f246602d115f4e6e41903b?fileIndex=${idx}`
       )
       .then((result) => {
         const url = result.config.url;
@@ -105,7 +105,7 @@ export default function Detail() {
       };
       axios
         .post(
-          `${process.env.REACT_APP_API_URI}/comments/62f1e3c5940b05c41f85c58a`,
+          `${process.env.REACT_APP_API_URI}/comments/62f246602d115f4e6e41903b`,
           data,
           config
         )
@@ -127,7 +127,7 @@ export default function Detail() {
     isUpdate(true);
     axios
       .get(
-        `${process.env.REACT_APP_API_URI}/comments/62f1e3c5940b05c41f85c58a?sortby=${sortBy}&page=${page}`
+        `${process.env.REACT_APP_API_URI}/comments/62f246602d115f4e6e41903b?sortby=${sortBy}&page=${page}`
       )
       .then((result) => {
         // setTimeout(() => {
@@ -145,7 +145,7 @@ export default function Detail() {
   // 페이지 이동시 처음 post 정보 가져오기
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_API_URI}/posts/62f1e3c5940b05c41f85c58a`)
+      .get(`${process.env.REACT_APP_API_URI}/posts/62f246602d115f4e6e41903b`)
       .then((result) => setPostInfo(result.data));
   }, []);
 
@@ -192,7 +192,9 @@ export default function Detail() {
             </div>
             <span>{AfterOneMonth(postInfo.createdAt)}</span>
           </Info>
-          <ResultFiled>통계 결과 들어가기</ResultFiled>
+          <ResultFiled>
+            <span>투표 상세 결과보기</span>
+          </ResultFiled>
           <ContentsFiled>
             <Contents>
               <div>법안 발의 취지</div>

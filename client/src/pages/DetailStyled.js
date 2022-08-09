@@ -16,6 +16,7 @@ export const Title = styled.div`
 `;
 
 export const Info = styled.div`
+  margin-bottom: 10px;
   .writer {
     display: flex;
     justify-content: space-between;
@@ -41,6 +42,11 @@ export const Info = styled.div`
 export const ResultFiled = styled.div`
   border: 1px solid red;
   height: 200px;
+  span {
+    margin: auto;
+    text-decoration: underline;
+    background: red;
+  }
 `;
 
 export const ContentsFiled = styled.div`
