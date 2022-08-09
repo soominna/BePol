@@ -53,6 +53,8 @@ export const Contents = styled.div`
   width: 90%;
   margin: auto;
   margin-bottom: 30px;
+  white-space: pre-line;
+  word-break: break-all;
   div {
     &:first-child {
       font-size: 20px;

@@ -28,18 +28,34 @@ export const ProsAndCons = styled.span`
   margin-right: 10px;
 `;
 
-export const ModifyAndDelete = styled.div`
+export const CommentButton = styled.div`
   display: flex;
-  span {
-    font-size: 15px;
-    &:first-child {
-      cursor: pointer;
-      margin-right: 5px;
-    }
-    &:last-child {
-      cursor: pointer;
-      margin-left: 5px;
-    }
+  align-items: center;
+`;
+
+export const ModifyAndDelete = styled.span`
+  font-size: 15px;
+  &:first-child {
+    cursor: pointer;
+    margin-right: 5px;
+  }
+  &:last-child {
+    cursor: pointer;
+    margin-left: 5px;
+  }
+`;
+
+export const CancleAndCheck = styled.span`
+  background: ${(props) => props.background};
+  color: #ffffff;
+  padding: 5px;
+  border-radius: 5px;
+  cursor: ${(props) => props.cursor};
+  &:first-child {
+    margin-right: 5px;
+  }
+  &:last-child {
+    margin-left: 5px;
   }
 `;
 
@@ -50,13 +66,25 @@ export const Contents = styled.div`
   div {
     &:first-child {
       margin-bottom: 5px;
+      white-space: pre-wrap;
+      word-break: break-all;
     }
     &:last-child {
       display: flex;
+      svg {
+        margin-right: 5px;
+        cursor: pointer;
+      }
     }
   }
-  img {
-    width: 20px;
-    height: 20px;
-  }
+`;
+
+export const InputModifyComment = styled.textarea`
+  resize: none;
+  border: none;
+  outline-color: #a5a5a5;
+  width: 100%;
+  font-size: 15px;
+  /* height: ${(props) => props.height}; */
+  min-height: 80px;
 `;
