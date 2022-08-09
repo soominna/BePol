@@ -46,12 +46,12 @@ cron.schedule("59 23 1-31 * *", async () => {
   await postRepsitory.setThreePopularPosts();
 });
 
-// 투표 현황 메일 - 매주 월요일
-cron.schedule("59 23 * * 0", async () => {
+// 투표 현황 메일 - 매일 오전 9시
+cron.schedule("59 8 1-31 * *", async () => {
   await sendMailStatusRepository.sendMailStats();
 });
 
-// 월요일에 메일 보낸 후 imgs 폴더 비워주기
-cron.schedule("59 0 * * 1", async () => {
+// 메일 보낸 후 imgs 폴더 비워주기
+cron.schedule("59 9 1-31 * *", async () => {
   fsExtra.emptyDirSync("imgs/");
 });
