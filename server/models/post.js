@@ -46,6 +46,11 @@ const newSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
+    sendEmailStatus: {
+      type: Boolean,
+      default: false,
+      required: true,
+    },
   },
   {
     timestamps: {
