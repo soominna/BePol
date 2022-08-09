@@ -12,7 +12,7 @@ export const sendMailStats = async () => {
   /**
    * 기능: 투표 현황 이메일 전송 기능
    * 작성자: 이승연
-   * 📌 발의문 마감일에 투표율, 찬성율, 반대율 등 투표 현황 리포트 이메일로 전송 (client화면) ✔︎
+   * 📌 발의문 마감일에 투표 현황 리포트 이메일로 전송 (client화면) ✔︎
    * 📌 통계 client부분 완성되면 제대로 연결 🔺
    * 📌 node-mailer로 이메일 전송 기능 구현 ✔︎
    * 📌 node-mailer 파일 첨부 및 Embedded 이미지 구현 ✔︎
@@ -20,7 +20,7 @@ export const sendMailStats = async () => {
    */
 
   /** Logic
-   * 1. 발의문들 중 투표가 30표 이상 진행된 것들 필터링 (마감 안된걸로) ✔︎
+   * 1. 발의문들 중 마감이 하루 남은 것들 필터링 (마감 안된걸로) ✔︎
    * 2. 해당 발의문의 작성자 이메일 찾기 (User collection) ✔︎
    * 3. 해당 발의문 투표 통계 페이지 (client) 캡쳐 기능 - puppeteer 사용 ✔︎
    * 4. 캡쳐한 화면을 node-mailer에서 attachment 옵션으로 보내기 ✔︎
