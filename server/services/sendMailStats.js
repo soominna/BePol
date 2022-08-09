@@ -6,7 +6,7 @@ import fs from "fs";
 import dotenv from "dotenv";
 dotenv.config();
 
-const { sendEmailUser } = process.env;
+const { sendEmailUser, PORT, captureStatsClient } = process.env;
 
 export const sendMailStats = async () => {
   /**
@@ -44,17 +44,21 @@ export const sendMailStats = async () => {
       }
     );
     for (let post of postsList) {
-      const { agrees, disagrees, createdAt } = post;
-      const voteSum = agrees + disagrees;
+      const { createdAt } = post;
       const date = new Date(createdAt);
       const year = date.getFullYear();
       const month = date.getMonth();
       const day = date.getDate();
 
       const afterOneMonth = new Date(year, month + 1, day);
+      const oneDayBeforeEnd = new Date(year, month + 1, day - 1);
 
-      if (voteSum >= 30 && afterOneMonth.getTime() > new Date().getTime()) {
-        // 투표수가 30표가 넘으면서 마감되지 않은 발의문만 filtering함
+      if (
+        oneDayBeforeEnd.toLocaleDateString() ===
+          new Date().toLocaleDateString() &&
+        afterOneMonth.getTime() > new Date().getTime()
+      ) {
+        // 마감되지 않은 발의문 중 마감 하루 남은 발의문 리스트 filtering
         thirtyPercentOverPosts.push(post);
       }
     }
@@ -90,7 +94,7 @@ export const sendMailStats = async () => {
               .then(async () => {
                 transport.sendMail(emailOptions); // updateOne에 오류가 생기지 않을때만 메일이 보내지도록 처리
               })
-              .then(() => {
+              .then(async () => {
                 console.log(
                   `Emails are sent in ${new Date().toLocaleDateString()}`
                 );
@@ -102,7 +106,7 @@ export const sendMailStats = async () => {
             puppeteer.launch().then(async (browser) => {
               return browser.newPage().then(async (page) => {
                 return page
-                  .goto("http://localhost:3000/write")
+                  .goto(`http://localhost${PORT}/${captureStatsClient}`)
                   .then(async () => {
                     await page.screenshot({
                       fullPage: true, // 전체페이지 캡쳐 옵션
@@ -116,7 +120,7 @@ export const sendMailStats = async () => {
                   .then(async () => {
                     transport.sendMail(emailOptions); // updateOne에 오류가 생기지 않을때만 메일이 보내지도록 처리
                   })
-                  .then(() => {
+                  .then(async () => {
                     console.log(
                       `Emails are sent in ${new Date().toLocaleDateString()}`
                     );
