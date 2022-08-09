@@ -12,7 +12,7 @@ export const sendMailStats = async () => {
   /**
    * 기능: 투표 현황 이메일 전송 기능
    * 작성자: 이승연
-   * 📌 발의문 마감일에 투표 현황 리포트 이메일로 전송 (client화면) ✔︎
+   * 📌 발의문 마감 임박일에 투표 현황 리포트 이메일로 전송 (client화면) ✔︎
    * 📌 통계 client부분 완성되면 제대로 연결 🔺
    * 📌 node-mailer로 이메일 전송 기능 구현 ✔︎
    * 📌 node-mailer 파일 첨부 및 Embedded 이미지 구현 ✔︎
