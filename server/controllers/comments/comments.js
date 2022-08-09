@@ -15,8 +15,7 @@ export const postComment = async (req, res) => {
       user.username
     );
     if (newComment) {
-      const { postId, userId, updatedAt, __v, ...commentInfo } =
-        newComment.toObject();
+      const { postId, updatedAt, __v, ...commentInfo } = newComment.toObject();
 
       res.status(201).json({ data: commentInfo });
     } else res.sendStatus(500);
