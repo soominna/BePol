@@ -13,10 +13,11 @@ export const getPostsList = async (req, res, next) => {
    * 📍 search - 검색 ✔︎
    * 📍 closed - 마감여부 ✔︎
    * 📍 page - 페이지당 게시물 개수 ✔︎
-   * 📍 최적화 🔺 - 페이징 최적화 ❌
+   *  📌 D-Day 계산 ✔︎
    */
   const { category, sortby, search, closed, page } = req.query;
   let data;
+  let dDayList = [];
   try {
     // 카테고리 제외
     if (closed === "true") {
@@ -38,7 +39,6 @@ export const getPostsList = async (req, res, next) => {
     // 카테고리 검색일 경우
     if (category) {
       const categoryArr = category.split(",");
-      let filteredData;
       if (closed === "true") {
         data = await postRepository.getClosedAllByCategory(
           categoryArr,
@@ -46,23 +46,33 @@ export const getPostsList = async (req, res, next) => {
           sortby,
           page
         );
-        filteredData = data.filter((post) => post !== false);
-      } else if (closed === "false") {
+
+        return res.status(200).json({
+          data: data[0],
+        });
+      } else if (!closed) {
+        // 마감 + 마감x 모두 포함
         data = await postRepository.getAllByCategory(
           categoryArr,
           search,
           sortby,
           page
         );
-        filteredData = data.filter((post) => post !== false);
+
+        postRepository.getDday(data[0], dDayList);
+
+        return res.status(200).json({
+          data: data[0],
+          dDayList,
+        });
       }
-      return res.status(200).json({
-        data: filteredData[0],
-      });
     }
+
+    postRepository.getDday(data, dDayList);
 
     return res.status(200).json({
       data,
+      dDayList,
     });
   } catch (err) {
     return res.status(500).json({
@@ -78,13 +88,17 @@ export const getThreePopularPostsList = async (req, res, next) => {
    * - 메인페이지 hot3 게시글 기준 →
    * 찬성 반대 비율 차이가 10퍼센트 미만인 글들 중에서 투표수가 많은 기준으로 3개 선정, ✔︎
    * 투표수별 내림차순 나열은 getThreePopularPosts에서 구현 ✔︎
-   * 💡 3개가 안되도 그대로 게시
-   * db에 저장해 놓고 10분마다 업데이트(node-cron 라이브러리)
+   * 💡 3개가 안되도 그대로 게시 ✔︎
+   * db에 저장해 놓고 10분마다 업데이트(node-cron 라이브러리) ✔︎
+   * 📌 D-Day 계산 ✔︎
    */
 
   // 매일 밤 11시 59분에 업데이트
   try {
-    const data = await postRepsitory.getThreePopularPosts();
+    let dDayList = [];
+    const data = await postRepository.getThreePopularPosts();
+
+    postRepository.getDday(data, dDayList); // D-Day 계산
 
     if (!data) {
       return res.status(404).json({
@@ -92,7 +106,9 @@ export const getThreePopularPostsList = async (req, res, next) => {
       });
     } else {
       return res.status(200).json({
+        // 해당 발의문의 postId와 D-DAY 값이 넘어옴 (dDayList)
         data,
+        dDayList,
       });
     }
   } catch (err) {
