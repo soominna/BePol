@@ -1,18 +1,22 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import ApexCharts from "react-apexcharts";
+import { useSelector, useDispatch } from "react-redux";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import Swal from "sweetalert2";
+import { showStatisticsModal } from "../reducers/modalSlice";
 import Comment from "../components/Comment";
-import Chart from "../components/BarGraph";
+import Chart from "../components/BarGraphModal";
 import { Body, ButtonField } from "./WriteStyled";
 import {
   Title,
   Info,
-  ResultFiled,
+  ResultField,
   ProsAndCons,
-  ContentsFiled,
+  VoteField,
+  Vote,
+  ContentsField,
   Contents,
   AttachedField,
   AttachedFile,
@@ -25,10 +29,14 @@ import {
 export default function Detail() {
   const { postId } = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const userInfo = useSelector((state) => state.user.userInfo);
   const accessToken = useSelector((state) => state.login.accessToken);
   const isLogin = useSelector((state) => state.login.isLogin);
+  const isStatisticsModal = useSelector((state) => state.modal.statisticsModal);
   const [postInfo, setPostInfo] = useState(null);
+  const [statistic, setStatistic] = useState([]);
+  const [agree, isAgree] = useState(undefined);
   const [comment, setComment] = useState("");
   const [sortBy, setSortBy] = useState("recent");
   const [commentList, setCommentList] = useState([]);
@@ -36,10 +44,18 @@ export default function Detail() {
   const [endUpdate, isEndUpdate] = useState(false);
   const [page, setPage] = useState(1);
 
+  const config = {
+    headers: {
+      "access-token": accessToken,
+    },
+  };
   // 삭제하기 버튼 클릭 함수
   const handleRemoveButton = () => {
     axios
-      .delete(`${process.env.REACT_APP_API_URI}/posts/62f246602d115f4e6e41903b`)
+      .delete(
+        `${process.env.REACT_APP_API_URI}/posts/62f246602d115f4e6e41903b`,
+        config
+      )
       .then((result) => {
         Swal.fire({
           title: "법안을 삭제하시겠습니까?",
@@ -76,6 +92,70 @@ export default function Detail() {
     return `${date.slice(0, 10)} ~ ${dateFormat}`;
   };
 
+  // 투표 상세 결과보기 를 클릭햇을 때 함수
+  const showDetailResult = () => {
+    dispatch(showStatisticsModal(true));
+  };
+
+  // 투표 했을 때 함수
+  const handleVote = (vote) => {
+    // vote(true, false) agree(true, false, undefined)
+    // true              true             투표 취소
+    // false             false            투표 취소
+    // true              undefined        찬성투표
+    // false             undefined        반대투표
+    // true              false            찬성투표
+    // false             true             반대투표
+    //! agree에서 false 와 undefined 구별해주기
+    console.log(isLogin, vote, agree);
+    const data = {
+      agree: vote,
+    };
+    if (isLogin) {
+      Swal.fire({
+        position: "center",
+        icon: "warning",
+        title: "로그인이 필요한 작업입니다.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    } else if ((vote && agree) || (vote === false && agree === false)) {
+      axios
+        .put(
+          `${process.env.REACT_APP_API_URI}/posts/vote/62f246602d115f4e6e41903b`,
+          config
+        )
+        .then((result) => {
+          isAgree("none");
+        });
+    } else if (vote && agree === undefined) {
+      axios
+        .post(
+          `${process.env.REACT_APP_API_URI}/posts/vote/62f246602d115f4e6e41903b`,
+          data,
+          config
+        )
+        .then((result) => {
+          console.log(result.data.agree);
+          isAgree(result.data.agree);
+        });
+    } else if (!vote && agree === undefined) {
+      axios
+        .post(
+          `${process.env.REACT_APP_API_URI}/posts/vote/62f246602d115f4e6e41903b`,
+          data,
+          config
+        )
+        .then((result) => {
+          console.log(result.data.agree);
+          isAgree(result.data.agree);
+        });
+      //TODO: 결과를 바꿔서 투표하는 경우 처리
+    } else if (vote && agree === false) {
+    } else if (!vote && agree) {
+    }
+  };
+
   // 첨부파일 다운로드받는 함수
   const handleDownloadFile = (idx) => {
     axios
@@ -97,23 +177,19 @@ export default function Detail() {
 
   // 댓글작성 버튼 눌렀을 때 함수
   const handleCreateComment = () => {
-    if (!isLogin) {
-      Swal.fire({
-        position: "center",
-        icon: "warning",
-        title: "로그인이 필요한 작업입니다.",
-        showConfirmButton: false,
-        timer: 1500,
-      });
-    } else if (comment.length) {
+    // if (!isLogin) {
+    //   Swal.fire({
+    //     position: "center",
+    //     icon: "warning",
+    //     title: "로그인이 필요한 작업입니다.",
+    //     showConfirmButton: false,
+    //     timer: 1500,
+    //   });
+    // } else
+    if (comment.length) {
       setComment("");
       const data = {
         commentContent: comment,
-      };
-      const config = {
-        headers: {
-          "access-token": accessToken,
-        },
       };
       axios
         .post(
@@ -142,23 +218,34 @@ export default function Detail() {
         `${process.env.REACT_APP_API_URI}/comments/62f246602d115f4e6e41903b?sortby=${sortBy}&page=${page}`
       )
       .then((result) => {
-        // setTimeout(() => {
-        if (!result.data.data.length) {
-          isEndUpdate(true);
-        } else {
-          setCommentList([...commentList, ...result.data.data]);
-          setPage((preState) => preState + 1);
-          isUpdate(false);
-        }
-        // }, 3000);
+        setTimeout(() => {
+          if (!result.data.data.length) {
+            isEndUpdate(true);
+          } else {
+            setCommentList([...commentList, ...result.data.data]);
+            setPage((preState) => preState + 1);
+            isUpdate(false);
+          }
+        }, 2000);
       });
   };
 
-  // 페이지 이동시 처음 post 정보 가져오기
+  // 페이지 이동시 처음 post와 통계 정보 가져오기
   useEffect(() => {
+    window.onbeforeunload = function pushRefresh() {
+      window.scrollTo(0, 0);
+    };
     axios
       .get(`${process.env.REACT_APP_API_URI}/posts/62f246602d115f4e6e41903b`)
-      .then((result) => setPostInfo(result.data));
+      .then((result) => {
+        setPostInfo(result.data);
+        // isAgree(result.data.answer);
+      });
+    axios
+      .get(
+        `${process.env.REACT_APP_API_URI}/posts/record/62f246602d115f4e6e41903b`
+      )
+      .then((result) => console.log(result.data.data));
   }, []);
 
   // 댓글 정보 불러오기
@@ -204,15 +291,17 @@ export default function Detail() {
             </div>
             <span>{AfterOneMonth(postInfo.createdAt)}</span>
           </Info>
-          <ResultFiled>
-            <div className={"detailResult"}>투표 상세 결과보기</div>
+          <ResultField>
+            <div className={"detailResult"} onClick={showDetailResult}>
+              투표 상세 결과보기
+            </div>
             <div className={"propsAndCons"}>
               <ProsAndCons
                 background={"#FB7777"}
                 flex={postInfo.agrees / (postInfo.agrees + postInfo.disagrees)}
                 textAlign={"left"}
               >
-                {postInfo.agrees}
+                <div className={"pros"}>{postInfo.agrees}</div>
               </ProsAndCons>
               <ProsAndCons
                 background={"#A5A5A5"}
@@ -221,11 +310,29 @@ export default function Detail() {
                 }
                 textAlign={"right"}
               >
-                {postInfo.disagrees}
+                <div className={"cons"}>{postInfo.disagrees}</div>
               </ProsAndCons>
             </div>
-          </ResultFiled>
-          <ContentsFiled>
+          </ResultField>
+          <VoteField>
+            <Vote onClick={() => handleVote(true)}>
+              <div>찬 성</div>
+              {agree ? (
+                <img src={"images/vote.png"} alt={"투표마크"}></img>
+              ) : (
+                <div></div>
+              )}
+            </Vote>
+            <Vote onClick={() => handleVote(false)}>
+              <div>반 대</div>
+              {agree === false ? (
+                <img src={"images/vote.png"} alt={"투표마크"}></img>
+              ) : (
+                <div></div>
+              )}
+            </Vote>
+          </VoteField>
+          <ContentsField>
             <Contents>
               <div>법안 발의 취지</div>
               <div className={"purport"}>{postInfo.purport}</div>
@@ -247,7 +354,7 @@ export default function Detail() {
             <ButtonField>
               <div onClick={() => navigate("/")}>목록보기</div>
             </ButtonField>
-          </ContentsFiled>
+          </ContentsField>
           <InputField>
             <textarea
               value={comment}
@@ -295,9 +402,18 @@ export default function Detail() {
                 setCommentList={setCommentList}
               ></Comment>
             ))}
+            {/* TODO: 추가적인 댓글 불러온다는 것을 나타내기 */}
+            {update && !endUpdate ? (
+              <div className={"loading"}>
+                <FontAwesomeIcon
+                  icon={faSpinner}
+                  size={"3x"}
+                  spin
+                ></FontAwesomeIcon>
+              </div>
+            ) : null}
           </CommentsField>
-          {/* TODO: 추가적인 댓글 불러온다는 것을 나타내기 */}
-          <Chart></Chart>
+          {/* <Chart></Chart> */}
         </Body>
       ) : (
         //TODO: 로딩페이지 대체에정

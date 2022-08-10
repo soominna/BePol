@@ -1,5 +1,5 @@
 import ApexCharts from "react-apexcharts";
-
+//TODO: 통계 그래프 모달 완성하기
 export default function Chart() {
   return (
     <div>

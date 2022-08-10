@@ -122,51 +122,54 @@ export default function Comment({ comment, idx, commentList, setCommentList }) {
           <ProsAndCons background={"red"}></ProsAndCons>
           <div>{comment.username}</div>
         </Writer>
-        {/* {userInfo.id === comment.userId ? ( */}
-        {!modify ? (
-          <CommentButton>
-            <ModifyAndDelete onClick={() => isModify(true)}>
-              수정
-            </ModifyAndDelete>
-            <span> | </span>
-            <ModifyAndDelete onClick={handleRemoveComment}>
-              삭제
-            </ModifyAndDelete>
-          </CommentButton>
-        ) : (
-          <CommentButton>
-            <CancleAndCheck
-              background={"#474747"}
-              cursor={"pointer"}
-              onClick={() => {
-                isModify(false);
-              }}
-            >
-              취소
-            </CancleAndCheck>
-            <span> | </span>
-            <CancleAndCheck
-              background={
-                !modifiedComment.length || modifiedComment === comment.contents
-                  ? "#A5A5A5"
-                  : "#474747"
-              }
-              cursor={
-                !modifiedComment.length || modifiedComment === comment.contents
-                  ? "default"
-                  : "pointer"
-              }
-              onClick={
-                !modifiedComment.length || modifiedComment === comment.contents
-                  ? null
-                  : handleModifyComment
-              }
-            >
-              확인
-            </CancleAndCheck>
-          </CommentButton>
-        )}
-        {/* ) : null} */}
+        {userInfo.id === comment.userId ? (
+          !modify ? (
+            <CommentButton>
+              <ModifyAndDelete onClick={() => isModify(true)}>
+                수정
+              </ModifyAndDelete>
+              <span> | </span>
+              <ModifyAndDelete onClick={handleRemoveComment}>
+                삭제
+              </ModifyAndDelete>
+            </CommentButton>
+          ) : (
+            <CommentButton>
+              <CancleAndCheck
+                background={"#474747"}
+                cursor={"pointer"}
+                onClick={() => {
+                  isModify(false);
+                }}
+              >
+                취소
+              </CancleAndCheck>
+              <span> | </span>
+              <CancleAndCheck
+                background={
+                  !modifiedComment.length ||
+                  modifiedComment === comment.contents
+                    ? "#A5A5A5"
+                    : "#474747"
+                }
+                cursor={
+                  !modifiedComment.length ||
+                  modifiedComment === comment.contents
+                    ? "default"
+                    : "pointer"
+                }
+                onClick={
+                  !modifiedComment.length ||
+                  modifiedComment === comment.contents
+                    ? null
+                    : handleModifyComment
+                }
+              >
+                확인
+              </CancleAndCheck>
+            </CommentButton>
+          )
+        ) : null}
       </WriterInfo>
       <Contents>
         {!modify ? (
