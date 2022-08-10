@@ -2,13 +2,16 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import ApexCharts from "react-apexcharts";
 import Swal from "sweetalert2";
 import Comment from "../components/Comment";
+import Chart from "../components/BarGraph";
 import { Body, ButtonField } from "./WriteStyled";
 import {
   Title,
   Info,
   ResultFiled,
+  ProsAndCons,
   ContentsFiled,
   Contents,
   AttachedField,
@@ -24,6 +27,7 @@ export default function Detail() {
   const navigate = useNavigate();
   const userInfo = useSelector((state) => state.user.userInfo);
   const accessToken = useSelector((state) => state.login.accessToken);
+  const isLogin = useSelector((state) => state.login.isLogin);
   const [postInfo, setPostInfo] = useState(null);
   const [comment, setComment] = useState("");
   const [sortBy, setSortBy] = useState("recent");
@@ -93,7 +97,15 @@ export default function Detail() {
 
   // 댓글작성 버튼 눌렀을 때 함수
   const handleCreateComment = () => {
-    if (comment.length) {
+    if (!isLogin) {
+      Swal.fire({
+        position: "center",
+        icon: "warning",
+        title: "로그인이 필요한 작업입니다.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    } else if (comment.length) {
       setComment("");
       const data = {
         commentContent: comment,
@@ -193,7 +205,25 @@ export default function Detail() {
             <span>{AfterOneMonth(postInfo.createdAt)}</span>
           </Info>
           <ResultFiled>
-            <span>투표 상세 결과보기</span>
+            <div className={"detailResult"}>투표 상세 결과보기</div>
+            <div className={"propsAndCons"}>
+              <ProsAndCons
+                background={"#FB7777"}
+                flex={postInfo.agrees / (postInfo.agrees + postInfo.disagrees)}
+                textAlign={"left"}
+              >
+                {postInfo.agrees}
+              </ProsAndCons>
+              <ProsAndCons
+                background={"#A5A5A5"}
+                flex={
+                  postInfo.disagrees / (postInfo.agrees + postInfo.disagrees)
+                }
+                textAlign={"right"}
+              >
+                {postInfo.disagrees}
+              </ProsAndCons>
+            </div>
           </ResultFiled>
           <ContentsFiled>
             <Contents>
@@ -267,6 +297,7 @@ export default function Detail() {
             ))}
           </CommentsField>
           {/* TODO: 추가적인 댓글 불러온다는 것을 나타내기 */}
+          <Chart></Chart>
         </Body>
       ) : (
         //TODO: 로딩페이지 대체에정

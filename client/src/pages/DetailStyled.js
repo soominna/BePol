@@ -42,11 +42,27 @@ export const Info = styled.div`
 export const ResultFiled = styled.div`
   border: 1px solid red;
   height: 200px;
-  span {
+  .detailResult {
     margin: auto;
     text-decoration: underline;
     background: red;
+    cursor: pointer;
   }
+  .propsAndCons {
+    border: 1px solid green;
+    display: flex;
+    height: 80px;
+  }
+`;
+
+export const ProsAndCons = styled.div`
+  height: 100%;
+  font-size: 30px;
+  font-weight: bold;
+  color: #ffffff;
+  background: ${(props) => props.background};
+  flex: ${(props) => props.flex};
+  text-align: ${(props) => props.textAlign};
 `;
 
 export const ContentsFiled = styled.div`

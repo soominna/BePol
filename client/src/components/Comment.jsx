@@ -114,7 +114,7 @@ export default function Comment({ comment, idx, commentList, setCommentList }) {
       textareaRef.current.value = comment.contents;
     }
   }, [modify]);
-  console.log(commentList);
+
   return (
     <Container>
       <WriterInfo>
