@@ -11,21 +11,28 @@ import {
 
 export default function TopCard({ info }) {
   const navigate = useNavigate();
+  const maxWord = 75;
 
   const handleGetCardId = (e) => {
     navigate("/detail", { state: { postId: e.currentTarget.id } });
   };
   const sliceTitleStr = (str) => {
-    return str.slice(0, 75);
+    return str.slice(0, maxWord);
   };
   return (
     <>
       <TopCardSection>
         <Card id={info.id} onClick={(e) => handleGetCardId(e)}>
-          {/* D-day 정보 받아오면 사용 */}
-          {/* <CardDay>{info.date}</CardDay> */}
-          <CardDay>D-10</CardDay>
-          {info.title.length > 75 ? (
+          {info.dDay <= 3 ? (
+            info.dDay === 0 ? (
+              <CardDay imminent="high">D-Day</CardDay>
+            ) : (
+              <CardDay imminent="high">D-{info.dDay}</CardDay>
+            )
+          ) : (
+            <CardDay imminent="low">D-{info.dDay}</CardDay>
+          )}
+          {info.title.length > maxWord ? (
             <CardTitle>
               <h3>{sliceTitleStr(info.title)}... </h3>
             </CardTitle>

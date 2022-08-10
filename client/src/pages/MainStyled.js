@@ -8,8 +8,6 @@ export const MainSection = styled.div`
   /* top: 5rem;
   left: -0.01rem; */
 `;
-
-//flex에 따라, grid에 따라 if문 걸어서 따로 쓸 수 있는지 문법 확인
 export const Section = styled.section`
   width: 100%;
   padding: 1rem 0;
@@ -22,9 +20,27 @@ export const Section = styled.section`
   }
   ${(props) => {
     if (props.display === "grid") {
-      //grid일 때 적용할 스타일
+      //grid일때
+      if (props.list) {
+        return css`
+          grid-template-columns: 1fr 1fr 1fr;
+          grid-auto-rows: minmax(22rem, auto);
+          & > h2 {
+            margin: 0 0.2rem;
+            font-size: 2rem;
+            font-weight: 700;
+          }
+          & > h3 {
+            margin: 3rem;
+            padding: 5rem;
+            background-color: #f5f5f5;
+            border-radius: 20px;
+            font-size: 1.5rem;
+            text-align: center;
+          }
+        `;
+      }
       return css`
-        /* margin: 0 2rem; */
         & > h2 {
           margin: 0 0.2rem;
           font-size: 2rem;
@@ -48,10 +64,17 @@ export const Section = styled.section`
     } else {
       //flex일 때
       return css`
-        margin: 0 2rem;
+        margin: 1rem 2rem;
         flex-direction: row;
         justify-content: flex-start;
-        color: pink;
+        & > h2 {
+          margin: 0 0.2rem;
+          font-size: 2rem;
+          font-weight: 700;
+        }
+        & > img {
+          margin: 0;
+        }
       `;
     }
   }}

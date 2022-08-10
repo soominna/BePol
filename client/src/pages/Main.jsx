@@ -6,13 +6,13 @@ import TopCard from "../components/TopCard";
 import Category from "../components/Category";
 import ListCard from "../components/ListCard";
 import { MainSection, Section, Text, SearchCategory } from "./MainStyled.js";
-import { topCardDummyData } from "../dummyData.js";
+import { topCardDummyData, listCardDummyData } from "../dummyData.js";
 
 export default function Main() {
   /*
    * 기능: 메인 페이지
    * 작성자: 송혜원
-   * 📌 Top3 게시글 보이기
+   * 📌 Top3 게시글 보이기 ✔︎
    * 📌 write 페이지와 연결 ✔︎
    * 📌 카테고리별 게시글 보이기
    * 📌 검색 및 정렬방식 선택
@@ -89,8 +89,15 @@ export default function Main() {
             ))}
           </SearchCategory>
         </Section>
-        <Section display="grid">
-          <ListCard />
+        <Section display="grid" list>
+          {listCardDummyData ? (
+            listCardDummyData.map((el, idx) => <ListCard key={idx} info={el} />)
+          ) : (
+            <h3>
+              아직 등록된 게시글이 없어요 🧐 <br />
+              모의 법안에 적극적으로 참여해보세요!
+            </h3>
+          )}
         </Section>
       </MainSection>
     </>

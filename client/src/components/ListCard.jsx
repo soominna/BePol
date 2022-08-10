@@ -1,7 +1,69 @@
-export default function ListCard() {
+import { useNavigate } from "react-router-dom";
+import {
+  ListCardSection,
+  Card,
+  CardDay,
+  CardDetail,
+  CardTitle,
+  CardButton,
+  CardIcon,
+} from "./ListStyled";
+
+export default function ListCard({ info }) {
+  const navigate = useNavigate();
+  const maxWord = 50;
+
+  const handleGetCardId = (e) => {
+    navigate("/detail", { state: { postId: e.currentTarget.id } });
+  };
+  const sliceTitleStr = (str) => {
+    return str.slice(0, maxWord);
+  };
   return (
     <>
-      <div>ListCards</div>
+      <ListCardSection>
+        <Card id={info.id} onClick={(e) => handleGetCardId(e)}>
+          {/* D-day 정보 받아오면 사용 */}
+          {info.dDay <= 3 ? (
+            info.dDay === 0 ? (
+              <CardDay imminent="high">D-Day</CardDay>
+            ) : (
+              <CardDay imminent="high">D-{info.dDay}</CardDay>
+            )
+          ) : (
+            <CardDay imminent="low">D-{info.dDay}</CardDay>
+          )}
+          {info.title.length > maxWord ? (
+            <CardTitle>
+              <h3>{sliceTitleStr(info.title)}... </h3>
+            </CardTitle>
+          ) : (
+            <CardTitle>
+              <h3>{info.title}</h3>
+            </CardTitle>
+          )}
+          <CardDetail>
+            <CardButton>
+              <CardIcon>
+                <img src="/images/likesIcon.png" alt="likes Icon" />
+              </CardIcon>
+              <p>{info.agrees}</p>
+            </CardButton>
+            <CardButton>
+              <CardIcon>
+                <img src="/images/dislikesIcon.png" alt="dislikes Icon" />
+              </CardIcon>
+              <p>{info.disagrees}</p>
+            </CardButton>
+            <CardButton>
+              <CardIcon>
+                <img src="/images/commentsCntIcon.png" alt="comments Icon" />
+              </CardIcon>
+              <p>{info.commentsCount}</p>
+            </CardButton>
+          </CardDetail>
+        </Card>
+      </ListCardSection>
     </>
   );
 }

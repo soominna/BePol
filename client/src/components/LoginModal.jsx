@@ -17,7 +17,7 @@ import {
   Ages,
   ButtonWrap,
   LoginButton,
-} from "./ModalStyled";
+} from "./LoginModalStyled";
 
 export default function LoginModal() {
   /*
