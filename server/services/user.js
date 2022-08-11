@@ -23,9 +23,9 @@ export const findUser = async (code) => {
   }
 };
 
-export const createUser = async (code, username, gender, age) => {
+export const createUser = async (code, username, gender, age, email) => {
   try {
-    const newUser = await User.create({ code, username, gender, age });
+    const newUser = await User.create({ code, username, gender, age, email });
     return newUser.toObject();
   } catch (err) {
     console.log(err);

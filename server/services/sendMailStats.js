@@ -29,6 +29,7 @@ export const sendMailStats = async () => {
    *
    */
   try {
+    console.log("here, too");
     let thirtyPercentOverPosts = [];
     const postsList = await Post.find(
       {},
@@ -76,8 +77,12 @@ export const sendMailStats = async () => {
             from: sendEmailUser,
             to: email,
             subject: `안녕하세요. BePol입니다.`,
-            html: `${username}님이 작성하신 ${title}에 관한 청원 투표 현황입니다.
+            html: `${username}님이 작성하신 ${title}에 관한 투표가 내일 마감됩니다. 
                 <br><br>
+                <br><br>
+                <a href="http://localhost:3000/detail"> 바로 가기 링크 </a>
+                <br>
+                <br>
                 <img src="cid:stats">
               `,
             attachments: [
@@ -89,7 +94,7 @@ export const sendMailStats = async () => {
             ],
           };
 
-          if (fileName && sendEmailStatus === false) {
+          if (fileName && sendEmailStatus === false && email) {
             Post.updateOne({ _id }, { sendEmailStatus: true })
               .then(async () => {
                 transport.sendMail(emailOptions); // updateOne에 오류가 생기지 않을때만 메일이 보내지도록 처리
@@ -102,11 +107,12 @@ export const sendMailStats = async () => {
               .catch(async (err) => {
                 console.log(err);
               });
-          } else if (!fileName && sendEmailStatus === false) {
+          } else if (!fileName && sendEmailStatus === false && email) {
+            console.log("here");
             puppeteer.launch().then(async (browser) => {
               return browser.newPage().then(async (page) => {
                 return page
-                  .goto(`http://localhost${PORT}/${captureStatsClient}`)
+                  .goto(`http://localhost:3000/${captureStatsClient}`)
                   .then(async () => {
                     await page.screenshot({
                       fullPage: true, // 전체페이지 캡쳐 옵션
