@@ -37,7 +37,7 @@ export default function Login() {
           };
           dispatch(getUserInfo(userData));
           //서버에서 보내준 header의 accessToken 값 dispatch로 login 상태 업데이트
-          dispatch(login(result.headers["access-token"]));
+          dispatch(login(result.headers.authorization));
         }
         // 아직 가입하지 않은 회원 -> 추가 입력 로그인 모달
         else if (result.data.isUser === false) {

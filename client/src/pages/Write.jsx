@@ -179,9 +179,9 @@ export default function Write({ history }) {
           formData.append("purport", purport);
           formData.append("contents", contents);
           const config = {
-            Headers: {
+            headers: {
               "content-type": "multipart/form-data",
-              "access-token": accessToken,
+              "Authorization": accessToken,
             },
           };
           axios
