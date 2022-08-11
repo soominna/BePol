@@ -51,6 +51,7 @@ export default function Category(props) {
       {props.allCategory.map((category, idx) => (
         <CategoryBlock
           id={idx}
+          key={idx}
           onClick={(e) => {
             handleClickedCategory(e);
             handleColorChange(e);

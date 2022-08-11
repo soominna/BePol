@@ -1,8 +1,10 @@
 import axios from "axios";
 import Swal from "sweetalert2";
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import TopCard from "../components/TopCard";
 import Category from "../components/Category";
 import ListCard from "../components/ListCard";
@@ -28,6 +30,10 @@ export default function Main() {
    * 📌 마감된 게시글만 보이기 ✔︎
    * 📌 게시글 카드 무한 스크롤로 보이기
    */
+
+  const [update, isUpdate] = useState(false);
+  const [endUpdate, isEndUpdate] = useState(false);
+  const [page, setPage] = useState(1);
   const navigate = useNavigate();
   const viewList = ["최신순", "마감임박순", "찬성순", "반대순"];
   const allCategory = [
@@ -85,6 +91,7 @@ export default function Main() {
   };
 
   const handlePostInfo = () => {
+    isUpdate(true);
     axios(`${process.env.REACT_APP_API_URI}/posts`, {
       params: {
         category: encodeURIComponent(searchInfo.category),
@@ -95,6 +102,7 @@ export default function Main() {
       },
     }).then((result) => {
       if (result.status === 204) {
+        isEndUpdate(true);
         setPostInfo([]);
       } else {
         let postInfo = result.data.data.map((item, idx) => {
@@ -108,6 +116,7 @@ export default function Main() {
           };
         });
         setPostInfo(postInfo);
+        isUpdate(false);
       }
     });
   };
@@ -134,6 +143,23 @@ export default function Main() {
     handlePopularList();
     handlePostInfo();
   }, [searchInfo.closed, searchInfo.category, searchInfo.sortby]);
+
+  // 스크롤 이벤트 함수
+  const handleScroll = () => {
+    const scrollHeight = document.documentElement.scrollHeight;
+    const scrollTop = document.documentElement.scrollTop;
+    const clientHeight = document.documentElement.clientHeight;
+    if (scrollTop + clientHeight >= scrollHeight && !update && !endUpdate) {
+      handlePostInfo();
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  });
 
   return (
     <>
@@ -219,6 +245,15 @@ export default function Main() {
             </h3>
           </Section>
         )}
+        {update && !endUpdate ? (
+          <div className={"loading"}>
+            <FontAwesomeIcon
+              icon={faSpinner}
+              size={"3x"}
+              spin
+            ></FontAwesomeIcon>
+          </div>
+        ) : null}
       </MainSection>
     </>
   );
