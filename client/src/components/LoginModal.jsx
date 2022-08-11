@@ -69,7 +69,7 @@ export default function LoginModal() {
           };
           //응답 받은 유저 정보 상태로 저장
           dispatch(getUserInfo(data));
-          dispatch(login(result.headers["access-token"]));
+          dispatch(login(result.headers["authorization"]));
           dispatch(showLoginModal(false));
         });
     }
