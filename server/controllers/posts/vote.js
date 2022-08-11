@@ -85,7 +85,10 @@ export const voteDeleteToPost = async (req, res) => {
     const user = verifyToken(req.headers["access-token"].split(" ")[1]);
 
     const userPostAnswer = await postAnswerRepository.findUserAnswer(user.id);
-    const votedUser = await postAnswerRepository.getUserIdAnswered(user.id);
+    const votedUser = await postAnswerRepository.getUserIdAnswered(
+      user.id,
+      postId
+    );
     if (!accesstoken) {
       // user 정보 불일치시 error
       res.status(401).json({
