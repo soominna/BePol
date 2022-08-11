@@ -16,6 +16,7 @@ export const Title = styled.div`
 `;
 
 export const Info = styled.div`
+  margin-bottom: 10px;
   .writer {
     display: flex;
     justify-content: space-between;
@@ -38,12 +39,79 @@ export const Info = styled.div`
   }
 `;
 
-export const ResultFiled = styled.div`
-  border: 1px solid red;
-  height: 200px;
+export const ResultField = styled.div`
+  .detailResult {
+    width: 120px;
+    margin: auto;
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  .propsAndCons {
+    margin-top: 30px;
+    display: flex;
+    height: 80px;
+  }
 `;
 
-export const ContentsFiled = styled.div`
+export const ProsAndCons = styled.div`
+  background: ${(props) => props.background};
+  flex: ${(props) => props.flex};
+  text-align: ${(props) => props.textAlign};
+  position: relative;
+  color: #ffffff;
+  font-size: 25px;
+  font-weight: bold;
+  .pros {
+    position: absolute;
+    top: 35%;
+    left: 20px;
+    z-index: 1;
+  }
+  .cons {
+    position: absolute;
+    top: 30%;
+    right: 20px;
+    z-index: 1;
+  }
+`;
+
+export const VoteField = styled.div`
+  display: flex;
+  justify-content: space-around;
+  width: 500px;
+  margin: 20px auto 0 auto;
+`;
+
+export const Vote = styled.div`
+  border: 1px solid #cdcdcd;
+  font-size: 35px;
+  font-weight: bold;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 200px;
+  cursor: pointer;
+  div {
+    &:first-child {
+      border-right: 1px solid #cdcdcd;
+      text-align: center;
+      width: 130px;
+      padding: 5px 10px 5px 10px;
+    }
+    &:last-child {
+      width: 50px;
+    }
+  }
+  img {
+    width: 40px;
+    height: 40px;
+    padding: 5px;
+  }
+`;
+
+export const ContentsField = styled.div`
   background: #f9f9f9;
   padding: 30px 0 30px 0;
 `;
@@ -135,4 +203,7 @@ export const CommentsField = styled.div`
   width: 90%;
   margin: auto;
   margin-top: 30px;
+  .loading {
+    text-align: center;
+  }
 `;
