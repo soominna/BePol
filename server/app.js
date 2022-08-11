@@ -27,13 +27,14 @@ io.on("connection", (socket) => socketServer(socket, io));
 app.use(express.json());
 app.use(
   cors({
-    exposedHeaders: ["access-token"],
+    exposedHeaders: ["Authorization"],
+    origin: "*",
+    credentials: true,
   })
 );
 
 app.use(helmet());
 app.use(morgan("tiny"));
-
 
 app.use("/posts", postsRouter);
 app.use("/users", userRouter);
