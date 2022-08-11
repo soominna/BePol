@@ -94,7 +94,7 @@ export const sendMailStats = async () => {
             ],
           };
 
-          if (fileName && sendEmailStatus === false) {
+          if (fileName && sendEmailStatus === false && email) {
             Post.updateOne({ _id }, { sendEmailStatus: true })
               .then(async () => {
                 transport.sendMail(emailOptions); // updateOne에 오류가 생기지 않을때만 메일이 보내지도록 처리
@@ -107,7 +107,7 @@ export const sendMailStats = async () => {
               .catch(async (err) => {
                 console.log(err);
               });
-          } else if (!fileName && sendEmailStatus === false) {
+          } else if (!fileName && sendEmailStatus === false && email) {
             console.log("here");
             puppeteer.launch().then(async (browser) => {
               return browser.newPage().then(async (page) => {
