@@ -176,6 +176,8 @@ export const getClosedSearchedTitleBySorting = async (search, sortby, page) => {
 export const getDday = (data, dDayList) => {
   data.forEach((post) => {
     const { _id, createdAt, postId } = post;
+    console.log(post);
+
     const date = new Date(createdAt);
     const year = date.getFullYear();
     const month = date.getMonth();
@@ -183,12 +185,12 @@ export const getDday = (data, dDayList) => {
 
     const dDay = new Date(year, month + 1, day);
     const today = new Date();
-    if (dDay.getTime() > new Date().getTime()) {
-      const diff = Math.floor((dDay - today) / (1000 * 60 * 60 * 24));
-      postId
-        ? dDayList.push({ postId, dDay: diff })
-        : dDayList.push({ postId: _id, dDay: diff });
-    }
+    // if (dDay.getTime() > new Date().getTime()) {
+    const diff = Math.floor((dDay - today) / (1000 * 60 * 60 * 24));
+    postId
+      ? dDayList.push({ postId, dDay: diff })
+      : dDayList.push({ postId: _id, dDay: diff });
+    // }
   });
 };
 

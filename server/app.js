@@ -9,6 +9,9 @@ import postsRouter from "./routes/posts.js";
 import userRouter from "./routes/users.js";
 import commentRouter from "./routes/comments.js";
 import cron from "node-cron";
+import { createServer } from "http";
+import { Server } from "socket.io";
+import { socketServer } from "./controllers/socket.js";
 import fsExtra from "fs-extra";
 import * as sendMailStatusRepository from "./services/sendMailStats.js";
 import * as postRepsitory from "./services/post.js";
@@ -16,10 +19,17 @@ dotenv.config();
 
 const app = express();
 
+const server = createServer(app);
+
+const io = new Server(server);
+io.on("connection", (socket) => socketServer(socket, io));
+
 app.use(express.json());
 app.use(
   cors({
-    exposedHeaders: ["access-token"],
+    exposedHeaders: ["Authorization"],
+    origin: "*",
+    credentials: true,
   })
 );
 
@@ -46,7 +56,7 @@ app.use((err, req, res, next) => {
 const port = config.port || 4000;
 connectDb();
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`SERVER Started on ${port} port`);
 });
 

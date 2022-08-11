@@ -22,7 +22,7 @@ export const voteToPost = async (req, res) => {
     const { agree } = req.body;
     const { accesstoken } = req.headers;
     const { postId } = req.params;
-    const user = verifyToken(req.headers["access-token"].split(" ")[1]);
+    const user = verifyToken(req.headers["authorization"].split(" ")[1]);
 
     const votedUser = await postAnswerRepository.getUserIdAnswered(user.id);
     if (!accesstoken) {
@@ -82,7 +82,7 @@ export const voteDeleteToPost = async (req, res) => {
   try {
     const { accesstoken } = req.headers;
     const { postId } = req.params;
-    const user = verifyToken(req.headers["access-token"].split(" ")[1]);
+    const user = verifyToken(req.headers["authorization"].split(" ")[1]);
 
     const userPostAnswer = await postAnswerRepository.findUserAnswer(user.id);
     const votedUser = await postAnswerRepository.getUserIdAnswered(

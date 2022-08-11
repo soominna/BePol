@@ -17,6 +17,7 @@ import {
   SearchExpireTap,
 } from "./MainStyled.js";
 
+
 export default function Main() {
   /*
    * 기능: 메인 페이지
@@ -146,7 +147,7 @@ export default function Main() {
               아직 인기 게시글이 없어요 🧐 <br />
               모의 법안에 적극적으로 참여해보세요!
             </h3>
-          )}
+          )} */}
         </Section>
         {isLogin ? (
           <Section

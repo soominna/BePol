@@ -7,7 +7,7 @@ export const postComment = async (req, res) => {
    * 작성자: 나수민
    */
   try {
-    const user = verifyToken(req.headers["access-token"].split(" ")[1]);
+    const user = verifyToken(req.headers["authorization"].split(" ")[1]);
     const newComment = await commentRepository.createCommentTransaction(
       req.body.commentContent,
       req.params.postId,
@@ -30,8 +30,8 @@ export const patchComment = async (req, res) => {
    * 기능: 댓글 수정
    * 작성자: 나수민
    */
-  const user = verifyToken(req.headers["access-token"].split(" ")[1]); //access token 해독해서 사용할 예정
   try {
+    const user = verifyToken(req.headers["authorization"].split(" ")[1]); //access token 해독해서 사용할 예정
     const updatedComment = await commentRepository.modifyComment(
       user.id,
       req.params.commentId,
@@ -60,7 +60,7 @@ export const deleteComment = async (req, res) => {
    * 📌 로그인 적용 ❌ (소셜로그인 부분 merge 후 진행할 계획!)
    */
   try {
-    const user = verifyToken(req.headers["access-token"].split(" ")[1]);
+    const user = verifyToken(req.headers["authorization"].split(" ")[1]);
 
     const deletedComment = await commentRepository.deleteCommentTransaction(
       user.id,
@@ -83,7 +83,7 @@ export const getComments = async (req, res) => {
    */
 
   try {
-    const user = verifyToken(req.headers["access-token"].split(" ")[1]); //access token 해독해서 사용할 예정
+    const user = verifyToken(req.headers["authorization"].split(" ")[1]); //access token 해독해서 사용할 예정
 
     const commentList = await commentRepository.getCommentList(
       user.id,
