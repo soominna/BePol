@@ -1,11 +1,21 @@
 import axios from "axios";
 import Swal from "sweetalert2";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import TopCard from "../components/TopCard";
 import Category from "../components/Category";
 import ListCard from "../components/ListCard";
-import { MainSection, Section, Text, SearchCategory } from "./MainStyled.js";
+import {
+  MainSection,
+  Section,
+  Text,
+  SearchCategory,
+  SearchWrap,
+  SearchTab,
+  SearchButton,
+  SearchExpireTap,
+} from "./MainStyled.js";
 import { topCardDummyData, listCardDummyData } from "../dummyData.js";
 
 export default function Main() {
@@ -21,7 +31,24 @@ export default function Main() {
    */
   const navigate = useNavigate();
   const isLogin = useSelector((state) => state.login.isLogin);
+  const [clickedCategory, setCategory] = useState([]);
+  const [searchInfo, setSearchInfo] = useState();
   const viewList = ["최신순", "마감임박순", "찬성순", "반대순"];
+  const allCategory = [
+    { 0: "법률/사법" },
+    { 1: "금융/경제" },
+    { 2: "교육" },
+    { 3: "과학기술/정보통신" },
+    { 4: "외교/통일/국방" },
+    { 5: "행정" },
+    { 6: "문화/예술/관광" },
+    { 7: "농업/식품/수산" },
+    { 8: "국토/교통" },
+    { 9: "산업/통상/기업" },
+    { 10: "보건/복지/식품안전" },
+    { 11: "환경/성평등/청소년/노동" },
+    { 12: "기타" },
+  ];
 
   //로그인 안한 회원에게 알림창 안내
   const handleLoginAlert = () => {
@@ -31,8 +58,12 @@ export default function Main() {
       icon: "warning",
     });
   };
-  const handleSearchInput = () => {};
+  const handleInputValue = (key) => (e) => {
+    // onChange 가 발생할 경우 값을 넣어주는 함수
+    setSearchInfo({ ...searchInfo, [key]: e.target.value });
+  };
 
+  const handleSearch = () => {};
   return (
     <>
       <MainSection>
@@ -73,22 +104,35 @@ export default function Main() {
           <h2>모의법안 둘러보기</h2>
           <img src="/images/binocularsIcon.png" alt="Binoculars Icon" />
         </Section>
+        {/* // ! 카테고리 선택 값 상태 끌어올리기 */}
+        <Category
+          allCategory={allCategory}
+          clickedCategory={clickedCategory}
+          onClick={(clickedItem) => setCategory(clickedItem)}
+        />
+        {console.log(clickedCategory)}
         <Section>
-          <Category />
+          <SearchWrap>
+            <SearchTab
+              type="text"
+              onChange={handleInputValue("search")}
+            ></SearchTab>
+            <SearchCategory onChange={handleInputValue("sortby")}>
+              {viewList.map((el, idx) => (
+                <option key={idx} value={el}>
+                  {el}
+                </option>
+              ))}
+            </SearchCategory>
+            <SearchButton onClick={() => handleSearch()}>검색</SearchButton>
+          </SearchWrap>
         </Section>
-        <Section>
-          {/* Enter로 값 입력받기 */}
-          <input type="text" onChange={handleSearchInput} />
-          {/* 체크박스 필요 */}
-          <p>마감된 법안 같이보기</p>
-          <SearchCategory>
-            {viewList.map((el, idx) => (
-              <option key={idx} value={el}>
-                {el}
-              </option>
-            ))}
-          </SearchCategory>
-        </Section>
+
+        <SearchExpireTap>
+          {"마감된 모의법안"}
+          <input type="checkbox" onChange={handleInputValue("closed")} />
+        </SearchExpireTap>
+
         <Section display="grid" list>
           {listCardDummyData ? (
             listCardDummyData.map((el, idx) => <ListCard key={idx} info={el} />)

@@ -14,7 +14,7 @@ export default function ListCard({ info }) {
   const maxWord = 50;
 
   const handleGetCardId = (e) => {
-    navigate("/detail", { state: { postId: e.currentTarget.id } });
+    navigate(`/detail/${e.currentTarget.id}`);
   };
   const sliceTitleStr = (str) => {
     return str.slice(0, maxWord);
