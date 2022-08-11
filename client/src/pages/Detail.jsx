@@ -333,6 +333,7 @@ export default function Detail() {
   return (
     <>
       {postInfo !== null ? (
+        // {/* {postInfo === null ? ( */}
         <Body>
           <Title>
             {postInfo.category.map((category, idx) => (
@@ -479,8 +480,7 @@ export default function Detail() {
           ) : null}
         </Body>
       ) : (
-        //TODO: 로딩페이지 대체에정
-        <div>로딩화면</div>
+        <Loading />
       )}
     </>
   );
