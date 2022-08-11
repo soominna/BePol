@@ -63,3 +63,14 @@ export const Button = styled.button`
         font-size: 1.6rem;
     } */
 `;
+
+export const Icon = styled.img`
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+`;
+
+export const NotiBox = styled.div`
+  display: flex;
+  margin-left: 1rem;
+`;

@@ -6,6 +6,7 @@ import Main from "./pages/Main.jsx";
 import Write from "./pages/Write.jsx";
 import Header from "./components/Header.jsx";
 import LoginModal from "./components/LoginModal.jsx";
+import SocketContainer from "./components/SocketContainer.jsx";
 
 function App() {
   const isLogin = useSelector((state) => state.login.isLogin);
@@ -14,6 +15,7 @@ function App() {
   return (
     <BrowserRouter>
       <Header />
+      <SocketContainer />
       <Routes>
         <Route path="/" element={<Main />} />
         {/* 카드 클릭했을 때 상세페이지 이동 경로 => useNavigator 사용 */}
@@ -24,7 +26,6 @@ function App() {
         />
 
         <Route path="/detail" element={<Detail />} />
-       
 
         <Route
           path="/login"
