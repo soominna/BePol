@@ -43,18 +43,27 @@
 <br>
 
 
-## 어떤 기술이 사용되었나요?
+## 🕹 어떤 기술이 사용되었나요?
 
-### TECH STACK FLOW
+### 📈 TECH STACK FLOW
 ![image](https://user-images.githubusercontent.com/73332608/184178508-66cc01b3-65c9-4ce2-b2f8-1bb17fb5e5f6.png)
 
 
-## Architecture
-### FRONT-END
+## 🛠 Architecture
+### 🖥 FRONT-END
 ![image](https://user-images.githubusercontent.com/73332608/184191187-0257f3d7-8e7c-4e04-bbe2-db91476b317f.png)
 
-### BACK-END
+### 👾 BACK-END
 ![image](https://user-images.githubusercontent.com/73332608/184178464-82850aa0-cccf-4cb8-881d-70fe34db1304.png)
+
+
+## 📹 주요 페이지
+### 📌 메인페이지
+
+### 📌 투표 페이지
+
+### 📌 통계 페이지
+
 
 
 ### Worklog
