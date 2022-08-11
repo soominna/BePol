@@ -49,7 +49,7 @@ export default function Detail() {
 
   const config = {
     headers: {
-      "access-token": accessToken,
+      Authorization: accessToken,
     },
   };
   // 삭제하기 버튼 클릭 함수
@@ -82,11 +82,11 @@ export default function Detail() {
     const dateFormat =
       plusOneMonth.getFullYear() +
       "-" +
-      (plusOneMonth.getMonth() + 1 < 9
+      (plusOneMonth.getMonth() + 1 <= 9
         ? "0" + (plusOneMonth.getMonth() + 1)
         : plusOneMonth.getMonth() + 1) +
       "-" +
-      (plusOneMonth.getDate() + 1 < 9
+      (plusOneMonth.getDate() <= 9
         ? "0" + plusOneMonth.getDate()
         : plusOneMonth.getDate());
     return `${date.slice(0, 10)} ~ ${dateFormat}`;
@@ -110,7 +110,7 @@ export default function Detail() {
     const data = {
       agree: vote,
     };
-    if (isLogin) {
+    if (!isLogin) {
       Swal.fire({
         position: "center",
         icon: "warning",
@@ -239,7 +239,10 @@ export default function Detail() {
           data,
           config
         )
-        .then((result) => setCommentList([...result.data, ...commentList]));
+        .then((result) => {
+          console.log("등록한 댓글", result.data);
+          setCommentList([result.data.data, ...commentList]);
+        });
     } else {
       Swal.fire({
         position: "center",
@@ -256,10 +259,12 @@ export default function Detail() {
     isUpdate(true);
     axios
       .get(
-        `${process.env.REACT_APP_API_URI}/comments/${postId}?sortby=${sortBy}&page=${page}`
+        `${process.env.REACT_APP_API_URI}/comments/${postId}?sortby=${sortBy}&page=${page}`,
+        config
       )
       .then((result) => {
         setTimeout(() => {
+          console.log("댓글 목록", result.data);
           if (!result.data.data.length) {
             isEndUpdate(true);
           } else {
@@ -273,12 +278,14 @@ export default function Detail() {
 
   // 페이지 이동시 처음 post와 통계 정보 가져오기
   useEffect(() => {
+    window.scrollTo(0, 0);
     window.onbeforeunload = function pushRefresh() {
       window.scrollTo(0, 0);
     };
     axios
-      .get(`${process.env.REACT_APP_API_URI}/posts/${postId}`)
+      .get(`${process.env.REACT_APP_API_URI}/posts/${postId}`, config)
       .then((result) => {
+        console.log("post 정보", result.data);
         setTimeout(() => {
           setPostInfo(result.data);
           isAgree(result.data.answer);
@@ -340,15 +347,27 @@ export default function Detail() {
             </div>
             <div className={"propsAndCons"}>
               <ProsAndCons
-                background={"#FB7777"}
-                flex={agreeCount / (agreeCount + disagreeCount)}
+                background={
+                  agreeCount + disagreeCount === 0 ? "#414144" : "#FB7777"
+                }
+                flex={
+                  agreeCount + disagreeCount === 0
+                    ? 1
+                    : agreeCount / (agreeCount + disagreeCount)
+                }
                 textAlign={"left"}
               >
                 <div className={"pros"}>{agreeCount}</div>
               </ProsAndCons>
               <ProsAndCons
-                background={"#A5A5A5"}
-                flex={disagreeCount / (agreeCount + disagreeCount)}
+                background={
+                  agreeCount + disagreeCount === 0 ? "#414144" : "#A5A5A5"
+                }
+                flex={
+                  agreeCount + disagreeCount === 0
+                    ? 1
+                    : disagreeCount / (agreeCount + disagreeCount)
+                }
                 textAlign={"right"}
               >
                 <div className={"cons"}>{disagreeCount}</div>
@@ -359,7 +378,7 @@ export default function Detail() {
             <Vote onClick={() => handleVote(true)}>
               <div>찬 성</div>
               {agree ? (
-                <img src={"images/vote.png"} alt={"투표마크"}></img>
+                <img src={"/images/vote.png"} alt={"투표마크"}></img>
               ) : (
                 <div></div>
               )}
@@ -367,7 +386,7 @@ export default function Detail() {
             <Vote onClick={() => handleVote(false)}>
               <div>반 대</div>
               {agree === false ? (
-                <img src={"images/vote.png"} alt={"투표마크"}></img>
+                <img src={"/images/vote.png"} alt={"투표마크"}></img>
               ) : (
                 <div></div>
               )}

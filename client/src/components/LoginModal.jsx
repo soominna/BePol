@@ -62,14 +62,16 @@ export default function LoginModal() {
         })
         .then((result) => {
           let data = {
-            userInfo: {
-              id: result.data.data.id,
-              username: result.data.data.username,
-            },
+            // userInfo: {
+            //   id: result.data.data.id,
+            //   username: result.data.data.username,
+            // },
+            id: result.data.data.id,
+            username: result.data.data.username,
           };
           //응답 받은 유저 정보 상태로 저장
           dispatch(getUserInfo(data));
-          dispatch(login(result.headers["access-token"]));
+          dispatch(login(result.headers.authorization));
           dispatch(showLoginModal(false));
         });
     }

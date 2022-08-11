@@ -58,7 +58,7 @@ export default function TopCard({ info }) {
               <CardIcon>
                 <img src="/images/commentsCntIcon.png" alt="comments Icon" />
               </CardIcon>
-              <p>{info.commentsCount}</p>
+              <p>{info.comments}</p>
             </CardButton>
           </CardDetail>
         </Card>

@@ -1,6 +1,6 @@
 import axios from "axios";
 import Swal from "sweetalert2";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import TopCard from "../components/TopCard";
@@ -17,7 +17,6 @@ import {
   SearchExpireTap,
 } from "./MainStyled.js";
 
-
 export default function Main() {
   /*
    * 기능: 메인 페이지
@@ -25,25 +24,25 @@ export default function Main() {
    * 📌 Top3 게시글 보이기 ✔︎
    * 📌 write 페이지와 연결 ✔︎
    * 📌 카테고리별 게시글 보이기 ✔︎
-   * 📌 검색 및 정렬방식 선택
-   * 📌 마감된 게시글 포함해서 보이기
+   * 📌 검색 및 정렬방식 선택 ✔︎
+   * 📌 마감된 게시글만 보이기 ✔︎
    * 📌 게시글 카드 무한 스크롤로 보이기
    */
   const navigate = useNavigate();
   const viewList = ["최신순", "마감임박순", "찬성순", "반대순"];
   const allCategory = [
-    { 0: "법률/사법" },
-    { 1: "금융/경제" },
+    { 0: "법률 사법" },
+    { 1: "금융 경제" },
     { 2: "교육" },
-    { 3: "과학기술/정보통신" },
-    { 4: "외교/통일/국방" },
+    { 3: "과학기술 정보통신" },
+    { 4: "외교 통일 국방" },
     { 5: "행정" },
-    { 6: "문화/예술/관광" },
-    { 7: "농업/식품/수산" },
-    { 8: "국토/교통" },
-    { 9: "산업/통상/기업" },
-    { 10: "보건/복지/식품안전" },
-    { 11: "환경/성평등/청소년/노동" },
+    { 6: "문화 예술 관광" },
+    { 7: "농업 식품 수산" },
+    { 8: "국토 교통" },
+    { 9: "산업 통상 기업" },
+    { 10: "보건 복지 식품안전" },
+    { 11: "환경 성평등 청소년 노동" },
     { 12: "기타" },
   ];
   const isLogin = useSelector((state) => state.login.isLogin);
@@ -54,7 +53,7 @@ export default function Main() {
     search: "",
     sortby: viewList[0],
     closed: false,
-    category: allCategory[clickedCategory][clickedCategory],
+    category: "",
     page: 1,
   });
 
@@ -81,7 +80,6 @@ export default function Main() {
             dDay: result.data.dDayList[idx].dDay,
           };
         });
-        console.log(popularPostInfo);
         setPopularList(popularPostInfo);
       });
   };
@@ -90,14 +88,13 @@ export default function Main() {
     axios(`${process.env.REACT_APP_API_URI}/posts`, {
       params: {
         category: encodeURIComponent(searchInfo.category),
-        sortby: encodeURIComponent(searchInfo.sortby),
+        sortby: searchInfo.sortby,
         search: searchInfo.search,
         closed: searchInfo.closed,
         page: searchInfo.page,
       },
     }).then((result) => {
       if (result.status === 204) {
-        console.log(result);
         setPostInfo([]);
       } else {
         let postInfo = result.data.data.map((item, idx) => {
@@ -110,7 +107,6 @@ export default function Main() {
             dDay: result.data.dDayList[idx].dDay,
           };
         });
-        console.log(postInfo);
         setPostInfo(postInfo);
       }
     });
@@ -124,16 +120,20 @@ export default function Main() {
     setSearchInfo({ ...searchInfo, [key]: e.target.checked });
   };
   const handleCategoryValue = (key) => (input) => {
-    setSearchInfo({
-      ...searchInfo,
-      [key]: allCategory[input][input],
-    });
+    if (input.length > 0) {
+      setSearchInfo({
+        ...searchInfo,
+        [key]: allCategory[input][input],
+      });
+    } else {
+      setSearchInfo({ ...searchInfo, [key]: "" });
+    }
   };
 
   useEffect(() => {
     handlePopularList();
     handlePostInfo();
-  }, [searchInfo.closed, searchInfo.category]);
+  }, [searchInfo.closed, searchInfo.category, searchInfo.sortby]);
 
   return (
     <>
@@ -147,7 +147,7 @@ export default function Main() {
               아직 인기 게시글이 없어요 🧐 <br />
               모의 법안에 적극적으로 참여해보세요!
             </h3>
-          )} */}
+          )}
         </Section>
         {isLogin ? (
           <Section
@@ -178,6 +178,7 @@ export default function Main() {
         {/* // ! 카테고리 선택 값 상태 끌어올리기 */}
         <Category
           allCategory={allCategory}
+          clickedCategory={clickedCategory}
           onClick={(clickedItem) => {
             setCategory(clickedItem);
             handleCategoryValue("category")(clickedItem);
@@ -204,7 +205,6 @@ export default function Main() {
           {"마감된 모의법안"}
           <input type="checkbox" onChange={handleCheckedValue("closed")} />
         </SearchExpireTap>
-        {console.log(posts.length)}
         {posts.length > 0 ? (
           <Section display="grid" list>
             {posts.map((el, idx) => (

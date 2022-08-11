@@ -16,8 +16,10 @@ export const getPostsList = async (req, res, next) => {
    *  📌 D-Day 계산 ✔︎
    */
   let { category, sortby, search, closed, page } = req.query;
-  sortby = decodeURIComponent(sortby);
   category = decodeURIComponent(category);
+  // search = decodeURIComponent(search);
+  console.log(search);
+
   let data;
   let dDayList = [];
   try {
@@ -65,7 +67,6 @@ export const getPostsList = async (req, res, next) => {
           sortby,
           page
         );
-
 
         if (data.length === 0) {
           return res.sendStatus(204);
@@ -189,12 +190,14 @@ export const getPost = async (req, res) => {
   try {
     const post = await postRepository.getPost(req.params.postId);
     const { __v, updatedAt, userId, comments, ...postInfo } = post.toObject();
+
     if (req.headers["authorization"]) {
       const user = verifyToken(req.headers["authorization"].split(" ")[1]);
       const answer = await postRepository.getPostAnswer(
-        user.id,
-        req.params.postId
+        req.params.postId,
+        user.id
       );
+
       if (answer !== undefined) {
         postInfo.answer = answer;
       }
