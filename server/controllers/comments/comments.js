@@ -8,15 +8,15 @@ export const postComment = async (req, res) => {
    */
   try {
     const user = verifyToken(req.headers["access-token"].split(" ")[1]);
-    const newComment = await commentRepository.createComment(
+    const newComment = await commentRepository.createCommentTransaction(
       req.body.commentContent,
       req.params.postId,
       user.id,
       user.username
     );
+
     if (newComment) {
-      const { postId, userId, updatedAt, __v, ...commentInfo } =
-        newComment.toObject();
+      const { postId, updatedAt, __v, ...commentInfo } = newComment.toObject();
 
       res.status(201).json({ data: commentInfo });
     } else res.sendStatus(500);
@@ -62,7 +62,7 @@ export const deleteComment = async (req, res) => {
   try {
     const user = verifyToken(req.headers["access-token"].split(" ")[1]);
 
-    const deletedComment = await commentRepository.deleteComment(
+    const deletedComment = await commentRepository.deleteCommentTransaction(
       user.id,
       req.params.commentId
     );
