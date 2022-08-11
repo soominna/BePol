@@ -7,15 +7,15 @@ import * as postController from "../controllers/posts/posts.js";
 
 const router = express.Router();
 
-router.post("/", upload, postController.createPost);
+router.post("/", checkAuth, upload, postController.createPost);
 
-router.delete("/:postId", postController.deletePost);
+router.delete("/:postId", checkAuth, postController.deletePost);
 
 router.get("/:postId", postController.getPost);
 
-router.post("/vote/:postId", voteController.voteToPost);
+router.post("/vote/:postId", checkAuth, voteController.voteToPost);
 
-router.delete("/vote/:postId", voteController.voteDeleteToPost);
+router.delete("/vote/:postId", checkAuth, voteController.voteDeleteToPost);
 
 router.get("/record/:postId", recordController.getVoteStatistics);
 
