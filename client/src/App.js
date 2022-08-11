@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-// import Detail from "./pages/Detail.jsx";
+import Detail from "./pages/Detail.jsx";
 import Login from "./pages/Login.jsx";
 import Main from "./pages/Main.jsx";
 import Write from "./pages/Write.jsx";
@@ -23,6 +23,10 @@ function App() {
           path="/write"
           element={isLogin ? <Write /> : <Navigate to="/" />}
         />
+
+        <Route path="/detail" element={<Detail />} />
+       
+
         <Route
           path="/login"
           element={isLogin ? <Navigate to="/" /> : <Login />}

@@ -1,18 +1,39 @@
 import mongoose from "mongoose";
 import Comment from "../models/comment.js";
+import PostAnswer from "../models/postAnswer.js";
+import Post from "../models/post.js";
 import * as commentLikeRepository from "./commentLike.js";
 
-export const createComment = async (contents, postId, userId, username) => {
+export const createCommentTransaction = async (
+  contents,
+  postId,
+  userId,
+  username
+) => {
+  const session = await mongoose.startSession();
   try {
-    const newComment = await Comment.create({
-      contents,
-      postId: mongoose.Types.ObjectId(postId),
-      userId: mongoose.Types.ObjectId(userId),
-      username,
-    });
+    session.startTransaction();
 
-    return newComment;
-  } catch (err) {}
+    const newComment = await Comment.create(
+      [{ contents, postId, userId, username }],
+      { session }
+    );
+
+    await Post.findByIdAndUpdate(
+      postId,
+      { $inc: { comments: 1 } },
+      { session }
+    );
+
+    await session.commitTransaction();
+    session.endSession();
+
+    return newComment[0];
+  } catch (err) {
+    console.log(err);
+    await session.abortTransaction();
+    session.endSession();
+  }
 };
 
 export const modifyComment = async (userId, commentId, contents) => {
@@ -30,21 +51,36 @@ export const modifyComment = async (userId, commentId, contents) => {
   }
 };
 
-export const deleteComment = async (userId, commentId) => {
+export const deleteCommentTransaction = async (userId, commentId) => {
+  const session = await mongoose.startSession();
   try {
-    return await Comment.findOneAndDelete({
-      _id: mongoose.Types.ObjectId(commentId),
-      userId: mongoose.Types.ObjectId(userId),
+    session.startTransaction();
+
+    const deletedComment = await Comment.findOneAndDelete({
+      _id: commentId,
+      userId: userId,
     });
+
+    await Post.findByIdAndUpdate(
+      deletedComment.postId,
+      { $inc: { comments: -1 } },
+      { session }
+    );
+
+    await session.commitTransaction();
+    session.endSession();
+
+    return deletedComment;
   } catch (err) {
-    return null;
+    await session.abortTransaction();
+    session.endSession();
   }
 };
 
 export const getCommentList = async (userId, postId, sortby, page) => {
   try {
     const pageSize = 3;
-    const sortOptions = sortby === "likes" ? { likes: -1 } : { createdAt: 1 };
+    const sortOptions = sortby === "likes" ? { likes: -1 } : { createdAt: -1 };
     const commentList = await Comment.find({
       postId: mongoose.Types.ObjectId(postId),
     })
@@ -63,7 +99,14 @@ export const getCommentList = async (userId, postId, sortby, page) => {
           comment._id,
           userId
         );
-        return commentLike ? { ...comment.toObject(), isliked: true } : comment;
+        const postAnswer = await PostAnswer.find({
+          id: comment.postId + comment.userId,
+        });
+        return {
+          ...comment.toObject(),
+          isliked: commentLike ? true : false,
+          answer: postAnswer ? postAnswer.answer : undefined,
+        };
       })
     );
   } catch (err) {
