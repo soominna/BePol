@@ -30,7 +30,7 @@ export const login = async (req, res) => {
         method: "post",
         url: "https://kapi.kakao.com/v2/user/me",
         headers: {
-          Authorization: `Bearer ${response.data.access_token}`,
+          authorization: `Bearer ${response.data.access_token}`,
           "Content-type": "application/x-www-form-urlencoded;charset=utf-8",
         },
       });
@@ -44,7 +44,7 @@ export const login = async (req, res) => {
               id: user._id,
               username: user.username,
             });
-            res.header("access-token", `Bearer ${accessToken}`);
+            res.header("authorization", `Bearer ${accessToken}`);
 
             res.json({
               message: "Logged in successfully!",
@@ -78,7 +78,7 @@ export const login = async (req, res) => {
 };
 
 export const logout = (req, res) => {
-  delete req.headers["access-token"];
+  delete req.headers["authorization"];
   res.status(200).json({ message: "Logged out!!" });
 };
 
@@ -97,7 +97,7 @@ export const signup = async (req, res) => {
         id: newUser._id,
         username: newUser.username,
       });
-      res.header("access-token", `Bearer ${accessToken}`);
+      res.header("authorization", `Bearer ${accessToken}`);
       res.json({
         message: "Account created",
         data: {
