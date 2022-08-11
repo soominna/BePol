@@ -10,6 +10,7 @@ for (let i = 40; i > 0; i--) {
     postId: mongoose.Types.ObjectId(postId[0]),
     userId: mongoose.Types.ObjectId(userId[i]),
     username: usernames[i],
+    createdAt: new Date(),
   };
   timeSeriesData.push(newDay);
 }
@@ -20,6 +21,7 @@ for (let i = 21; i > 0; i--) {
     postId: mongoose.Types.ObjectId(postId[1]),
     userId: mongoose.Types.ObjectId(userId[i]),
     username: usernames[i],
+    createdAt: new Date(),
   };
   timeSeriesData.push(newDay);
 }
@@ -30,6 +32,7 @@ for (let i = 15; i > 0; i--) {
     postId: mongoose.Types.ObjectId(postId[2]),
     userId: mongoose.Types.ObjectId(userId[i]),
     username: usernames[i],
+    createdAt: new Date(),
   };
   timeSeriesData.push(newDay);
 }
