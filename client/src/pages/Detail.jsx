@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
@@ -56,10 +55,7 @@ export default function Detail() {
   // 삭제하기 버튼 클릭 함수
   const handleRemoveButton = () => {
     axios
-      .delete(
-        `${process.env.REACT_APP_API_URI}/posts/62f246602d115f4e6e41903b`,
-        config
-      )
+      .delete(`${process.env.REACT_APP_API_URI}/posts/${postId}`, config)
       .then((result) => {
         Swal.fire({
           title: "법안을 삭제하시겠습니까?",
@@ -111,7 +107,6 @@ export default function Detail() {
     // true              false            투표 취소 => 찬성투표
     // false             true             투표 취소 => 반대투표
     //! agree에서 false 와 undefined 구별해주기
-    console.log(isLogin, vote, agree);
     const data = {
       agree: vote,
     };
@@ -125,10 +120,7 @@ export default function Detail() {
       });
     } else if (vote && agree) {
       axios
-        .delete(
-          `${process.env.REACT_APP_API_URI}/posts/vote/62f246602d115f4e6e41903b`,
-          config
-        )
+        .delete(`${process.env.REACT_APP_API_URI}/posts/vote/${postId}`, config)
         .then((result) => {
           isAgree(undefined);
           setAgreeCount((preState) => preState - 1);
@@ -136,10 +128,7 @@ export default function Detail() {
         .catch((error) => console.log(error));
     } else if (vote === false && agree === false) {
       axios
-        .delete(
-          `${process.env.REACT_APP_API_URI}/posts/vote/62f246602d115f4e6e41903b`,
-          config
-        )
+        .delete(`${process.env.REACT_APP_API_URI}/posts/vote/${postId}`, config)
         .then((result) => {
           isAgree(undefined);
           setDisagreeCount((preState) => preState - 1);
@@ -148,7 +137,7 @@ export default function Detail() {
     } else if (vote && agree === undefined) {
       axios
         .post(
-          `${process.env.REACT_APP_API_URI}/posts/vote/62f246602d115f4e6e41903b`,
+          `${process.env.REACT_APP_API_URI}/posts/vote/${postId}`,
           data,
           config
         )
@@ -160,7 +149,7 @@ export default function Detail() {
     } else if (!vote && agree === undefined) {
       axios
         .post(
-          `${process.env.REACT_APP_API_URI}/posts/vote/62f246602d115f4e6e41903b`,
+          `${process.env.REACT_APP_API_URI}/posts/vote/${postId}`,
           data,
           config
         )
@@ -169,19 +158,15 @@ export default function Detail() {
           setDisagreeCount((preState) => preState + 1);
         })
         .catch((error) => console.log(error));
-      //TODO: 결과를 바꿔서 투표하는 경우 처리
     } else if (vote && agree === false) {
       axios
-        .delete(
-          `${process.env.REACT_APP_API_URI}/posts/vote/62f246602d115f4e6e41903b`,
-          config
-        )
+        .delete(`${process.env.REACT_APP_API_URI}/posts/vote/${postId}`, config)
         .then((result) => {
           isAgree(undefined);
           setDisagreeCount((preState) => preState - 1);
           axios
             .post(
-              `${process.env.REACT_APP_API_URI}/posts/vote/62f246602d115f4e6e41903b`,
+              `${process.env.REACT_APP_API_URI}/posts/vote/${postId}`,
               data,
               config
             )
@@ -194,16 +179,13 @@ export default function Detail() {
         .catch((error) => console.log(error));
     } else if (!vote && agree) {
       axios
-        .delete(
-          `${process.env.REACT_APP_API_URI}/posts/vote/62f246602d115f4e6e41903b`,
-          config
-        )
+        .delete(`${process.env.REACT_APP_API_URI}/posts/vote/${postId}`, config)
         .then((result) => {
           isAgree(undefined);
           setAgreeCount((preState) => preState - 1);
           axios
             .post(
-              `${process.env.REACT_APP_API_URI}/posts/vote/62f246602d115f4e6e41903b`,
+              `${process.env.REACT_APP_API_URI}/posts/vote/${postId}`,
               data,
               config
             )
@@ -221,7 +203,7 @@ export default function Detail() {
   const handleDownloadFile = (idx) => {
     axios
       .get(
-        `${process.env.REACT_APP_API_URI}/posts/download/62f246602d115f4e6e41903b?fileIndex=${idx}`
+        `${process.env.REACT_APP_API_URI}/posts/download/${postId}?fileIndex=${idx}`
       )
       .then((result) => {
         const url = result.config.url;
@@ -253,7 +235,7 @@ export default function Detail() {
       };
       axios
         .post(
-          `${process.env.REACT_APP_API_URI}/comments/62f246602d115f4e6e41903b`,
+          `${process.env.REACT_APP_API_URI}/comments/${postId}`,
           data,
           config
         )
@@ -274,7 +256,7 @@ export default function Detail() {
     isUpdate(true);
     axios
       .get(
-        `${process.env.REACT_APP_API_URI}/comments/62f246602d115f4e6e41903b?sortby=${sortBy}&page=${page}`
+        `${process.env.REACT_APP_API_URI}/comments/${postId}?sortby=${sortBy}&page=${page}`
       )
       .then((result) => {
         setTimeout(() => {
@@ -295,17 +277,17 @@ export default function Detail() {
       window.scrollTo(0, 0);
     };
     axios
-      .get(`${process.env.REACT_APP_API_URI}/posts/62f246602d115f4e6e41903b`)
+      .get(`${process.env.REACT_APP_API_URI}/posts/${postId}`)
       .then((result) => {
-        setPostInfo(result.data);
-        isAgree(result.data.answer);
-        setAgreeCount(result.data.agrees);
-        setDisagreeCount(result.data.disagrees);
+        setTimeout(() => {
+          setPostInfo(result.data);
+          isAgree(result.data.answer);
+          setAgreeCount(result.data.agrees);
+          setDisagreeCount(result.data.disagrees);
+        }, 2000);
       });
     axios
-      .get(
-        `${process.env.REACT_APP_API_URI}/posts/record/62f246602d115f4e6e41903b`
-      )
+      .get(`${process.env.REACT_APP_API_URI}/posts/record/${postId}`)
       .then((result) => setStatistic(result.data.data));
   }, []);
 
@@ -334,7 +316,6 @@ export default function Detail() {
   return (
     <>
       {postInfo !== null ? (
-        // {/* {postInfo === null ? ( */}
         <Body>
           <Title>
             {postInfo.category.map((category, idx) => (
@@ -475,7 +456,6 @@ export default function Detail() {
           {isStatisticsModal ? (
             <BarGraphModal
               voteCount={agreeCount + disagreeCount}
-              // voteCount={0}
               statistic={statistic}
             ></BarGraphModal>
           ) : null}
@@ -485,5 +465,4 @@ export default function Detail() {
       )}
     </>
   );
-
 }

@@ -37,28 +37,26 @@ export default function BarGraphModal({ voteCount, statistic }) {
                   series={[
                     {
                       name: "반대",
-                      // data: [
-                      //   male["10"].disagree,
-                      //   male["20"].disagree,
-                      //   male["30"].disagree,
-                      //   male["40"].disagree,
-                      //   male["50"].disagree,
-                      //   male["60"].disagree,
-                      // ],
-                      data: [1],
+                      data: [
+                        male["10"].disagree,
+                        male["20"].disagree,
+                        male["30"].disagree,
+                        male["40"].disagree,
+                        male["50"].disagree,
+                        male["60"].disagree,
+                      ],
                       color: "#A5A5A5",
                     },
                     {
                       name: "찬성",
-                      // data: [
-                      //   male["10"].agree,
-                      //   male["20"].agree,
-                      //   male["30"].agree,
-                      //   male["40"].agree,
-                      //   male["50"].agree,
-                      //   male["60"].agree,
-                      // ],
-                      data: [1],
+                      data: [
+                        male["10"].agree,
+                        male["20"].agree,
+                        male["30"].agree,
+                        male["40"].agree,
+                        male["50"].agree,
+                        male["60"].agree,
+                      ],
                       color: "#FB7777",
                     },
                   ]}
@@ -110,28 +108,26 @@ export default function BarGraphModal({ voteCount, statistic }) {
                   series={[
                     {
                       name: "찬성",
-                      // data: [
-                      //   female["10"].agree,
-                      //   female["20"].agree,
-                      //   female["30"].agree,
-                      //   female["40"].agree,
-                      //   female["50"].agree,
-                      //   female["60"].agree,
-                      // ],
-                      data: [1],
+                      data: [
+                        female["10"].agree,
+                        female["20"].agree,
+                        female["30"].agree,
+                        female["40"].agree,
+                        female["50"].agree,
+                        female["60"].agree,
+                      ],
                       color: "#FB7777",
                     },
                     {
                       name: "반대",
-                      // data: [
-                      //   female["10"].disagree,
-                      //   female["20"].disagree,
-                      //   female["30"].disagree,
-                      //   female["40"].disagree,
-                      //   female["50"].disagree,
-                      //   female["60"].disagree,
-                      // ],
-                      data: [1],
+                      data: [
+                        female["10"].disagree,
+                        female["20"].disagree,
+                        female["30"].disagree,
+                        female["40"].disagree,
+                        female["50"].disagree,
+                        female["60"].disagree,
+                      ],
                       color: "#A5A5A5",
                     },
                   ]}
