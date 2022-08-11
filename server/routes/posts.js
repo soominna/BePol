@@ -21,7 +21,7 @@ router.get("/record/:postId", recordController.getVoteStatistics);
 
 router.get("/", postController.getPostsList);
 
-router.get("/popular", postController.getThreePopularPostsList);
+router.get("/popular/list", postController.getThreePopularPostsList);
 
 router.get("/download/:postId", postController.downloadFile);
 

@@ -11,7 +11,6 @@ export const Title = styled.div`
   display: flex;
   font-weight: bold;
   font-size: 30px;
-  margin-top: 30px;
   img {
     margin-left: 10px;
     width: 30px;
@@ -184,6 +183,8 @@ export const AttachedFile = styled.div`
   margin-top: 10px;
   margin-left: 210px;
   div {
+    width: 600px;
+    word-break: break-all;
     &:first-child {
       margin-bottom: 10px;
     }

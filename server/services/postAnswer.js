@@ -4,8 +4,8 @@ import User from "../models/user.js";
 import Post_statistics from "../models/postStatistics.js";
 import mongoose from "mongoose";
 
-export const getUserIdAnswered = async (userId) => {
-  return Post_answers.findOne({ userId });
+export const getUserIdAnswered = async (userId, postId) => {
+  return Post_answers.findOne({ userId, postId });
 };
 
 export const addAnswer = async (postId, userId, agree, session) => {
