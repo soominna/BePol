@@ -7,7 +7,8 @@ import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import Swal from "sweetalert2";
 import { showStatisticsModal } from "../reducers/modalSlice";
 import Comment from "../components/Comment";
-import Chart from "../components/BarGraphModal";
+import BarGraphModal from "../components/BarGraphModal";
+import Loading from "../components/Loading";
 import { Body, ButtonField } from "./WriteStyled";
 import {
   Title,
@@ -37,6 +38,8 @@ export default function Detail() {
   const [postInfo, setPostInfo] = useState(null);
   const [statistic, setStatistic] = useState([]);
   const [agree, isAgree] = useState(undefined);
+  const [agreeCount, setAgreeCount] = useState(0);
+  const [disagreeCount, setDisagreeCount] = useState(0);
   const [comment, setComment] = useState("");
   const [sortBy, setSortBy] = useState("recent");
   const [commentList, setCommentList] = useState([]);
@@ -104,8 +107,8 @@ export default function Detail() {
     // false             false            투표 취소
     // true              undefined        찬성투표
     // false             undefined        반대투표
-    // true              false            찬성투표
-    // false             true             반대투표
+    // true              false            투표 취소 => 찬성투표
+    // false             true             투표 취소 => 반대투표
     //! agree에서 false 와 undefined 구별해주기
     console.log(isLogin, vote, agree);
     const data = {
@@ -119,15 +122,28 @@ export default function Detail() {
         showConfirmButton: false,
         timer: 1500,
       });
-    } else if ((vote && agree) || (vote === false && agree === false)) {
+    } else if (vote && agree) {
       axios
-        .put(
+        .delete(
           `${process.env.REACT_APP_API_URI}/posts/vote/62f246602d115f4e6e41903b`,
           config
         )
         .then((result) => {
-          isAgree("none");
-        });
+          isAgree(undefined);
+          setAgreeCount((preState) => preState - 1);
+        })
+        .catch((error) => console.log(error));
+    } else if (vote === false && agree === false) {
+      axios
+        .delete(
+          `${process.env.REACT_APP_API_URI}/posts/vote/62f246602d115f4e6e41903b`,
+          config
+        )
+        .then((result) => {
+          isAgree(undefined);
+          setDisagreeCount((preState) => preState - 1);
+        })
+        .catch((error) => console.log(error));
     } else if (vote && agree === undefined) {
       axios
         .post(
@@ -136,9 +152,10 @@ export default function Detail() {
           config
         )
         .then((result) => {
-          console.log(result.data.agree);
           isAgree(result.data.agree);
-        });
+          setAgreeCount((preState) => preState + 1);
+        })
+        .catch((error) => console.log(error));
     } else if (!vote && agree === undefined) {
       axios
         .post(
@@ -147,12 +164,55 @@ export default function Detail() {
           config
         )
         .then((result) => {
-          console.log(result.data.agree);
           isAgree(result.data.agree);
-        });
+          setDisagreeCount((preState) => preState + 1);
+        })
+        .catch((error) => console.log(error));
       //TODO: 결과를 바꿔서 투표하는 경우 처리
     } else if (vote && agree === false) {
+      axios
+        .delete(
+          `${process.env.REACT_APP_API_URI}/posts/vote/62f246602d115f4e6e41903b`,
+          config
+        )
+        .then((result) => {
+          isAgree(undefined);
+          setDisagreeCount((preState) => preState - 1);
+          axios
+            .post(
+              `${process.env.REACT_APP_API_URI}/posts/vote/62f246602d115f4e6e41903b`,
+              data,
+              config
+            )
+            .then((result) => {
+              isAgree(result.data.agree);
+              setAgreeCount((preState) => preState + 1);
+            })
+            .catch((error) => console.log(error));
+        })
+        .catch((error) => console.log(error));
     } else if (!vote && agree) {
+      axios
+        .delete(
+          `${process.env.REACT_APP_API_URI}/posts/vote/62f246602d115f4e6e41903b`,
+          config
+        )
+        .then((result) => {
+          isAgree(undefined);
+          setAgreeCount((preState) => preState - 1);
+          axios
+            .post(
+              `${process.env.REACT_APP_API_URI}/posts/vote/62f246602d115f4e6e41903b`,
+              data,
+              config
+            )
+            .then((result) => {
+              isAgree(result.data.agree);
+              setDisagreeCount((preState) => preState + 1);
+            })
+            .catch((error) => console.log(error));
+        })
+        .catch((error) => console.log(error));
     }
   };
 
@@ -177,16 +237,15 @@ export default function Detail() {
 
   // 댓글작성 버튼 눌렀을 때 함수
   const handleCreateComment = () => {
-    // if (!isLogin) {
-    //   Swal.fire({
-    //     position: "center",
-    //     icon: "warning",
-    //     title: "로그인이 필요한 작업입니다.",
-    //     showConfirmButton: false,
-    //     timer: 1500,
-    //   });
-    // } else
-    if (comment.length) {
+    if (!isLogin) {
+      Swal.fire({
+        position: "center",
+        icon: "warning",
+        title: "로그인이 필요한 작업입니다.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    } else if (comment.length) {
       setComment("");
       const data = {
         commentContent: comment,
@@ -197,8 +256,7 @@ export default function Detail() {
           data,
           config
         )
-        //TODO: 받아온 데이터 바로 반영하기
-        .then((result) => console.log(result.data));
+        .then((result) => setCommentList([...result.data, ...commentList]));
     } else {
       Swal.fire({
         position: "center",
@@ -239,13 +297,15 @@ export default function Detail() {
       .get(`${process.env.REACT_APP_API_URI}/posts/62f246602d115f4e6e41903b`)
       .then((result) => {
         setPostInfo(result.data);
-        // isAgree(result.data.answer);
+        isAgree(result.data.answer);
+        setAgreeCount(result.data.agrees);
+        setDisagreeCount(result.data.disagrees);
       });
     axios
       .get(
         `${process.env.REACT_APP_API_URI}/posts/record/62f246602d115f4e6e41903b`
       )
-      .then((result) => console.log(result.data.data));
+      .then((result) => setStatistic(result.data.data));
   }, []);
 
   // 댓글 정보 불러오기
@@ -298,19 +358,17 @@ export default function Detail() {
             <div className={"propsAndCons"}>
               <ProsAndCons
                 background={"#FB7777"}
-                flex={postInfo.agrees / (postInfo.agrees + postInfo.disagrees)}
+                flex={agreeCount / (agreeCount + disagreeCount)}
                 textAlign={"left"}
               >
-                <div className={"pros"}>{postInfo.agrees}</div>
+                <div className={"pros"}>{agreeCount}</div>
               </ProsAndCons>
               <ProsAndCons
                 background={"#A5A5A5"}
-                flex={
-                  postInfo.disagrees / (postInfo.agrees + postInfo.disagrees)
-                }
+                flex={disagreeCount / (agreeCount + disagreeCount)}
                 textAlign={"right"}
               >
-                <div className={"cons"}>{postInfo.disagrees}</div>
+                <div className={"cons"}>{disagreeCount}</div>
               </ProsAndCons>
             </div>
           </ResultField>
@@ -402,7 +460,6 @@ export default function Detail() {
                 setCommentList={setCommentList}
               ></Comment>
             ))}
-            {/* TODO: 추가적인 댓글 불러온다는 것을 나타내기 */}
             {update && !endUpdate ? (
               <div className={"loading"}>
                 <FontAwesomeIcon
@@ -413,7 +470,13 @@ export default function Detail() {
               </div>
             ) : null}
           </CommentsField>
-          {/* <Chart></Chart> */}
+          {isStatisticsModal ? (
+            <BarGraphModal
+              voteCount={agreeCount + disagreeCount}
+              // voteCount={0}
+              statistic={statistic}
+            ></BarGraphModal>
+          ) : null}
         </Body>
       ) : (
         //TODO: 로딩페이지 대체에정
