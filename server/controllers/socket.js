@@ -1,9 +1,9 @@
 import Comment from "../models/comment.js";
+import * as postRepository from "../services/post.js";
 
 export const socketServer = (socket, io) => {
   socket.on("userId", (userId) => {
     socket.data.userId = userId;
-    socket.join(userId);
   });
 
   socket.on("disconnect", () => {
@@ -14,14 +14,15 @@ export const socketServer = (socket, io) => {
   try {
     changeStream = Comment.watch();
 
-    changeStream.on("change", (next) => {
+    changeStream.on("change", async (next) => {
       switch (next.operationType) {
         case "insert":
-          console.log(next.fullDocument.userId.toString());
           const userIdToNotify = next.fullDocument.userId.toString();
-          socket
-            .to(userIdToNotify)
-            .emit("newComment", next.fullDocument._id, next.fullDocument.title);
+          if (socket.data.userId === userIdToNotify) {
+            const post = await postRepository.getPost(next.fullDocument.postId);
+            socket.emit("newComment", post._id, post.title);
+          }
+
           break;
       }
     });
