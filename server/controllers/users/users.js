@@ -58,6 +58,7 @@ export const login = async (req, res) => {
               data: {
                 subId: data.data.id,
                 username: data.data.properties.nickname,
+                email: data.data.kakao_account.email,
               },
             });
           }
@@ -83,12 +84,13 @@ export const logout = (req, res) => {
 
 export const signup = async (req, res) => {
   try {
-    const { subId, username, gender, age } = req.body;
+    const { subId, username, gender, age, email } = req.body;
     const newUser = await userRepository.createUser(
       subId,
       username,
       gender,
-      age
+      age,
+      email
     );
     if (newUser) {
       const accessToken = encodeToken({
