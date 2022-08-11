@@ -17,7 +17,7 @@ import {
   Ages,
   ButtonWrap,
   LoginButton,
-} from "./ModalStyled";
+} from "./LoginModalStyled";
 
 export default function LoginModal() {
   /*
@@ -57,8 +57,8 @@ export default function LoginModal() {
         .post(`${process.env.REACT_APP_API_URI}/users/signup`, {
           gender: loginInfo.gender,
           age: loginInfo.age,
-          subId: userInfo.id,
-          username: userInfo.username,
+          subId: userInfo.userInfo.id,
+          username: userInfo.userInfo.username,
         })
         .then((result) => {
           let data = {
@@ -69,10 +69,12 @@ export default function LoginModal() {
           };
           //응답 받은 유저 정보 상태로 저장
           dispatch(getUserInfo(data));
-          dispatch(login(result.headers.get("access-token")));
+          dispatch(login(result.headers["access-token"]));
+          dispatch(showLoginModal(false));
         });
     }
   };
+
   return (
     <>
       <ModalBackground onClick={() => dispatch(showLoginModal(false))} />

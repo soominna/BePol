@@ -12,16 +12,16 @@ export default function Login() {
     * 작성자: 송혜원
     * 📌 카카오 로그인 동의 ✔︎
     * 📌 카카오 로그인 전 추가 정보 입력창으로 연결 ✔︎
+    * 📌 기가입자 로그인 시 accessToken 상태 저장
     * kakao API로 code 요청 후 서버로 로그인 요청
 
      */
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const code = new URL(document.location).searchParams.get("code");
 
-  const code = new URL(window.location.href).searchParams.get("code");
-
-  const handleKakaoLogin = () => {
-    axios
+  const handleKakaoLogin = async () => {
+    await axios
       .post(`${process.env.REACT_APP_API_URI}/users/login`, {
         code: code,
       })
@@ -37,7 +37,7 @@ export default function Login() {
           };
           dispatch(getUserInfo(userData));
           //서버에서 보내준 header의 accessToken 값 dispatch로 login 상태 업데이트
-          dispatch(login(result.headers.get("access-token")));
+          dispatch(login(result.headers["access-token"]));
         }
         // 아직 가입하지 않은 회원 -> 추가 입력 로그인 모달
         else if (result.data.isUser === false) {
