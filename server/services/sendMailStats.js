@@ -77,7 +77,7 @@ export const sendMailStats = async () => {
             from: sendEmailUser,
             to: email,
             subject: `안녕하세요. BePol입니다.`,
-            html: `${username}님이 작성하신 ${title}에 관한 청원 투표 현황입니다. 
+            html: `${username}님이 작성하신 ${title}에 관한 투표가 내일 마감됩니다. 
                 <br><br>
                 <br><br>
                 <a href="http://localhost:3000/detail"> 바로 가기 링크 </a>
@@ -85,7 +85,6 @@ export const sendMailStats = async () => {
                 <br>
                 <img src="cid:stats">
               `,
-            text: "자세한 투표 현황은 직접 확인하세요",
             attachments: [
               {
                 filename: "stats.png",
