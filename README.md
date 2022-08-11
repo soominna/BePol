@@ -50,6 +50,9 @@
 
 
 ## Architecture
+### FRONT-END
+![image](https://user-images.githubusercontent.com/73332608/184191187-0257f3d7-8e7c-4e04-bbe2-db91476b317f.png)
+
 ### BACK-END
 ![image](https://user-images.githubusercontent.com/73332608/184178464-82850aa0-cccf-4cb8-881d-70fe34db1304.png)
 
