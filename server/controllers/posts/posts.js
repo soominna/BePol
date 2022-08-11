@@ -47,11 +47,16 @@ export const getPostsList = async (req, res, next) => {
           page
         );
 
+        if (data.length === 0) {
+          return res.sendStatus(204);
+        }
+
         return res.status(200).json({
           data: data[0],
         });
-      } else if (!closed) {
+      } else if (closed === "false") {
         // 마감 + 마감x 모두 포함
+        console.log(category);
         data = await postRepository.getAllByCategory(
           categoryArr,
           search,
@@ -59,6 +64,9 @@ export const getPostsList = async (req, res, next) => {
           page
         );
 
+        if (data.length === 0) {
+          return res.sendStatus(204);
+        }
         postRepository.getDday(data[0], dDayList);
 
         return res.status(200).json({
@@ -66,6 +74,10 @@ export const getPostsList = async (req, res, next) => {
           dDayList,
         });
       }
+    }
+
+    if (data.length === 0) {
+      return res.sendStatus(204);
     }
 
     postRepository.getDday(data, dDayList);
@@ -126,8 +138,7 @@ export const createPost = async (req, res) => {
    */
 
   try {
-    const user = { id: "62eb19eec68ed76ba371a228", username: "bepol" }; //테스트 데이터
-    //verifyToken(req.headers["access-token"].split(" ")[1]);
+    const user = verifyToken(req.headers["authorization"].split(" ")[1]);
     const { title, purport, contents, category } = req.body;
 
     const createdPost = await postRepository.createPost(
@@ -153,8 +164,7 @@ export const deletePost = async (req, res) => {
    * 📌 게시물과 함께 s3 버킷에 저장된 파일도 삭제
    */
   try {
-    const user = { id: "62eb19eec68ed76ba371a228", username: "bepol" }; //테스트 데이터
-    //verifyToken(req.headers["access-token"].split(" ")[1]);
+    const user = verifyToken(req.headers["authorization"].split(" ")[1]);
     const deletedPost = await postRepository.deletePost(
       user.id,
       req.params.postId
@@ -177,8 +187,8 @@ export const getPost = async (req, res) => {
   try {
     const post = await postRepository.getPost(req.params.postId);
     const { __v, updatedAt, userId, comments, ...postInfo } = post.toObject();
-    if (req.headers["access-token"]) {
-      const user = verifyToken(req.headers["access-token"].split(" ")[1]);
+    if (req.headers["authorization"]) {
+      const user = verifyToken(req.headers["authorization"].split(" ")[1]);
       const answer = await postRepository.getPostAnswer(
         user.id,
         req.params.postId
