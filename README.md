@@ -9,6 +9,8 @@
     <img src="https://img.shields.io/badge/AWS%20RDS-%23232F3E?style=flat&logo=AMAZON%20AWS&logoColor=white"/>
   </p>
   
+  ## [GO TO NOTION]()
+  
   ## Team members
   
 | 나수민 | 송혜원 | 이승연 | 이승준 |
@@ -66,9 +68,14 @@
 
 ![image](https://img.shields.io/badge/BACK-AWS%20RDS-%23527FFF?style=for-the-badge&logo=AMAZON%20RDS)
 
+### TECH STACK FLOW
+![image](https://user-images.githubusercontent.com/73332608/184178508-66cc01b3-65c9-4ce2-b2f8-1bb17fb5e5f6.png)
 
 
 ## Architecture
+### BACK-END
+![image](https://user-images.githubusercontent.com/73332608/184178464-82850aa0-cccf-4cb8-881d-70fe34db1304.png)
+
 
 ### Worklog
 [Worklog](https://github.com/oxopolitics-internship-for-codestates/BePol/wiki/Team#worklog)
