@@ -41,6 +41,6 @@ async function seedDB(collectionName, timeSeriesData) {
 seedDB("users", userData);
 seedDB("posts", postData);
 seedDB("comments", commentData);
-seedDB("hotposts", hotPostData);
-seedDB("postanswers", postAnswerData);
-seedDB("poststatistics", postStatisticsData);
+seedDB("hot_posts", hotPostData);
+seedDB("post_answers", postAnswerData);
+seedDB("post_statistics", postStatisticsData);
