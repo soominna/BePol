@@ -38,15 +38,16 @@ export const createCommentTransaction = async (
 
 export const modifyComment = async (userId, commentId, contents) => {
   try {
-    return await Comment.findOneAndUpdate(
-      {
-        _id: mongoose.Types.ObjectId(commentId),
-        userId: mongoose.Types.ObjectId(userId),
-      },
+    const comment = await Comment.findOne({ _id: commentId, userId });
+
+    const updatedComment = await Comment.findOneAndUpdate(
+      { _id: commentId, userId },
       { contents },
       { new: true }
     );
+    return updatedComment;
   } catch (err) {
+    console.log(err);
     return null;
   }
 };
@@ -81,17 +82,25 @@ export const getCommentList = async (userId, postId, sortby, page) => {
   try {
     const pageSize = 3;
     const sortOptions = sortby === "likes" ? { likes: -1 } : { createdAt: -1 };
-    const commentList = await Comment.find({
-      postId: mongoose.Types.ObjectId(postId),
-    })
+
+    const commentList = await Comment.find({ postId })
       .sort(sortOptions)
       .skip(pageSize * (Number(page ? page : 1) - 1))
-      .limit(pageSize)
-      .exec();
+      .limit(pageSize);
 
-    if (!userId) return commentList;
-
-    console.log(commentList);
+    if (!userId) {
+      return Promise.all(
+        commentList.map(async (comment) => {
+          const postAnswer = await PostAnswer.findOne({
+            id: postId + comment.userId,
+          });
+          return {
+            ...comment.toObject(),
+            answer: postAnswer ? postAnswer.answer : undefined,
+          };
+        })
+      );
+    }
 
     return Promise.all(
       commentList.map(async (comment) => {
@@ -99,9 +108,10 @@ export const getCommentList = async (userId, postId, sortby, page) => {
           comment._id,
           userId
         );
-        const postAnswer = await PostAnswer.find({
-          id: comment.postId + comment.userId,
+        const postAnswer = await PostAnswer.findOne({
+          id: postId + comment.userId,
         });
+
         return {
           ...comment.toObject(),
           isliked: commentLike ? true : false,

@@ -1,4 +1,5 @@
 import * as commentLikeRepository from "../../services/commentLike.js";
+import { verifyToken } from "../functions/authentication.js";
 
 export const postLike = async (req, res) => {
   /**
@@ -9,7 +10,7 @@ export const postLike = async (req, res) => {
 
   try {
     const user = verifyToken(req.headers["authorization"].split(" ")[1]);
-
+    console.log("asdfasdf", user, req.headers);
     const commentLike = await commentLikeRepository.getCommentLike(
       req.params.commentId,
       user.id
