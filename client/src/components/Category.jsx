@@ -1,10 +1,11 @@
+import { useState } from "react";
 import {
   CategoryContainer,
   CategoryBlock,
   CategoryIcon,
   CategoryTxt,
 } from "./CategoryStyled";
-export default function Category({ allCategory, clickedCategory }) {
+export default function Category(props) {
   const categoryImg = [
     "/images/lawIcon.png",
     "/images/moneyIcon.png",
@@ -21,17 +22,42 @@ export default function Category({ allCategory, clickedCategory }) {
     "/images/etcIcon.png",
   ];
 
+  let colorArr = Array(13).fill("white");
+  const [color, setColor] = useState(colorArr);
+  const [targetId, setTargetId] = useState();
   const handleClickedCategory = (e) => {
-    clickedCategory.onClick(e.target.id);
+    props.onClick(e.target.id);
+  };
+
+  const handleColorChange = (e) => {
+    let currentId = Number(e.target.id);
+    setTargetId(currentId);
+    if (color[currentId] === "white") {
+      colorArr[currentId] = "#414144";
+      setColor(colorArr);
+      console.log(color);
+    } else {
+      setColor("white");
+    }
   };
   return (
     <CategoryContainer>
-      {allCategory.map((category, idx) => (
-        <CategoryBlock onClick={handleClickedCategory}>
-          <CategoryIcon>
-            <img src={categoryImg[idx]} alt={category[idx]} />
+      {props.allCategory.map((category, idx) => (
+        <CategoryBlock
+          id={idx}
+          onClick={(e) => {
+            handleClickedCategory(e);
+            handleColorChange(e);
+          }}
+        >
+          <CategoryIcon
+            id={idx}
+            targetId={targetId}
+            backgroundColor={color[idx]}
+          >
+            <img id={idx} src={categoryImg[idx]} alt={category[idx]} />
           </CategoryIcon>
-          <CategoryTxt>{category[idx]}</CategoryTxt>
+          <CategoryTxt id={idx}>{category[idx]}</CategoryTxt>
         </CategoryBlock>
       ))}
     </CategoryContainer>

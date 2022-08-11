@@ -29,7 +29,14 @@ export const CategoryIcon = styled.div`
   width: 70px;
   margin: 1rem;
   border-radius: 20rem;
-  background-color: white;
+
+  background-color: ${(props) => {
+    if (props.targetId === props.id) {
+      return props.backgroundColor;
+    } else {
+      return "white";
+    }
+  }};
   & > img {
     width: 3rem;
     height: 3rem;

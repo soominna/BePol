@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
@@ -36,7 +35,7 @@ export default function Detail() {
   // 삭제하기 버튼 클릭 함수
   const handleRemoveButton = () => {
     axios
-      .delete(`${process.env.REACT_APP_API_URI}/posts/62f1e3c5940b05c41f85c58a`)
+      .delete(`${process.env.REACT_APP_API_URI}/posts/${postId}`)
       .then((result) => {
         Swal.fire({
           title: "법안을 삭제하시겠습니까?",
@@ -77,7 +76,7 @@ export default function Detail() {
   const handleDownloadFile = (idx) => {
     axios
       .get(
-        `${process.env.REACT_APP_API_URI}/posts/download/62f1e3c5940b05c41f85c58a?fileIndex=${idx}`
+        `${process.env.REACT_APP_API_URI}/posts/download/${postId}?fileIndex=${idx}`
       )
       .then((result) => {
         const url = result.config.url;
@@ -106,7 +105,7 @@ export default function Detail() {
       };
       axios
         .post(
-          `${process.env.REACT_APP_API_URI}/comments/62f1e3c5940b05c41f85c58a`,
+          `${process.env.REACT_APP_API_URI}/comments/${postId}`,
           data,
           config
         )
@@ -128,7 +127,7 @@ export default function Detail() {
     isUpdate(true);
     axios
       .get(
-        `${process.env.REACT_APP_API_URI}/comments/62f1e3c5940b05c41f85c58a?sortby=${sortBy}&page=${page}`
+        `${process.env.REACT_APP_API_URI}/comments/${postId}?sortby=${sortBy}&page=${page}`
       )
       .then((result) => {
         // setTimeout(() => {
@@ -146,7 +145,7 @@ export default function Detail() {
   // 페이지 이동시 처음 post 정보 가져오기
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_API_URI}/posts/62f1e3c5940b05c41f85c58a`)
+      .get(`${process.env.REACT_APP_API_URI}/posts/${postId}`)
       .then((result) => setPostInfo(result.data));
   }, []);
 
@@ -273,5 +272,4 @@ export default function Detail() {
       )}
     </>
   );
-
 }
