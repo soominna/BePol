@@ -14,6 +14,7 @@ export default function ListCard({ info }) {
   const maxWord = 50;
 
   const handleGetCardId = (e) => {
+    console.log(e.currentTarget.id);
     navigate(`/detail/${e.currentTarget.id}`);
   };
   const sliceTitleStr = (str) => {
@@ -23,12 +24,15 @@ export default function ListCard({ info }) {
     <>
       <ListCardSection>
         <Card id={info.id} onClick={(e) => handleGetCardId(e)}>
-          {/* D-day 정보 받아오면 사용 */}
           {info.dDay <= 3 ? (
-            info.dDay === 0 ? (
-              <CardDay imminent="high">D-Day</CardDay>
+            info.dDay >= 0 ? (
+              info.dDay === 0 ? (
+                <CardDay imminent="high">D-Day</CardDay>
+              ) : (
+                <CardDay imminent="high">D-{info.dDay}</CardDay>
+              )
             ) : (
-              <CardDay imminent="high">D-{info.dDay}</CardDay>
+              <CardDay imminent="dead">기간만료</CardDay>
             )
           ) : (
             <CardDay imminent="low">D-{info.dDay}</CardDay>

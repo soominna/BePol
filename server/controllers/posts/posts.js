@@ -15,7 +15,9 @@ export const getPostsList = async (req, res, next) => {
    * 📍 page - 페이지당 게시물 개수 ✔︎
    *  📌 D-Day 계산 ✔︎
    */
-  const { category, sortby, search, closed, page } = req.query;
+  let { category, sortby, search, closed, page } = req.query;
+  sortby = decodeURIComponent(sortby);
+  category = decodeURIComponent(category);
   let data;
   let dDayList = [];
   try {
@@ -64,11 +66,11 @@ export const getPostsList = async (req, res, next) => {
           page
         );
 
+
         if (data.length === 0) {
           return res.sendStatus(204);
         }
         postRepository.getDday(data[0], dDayList);
-
         return res.status(200).json({
           data: data[0],
           dDayList,

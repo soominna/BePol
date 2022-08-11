@@ -31,7 +31,11 @@ export const CardDay = styled.div`
   font-size: 1rem;
   border-radius: 10px;
   background-color: ${(props) =>
-    props.imminent === "low" ? "#C4BCEE" : "#FCB4B4"};
+    props.imminent === "low"
+      ? "#C4BCEE"
+      : props.imminent === "dead"
+      ? "#D3CFCF"
+      : "#FCB4B4"};
   @import url("https://fonts.googleapis.com/css2?family=Krona+One&display=swap");
   font-family: "Krona One", sans-serif;
 `;

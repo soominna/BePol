@@ -61,10 +61,10 @@ server.listen(port, () => {
 });
 
 // hot3 게시판 매일 23시 59분에 업데이트 자동화 설정
-cron.schedule("59 23 1-31 * *", async () => {
-  await postRepsitory.setThreePopularPosts();
-});
-
+// cron.schedule("59 23 1-31 * *", async () => {
+//   await postRepsitory.setThreePopularPosts();
+// });
+postRepsitory.setThreePopularPosts();
 // 투표 현황 메일 - 매일 오전 9시
 cron.schedule("59 8 1-31 * *", async () => {
   await sendMailStatusRepository.sendMailStats();
