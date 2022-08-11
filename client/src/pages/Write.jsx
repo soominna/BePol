@@ -30,18 +30,31 @@ export default function Write({ history }) {
   const navigate = useNavigate();
   const accessToken = useSelector((state) => state.login.accessToken);
   const allCategory = [
-    { 0: "법률/사법" },
-    { 1: "금융/경제" },
+    // { 0: "법률/사법" },
+    // { 1: "금융/경제" },
+    // { 2: "교육" },
+    // { 3: "과학기술/정보통신" },
+    // { 4: "외교/통일/국방" },
+    // { 5: "행정" },
+    // { 6: "문화/예술/관광" },
+    // { 7: "농업/식품/수산" },
+    // { 8: "국토/교통" },
+    // { 9: "산업/통상/기업" },
+    // { 10: "보건/복지/식품안전" },
+    // { 11: "환경/성평등/청소년/노동" },
+    // { 12: "기타" },
+    { 0: "법률 사법" },
+    { 1: "금융 경제" },
     { 2: "교육" },
-    { 3: "과학기술/정보통신" },
-    { 4: "외교/통일/국방" },
+    { 3: "과학기술 정보통신" },
+    { 4: "외교 통일 국방" },
     { 5: "행정" },
-    { 6: "문화/예술/관광" },
-    { 7: "농업/식품/수산" },
-    { 8: "국토/교통" },
-    { 9: "산업/통상/기업" },
-    { 10: "보건/복지/식품안전" },
-    { 11: "환경/성평등/청소년/노동" },
+    { 6: "문화 예술 관광" },
+    { 7: "농업 식품 수산" },
+    { 8: "국토 교통" },
+    { 9: "산업 통상 기업" },
+    { 10: "보건 복지 식품안전" },
+    { 11: "환경 성평등 청소년 노동" },
     { 12: "기타" },
   ];
   const [selectedCategory, setSelectedCategory] = useState([]); // 선택된 카테고리를 저장하는 state
@@ -181,7 +194,7 @@ export default function Write({ history }) {
           const config = {
             headers: {
               "content-type": "multipart/form-data",
-              "Authorization": accessToken,
+              Authorization: accessToken,
             },
           };
           axios
@@ -207,6 +220,7 @@ export default function Write({ history }) {
     e.returnValue = ""; //Chrome에서 동작하도록;
   };
   useEffect(() => {
+    window.scrollTo(0, 0);
     (() => {
       window.addEventListener("beforeunload", preventClose);
     })();

@@ -38,7 +38,7 @@ export default function Header() {
     axios
       .post(`${process.env.REACT_APP_API_URI}/users/logout`, {
         headers: {
-          "access-token": `${accessToken}`,
+          Authorization: `${accessToken}`,
         },
       })
       .then(() => {
