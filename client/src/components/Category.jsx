@@ -26,7 +26,11 @@ export default function Category(props) {
   const [color, setColor] = useState(colorArr);
   const [targetId, setTargetId] = useState();
   const handleClickedCategory = (e) => {
-    props.onClick(e.target.id);
+    if (props.clickedCategory === e.target.id) {
+      props.onClick("");
+    } else {
+      props.onClick(e.target.id);
+    }
   };
 
   const handleColorChange = (e) => {
@@ -35,7 +39,9 @@ export default function Category(props) {
     if (color[currentId] === "white") {
       colorArr[currentId] = "#414144";
       setColor(colorArr);
-      console.log(color);
+    } else if (color[currentId] === "#414144") {
+      colorArr[currentId] = "white";
+      setColor(colorArr);
     } else {
       setColor("white");
     }
@@ -45,6 +51,7 @@ export default function Category(props) {
       {props.allCategory.map((category, idx) => (
         <CategoryBlock
           id={idx}
+          key={idx}
           onClick={(e) => {
             handleClickedCategory(e);
             handleColorChange(e);

@@ -204,6 +204,7 @@ export const CommentsField = styled.div`
   margin: auto;
   margin-top: 30px;
   .loading {
+    margin-top: 20px;
     text-align: center;
   }
 `;

@@ -8,7 +8,6 @@ const EXCEPT_OPTION = {
   purport: 0,
   contents: 0,
   attachments: 0,
-  comments: 0,
   sendEmailStatus: 0,
 }; // 필요없는 컬럼 삭제하기 위한 변수
 
@@ -52,7 +51,7 @@ const getPostsList = async (page, search, sortOptions, pageSize) => {
   }
 };
 
-const getByCategory = async (postsList, categoryArr) => {
+const getByCategory = async (postsList, categoryArr, search) => {
   // 카테고리 검색 함수 선언
   try {
     return Promise.all(
@@ -64,6 +63,9 @@ const getByCategory = async (postsList, categoryArr) => {
             if (type === category) {
               posts = await Post.find(
                 {
+                  title: {
+                    $regex: search,
+                  },
                   category: {
                     $in: type,
                   },
@@ -72,7 +74,7 @@ const getByCategory = async (postsList, categoryArr) => {
               );
               return posts;
             } else {
-              return false;
+              continue;
             }
           }
         }
@@ -112,11 +114,14 @@ export const getAllByCategory = async (categoryArr, search, sortby, page) => {
     const sortOptions = await setSortOptions(sortby);
     const postsList = await getPostsList(page, search, sortOptions, pageSize);
 
-    const listWithCategory = await getByCategory(postsList, categoryArr);
+    const listWithCategory = await getByCategory(
+      postsList,
+      categoryArr,
+      search
+    );
     const filteredList = listWithCategory.filter(
       (el) => el !== false && el !== undefined
     );
-
     return filteredList;
   } catch (err) {
     console.log(err);
@@ -216,7 +221,7 @@ export const createPost = async (
       category,
       purport,
       contents,
-      userId: mongoose.Types.ObjectId(userId),
+      userId: userId,
       attachments,
     });
 
@@ -228,16 +233,16 @@ export const createPost = async (
 
 export const getPost = async (postId) => {
   try {
-    return await Post.findById(mongoose.Types.ObjectId(postId));
+    return await Post.findById(postId);
   } catch (err) {}
 };
 
 export const getPostAnswer = async (postId, userId) => {
   try {
     const answer = await PostAnswer.findOne({
-      postId: mongoose.Types.ObjectId(postId),
-      userId: mongoose.Types.ObjectId(userId),
+      id: postId + userId,
     });
+    console.log(answer);
     if (answer) {
       return answer.answer;
     }
@@ -257,8 +262,8 @@ export const getFileName = async (postId, fileIndex) => {
 export const deletePost = async (userId, postId) => {
   try {
     const postToDelete = await Post.findOne({
-      userId: mongoose.Types.ObjectId(userId),
-      _id: mongoose.Types.ObjectId(postId),
+      userId: userId,
+      _id: postId,
     });
 
     if (postToDelete) {

@@ -5,7 +5,7 @@ import Comment from "../models/comment.js";
 export const getCommentLike = async (commentId, userId) => {
   const commentLike = await CommentLike.findOne({
     id: commentId + userId,
-  }).exec();
+  });
 
   return commentLike;
 };
@@ -16,7 +16,7 @@ export const commentLikeTransaction = async (commentId, userId) => {
     session.startTransaction();
 
     const updatedComment = await Comment.findByIdAndUpdate(
-      mongoose.Types.ObjectId(commentId),
+      commentId,
       { $inc: { likes: 1 } },
       { new: true, session: session }
     );
@@ -48,7 +48,7 @@ export const commentLikeCancelTransaction = async (commentId, userId) => {
     session.startTransaction();
 
     const updatedComment = await Comment.findByIdAndUpdate(
-      mongoose.Types.ObjectId(commentId),
+      commentId,
       { $inc: { likes: -1 } },
       { new: true, session: session }
     );

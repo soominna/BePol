@@ -28,7 +28,7 @@ export const CardDay = styled.div`
   margin: 1rem;
   padding: 0.5rem;
   font-weight: 900;
-  font-size: 1rem;
+  font-size: ${(props) => (props.imminent === "dead" ? "0.8rem" : "1rem")};
   border-radius: 10px;
   background-color: ${(props) =>
     props.imminent === "low"
