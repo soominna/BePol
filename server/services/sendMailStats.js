@@ -76,7 +76,9 @@ export const sendMailStats = async () => {
             from: sendEmailUser,
             to: email,
             subject: `안녕하세요. BePol입니다.`,
-            html: `${username}님이 작성하신 ${title}에 관한 청원 투표 현황입니다.
+            html: `${username}님이 작성하신 ${title}에 관한 청원 투표 현황입니다. <br> 자세한 투표 현황은 직접 확인하세요!!
+                <br><br>
+                📎 http://localhost:${PORT}/${captureStatsClient} 
                 <br><br>
                 <img src="cid:stats">
               `,
@@ -106,7 +108,7 @@ export const sendMailStats = async () => {
             puppeteer.launch().then(async (browser) => {
               return browser.newPage().then(async (page) => {
                 return page
-                  .goto(`http://localhost${PORT}/${captureStatsClient}`)
+                  .goto(`http://localhost:${PORT}/${captureStatsClient}`)
                   .then(async () => {
                     await page.screenshot({
                       fullPage: true, // 전체페이지 캡쳐 옵션
