@@ -16,7 +16,7 @@ import {
   SearchButton,
   SearchExpireTap,
 } from "./MainStyled.js";
-import { topCardDummyData, listCardDummyData } from "../dummyData.js";
+// import { topCardDummyData, listCardDummyData } from "../dummyData.js";
 
 export default function Main() {
   /*
@@ -69,14 +69,14 @@ export default function Main() {
       <MainSection>
         <Section display="grid">
           <h2>이번달 HOT🔥 모의법안</h2>
-          {topCardDummyData ? (
+          {/* {topCardDummyData ? (
             topCardDummyData.map((el, idx) => <TopCard key={idx} info={el} />)
           ) : (
             <h3>
               아직 인기 게시글이 없어요 🧐 <br />
               모의 법안에 적극적으로 참여해보세요!
             </h3>
-          )}
+          )} */}
         </Section>
         {isLogin ? (
           <Section
@@ -134,14 +134,14 @@ export default function Main() {
         </SearchExpireTap>
 
         <Section display="grid" list>
-          {listCardDummyData ? (
+          {/* {listCardDummyData ? (
             listCardDummyData.map((el, idx) => <ListCard key={idx} info={el} />)
           ) : (
             <h3>
               아직 등록된 게시글이 없어요 🧐 <br />
               모의 법안에 적극적으로 참여해보세요!
             </h3>
-          )}
+          )} */}
         </Section>
       </MainSection>
     </>
