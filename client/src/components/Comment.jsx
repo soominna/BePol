@@ -22,7 +22,8 @@ export default function Comment({ comment, idx, commentList, setCommentList }) {
   const accessToken = useSelector((state) => state.login.accessToken);
   const [modifiedComment, setModifiedComment] = useState("");
   const [modify, isModify] = useState(false);
-  const [likes, isLikes] = useState(false);
+  const [likes, isLikes] = useState(comment.isliked);
+  const [likesCount, setLikesCount] = useState(comment.likes);
   // const [height, setHeight] = useState("");
   const textareaRef = useRef(null);
   const data = {
@@ -82,8 +83,29 @@ export default function Comment({ comment, idx, commentList, setCommentList }) {
 
   // 좋아요버튼을 눌렀을 때
   const handleLikes = () => {
-    isLikes(!likes);
-    console.log(comment);
+    if (!likes) {
+      axios
+        .post(
+          `${process.env.REACT_APP_API_URI}/comments/likes/${comment._id}`,
+          config
+        )
+        .then((result) => {
+          setLikesCount(result.data.likesCount);
+          isLikes(true);
+        })
+        .catch((error) => console.log(error));
+    } else {
+      axios
+        .delete(
+          `${process.env.REACT_APP_API_URI}/comments/likes/${comment._id}`,
+          config
+        )
+        .then((result) => {
+          setLikesCount((preState) => preState - 1);
+          isLikes(false);
+        })
+        .catch((error) => console.log(error));
+    }
   };
 
   useEffect(() => {
@@ -100,51 +122,54 @@ export default function Comment({ comment, idx, commentList, setCommentList }) {
           <ProsAndCons background={"red"}></ProsAndCons>
           <div>{comment.username}</div>
         </Writer>
-        {/* {userInfo.id === comment.userId ? ( */}
-        {!modify ? (
-          <CommentButton>
-            <ModifyAndDelete onClick={() => isModify(true)}>
-              수정
-            </ModifyAndDelete>
-            <span> | </span>
-            <ModifyAndDelete onClick={handleRemoveComment}>
-              삭제
-            </ModifyAndDelete>
-          </CommentButton>
-        ) : (
-          <CommentButton>
-            <CancleAndCheck
-              background={"#474747"}
-              cursor={"pointer"}
-              onClick={() => {
-                isModify(false);
-              }}
-            >
-              취소
-            </CancleAndCheck>
-            <span> | </span>
-            <CancleAndCheck
-              background={
-                !modifiedComment.length || modifiedComment === comment.contents
-                  ? "#A5A5A5"
-                  : "#474747"
-              }
-              cursor={
-                !modifiedComment.length || modifiedComment === comment.contents
-                  ? "default"
-                  : "pointer"
-              }
-              onClick={
-                !modifiedComment.length || modifiedComment === comment.contents
-                  ? null
-                  : handleModifyComment
-              }
-            >
-              확인
-            </CancleAndCheck>
-          </CommentButton>
-        )}
-        {/* ) : null} */}
+        {userInfo.id === comment.userId ? (
+          !modify ? (
+            <CommentButton>
+              <ModifyAndDelete onClick={() => isModify(true)}>
+                수정
+              </ModifyAndDelete>
+              <span> | </span>
+              <ModifyAndDelete onClick={handleRemoveComment}>
+                삭제
+              </ModifyAndDelete>
+            </CommentButton>
+          ) : (
+            <CommentButton>
+              <CancleAndCheck
+                background={"#474747"}
+                cursor={"pointer"}
+                onClick={() => {
+                  isModify(false);
+                }}
+              >
+                취소
+              </CancleAndCheck>
+              <span> | </span>
+              <CancleAndCheck
+                background={
+                  !modifiedComment.length ||
+                  modifiedComment === comment.contents
+                    ? "#A5A5A5"
+                    : "#474747"
+                }
+                cursor={
+                  !modifiedComment.length ||
+                  modifiedComment === comment.contents
+                    ? "default"
+                    : "pointer"
+                }
+                onClick={
+                  !modifiedComment.length ||
+                  modifiedComment === comment.contents
+                    ? null
+                    : handleModifyComment
+                }
+              >
+                확인
+              </CancleAndCheck>
+            </CommentButton>
+          )
+        ) : null}
       </WriterInfo>
       <Contents>
         {!modify ? (
@@ -174,7 +199,7 @@ export default function Comment({ comment, idx, commentList, setCommentList }) {
             ></FontAwesomeIcon>
           )}
 
-          <div>{comment.likes}</div>
+          <div>{likesCount}</div>
         </div>
       </Contents>
     </Container>

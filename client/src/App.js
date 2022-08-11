@@ -5,7 +5,6 @@ import Login from "./pages/Login.jsx";
 import Main from "./pages/Main.jsx";
 import Write from "./pages/Write.jsx";
 import Header from "./components/Header.jsx";
-import Modal from "./components/Modal.jsx";
 import LoginModal from "./components/LoginModal.jsx";
 
 function App() {
@@ -33,7 +32,6 @@ function App() {
         />
       </Routes>
       {loginModal && <LoginModal />}
-      {staticModal && <Modal />}
     </BrowserRouter>
   );
 }
