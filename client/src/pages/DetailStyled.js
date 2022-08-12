@@ -12,6 +12,7 @@ export const Title = styled.div`
     font-size: 35px;
     text-align: center;
     margin-top: 15px;
+    font-weight: bold;
   }
 `;
 
