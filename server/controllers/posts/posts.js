@@ -18,7 +18,6 @@ export const getPostsList = async (req, res, next) => {
   let { category, sortby, search, closed, page } = req.query;
   category = decodeURIComponent(category);
   // search = decodeURIComponent(search);
-  console.log(search);
 
   let data;
   let dDayList = [];
@@ -60,7 +59,6 @@ export const getPostsList = async (req, res, next) => {
         });
       } else if (closed === "false") {
         // 마감 + 마감x 모두 포함
-        console.log(category);
         data = await postRepository.getAllByCategory(
           categoryArr,
           search,
@@ -189,7 +187,7 @@ export const getPost = async (req, res) => {
    */
   try {
     const post = await postRepository.getPost(req.params.postId);
-    const { __v, updatedAt, userId, comments, ...postInfo } = post.toObject();
+    const { __v, updatedAt, comments, ...postInfo } = post.toObject();
 
     if (req.headers["authorization"]) {
       const user = verifyToken(req.headers["authorization"].split(" ")[1]);

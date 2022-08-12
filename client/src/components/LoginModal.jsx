@@ -61,11 +61,13 @@ export default function LoginModal() {
           username: userInfo.userInfo.username,
         })
         .then((result) => {
+          // let data = {
+          //   userInfo: {
+          //     id: result.data.data.id,
+          //     username: result.data.data.username,
+          //   },
+          // };
           let data = {
-            // userInfo: {
-            //   id: result.data.data.id,
-            //   username: result.data.data.username,
-            // },
             id: result.data.data.id,
             username: result.data.data.username,
           };

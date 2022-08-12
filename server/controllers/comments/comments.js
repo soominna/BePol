@@ -32,13 +32,11 @@ export const patchComment = async (req, res) => {
    */
   try {
     const user = verifyToken(req.headers["authorization"].split(" ")[1]); //access token 해독해서 사용할 예정
-    console.log("????", req.params);
     const updatedComment = await commentRepository.modifyComment(
       user.id,
       req.params.commentId,
       req.body.commentContent
     );
-    console.log("updatedComment");
     if (updatedComment) {
       res.json({
         message: "Comment modified!",

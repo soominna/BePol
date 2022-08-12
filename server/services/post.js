@@ -181,7 +181,6 @@ export const getClosedSearchedTitleBySorting = async (search, sortby, page) => {
 export const getDday = (data, dDayList) => {
   data.forEach((post) => {
     const { _id, createdAt, postId } = post;
-    console.log(post);
 
     const date = new Date(createdAt);
     const year = date.getFullYear();
@@ -242,7 +241,6 @@ export const getPostAnswer = async (postId, userId) => {
     const answer = await PostAnswer.findOne({
       id: postId + userId,
     });
-    console.log(answer);
     if (answer) {
       return answer.answer;
     }

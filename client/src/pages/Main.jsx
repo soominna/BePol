@@ -31,9 +31,6 @@ export default function Main() {
    * 📌 게시글 카드 무한 스크롤로 보이기
    */
 
-  const [update, isUpdate] = useState(false);
-  const [endUpdate, isEndUpdate] = useState(false);
-  const [page, setPage] = useState(1);
   const navigate = useNavigate();
   const viewList = ["최신순", "마감임박순", "찬성순", "반대순"];
   const allCategory = [
@@ -52,6 +49,7 @@ export default function Main() {
     { 12: "기타" },
   ];
   const isLogin = useSelector((state) => state.login.isLogin);
+  const [page, setPage] = useState(1);
   const [popularList, setPopularList] = useState([]);
   const [posts, setPostInfo] = useState([]);
   const [clickedCategory, setCategory] = useState(0);
@@ -60,7 +58,7 @@ export default function Main() {
     sortby: viewList[0],
     closed: false,
     category: "",
-    page: 1,
+    page: page,
   });
 
   //로그인 안한 회원에게 알림창 안내
@@ -91,7 +89,6 @@ export default function Main() {
   };
 
   const handlePostInfo = () => {
-    isUpdate(true);
     axios(`${process.env.REACT_APP_API_URI}/posts`, {
       params: {
         category: encodeURIComponent(searchInfo.category),
@@ -101,23 +98,23 @@ export default function Main() {
         page: searchInfo.page,
       },
     }).then((result) => {
-      if (result.status === 204) {
-        isEndUpdate(true);
-        setPostInfo([]);
-      } else {
-        let postInfo = result.data.data.map((item, idx) => {
-          return {
-            id: item._id,
-            title: item.title,
-            agrees: item.agrees,
-            disagrees: item.disagrees,
-            comments: item.comments,
-            dDay: result.data.dDayList[idx].dDay,
-          };
-        });
-        setPostInfo(postInfo);
-        isUpdate(false);
-      }
+      setTimeout(() => {
+        if (result.status === 204) {
+          setPostInfo([]);
+        } else {
+          let postInfo = result.data.data.map((item, idx) => {
+            return {
+              id: item._id,
+              title: item.title,
+              agrees: item.agrees,
+              disagrees: item.disagrees,
+              comments: item.comments,
+              dDay: result.data.dDayList[idx].dDay,
+            };
+          });
+          setPostInfo(postInfo);
+        }
+      }, 1000);
     });
   };
 
@@ -127,6 +124,9 @@ export default function Main() {
   };
   const handleCheckedValue = (key) => (e) => {
     setSearchInfo({ ...searchInfo, [key]: e.target.checked });
+  };
+  const handlePageValue = (key) => {
+    setSearchInfo({ ...searchInfo, [key]: page });
   };
   const handleCategoryValue = (key) => (input) => {
     if (input.length > 0) {
@@ -142,24 +142,13 @@ export default function Main() {
   useEffect(() => {
     handlePopularList();
     handlePostInfo();
+    // handlePageValue("page");
   }, [searchInfo.closed, searchInfo.category, searchInfo.sortby]);
 
-  // 스크롤 이벤트 함수
-  const handleScroll = () => {
-    const scrollHeight = document.documentElement.scrollHeight;
-    const scrollTop = document.documentElement.scrollTop;
-    const clientHeight = document.documentElement.clientHeight;
-    if (scrollTop + clientHeight >= scrollHeight && !update && !endUpdate) {
-      handlePostInfo();
-    }
-  };
-
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  });
+    handlePageValue("page");
+    // handlePostInfo();
+  }, [page]);
 
   return (
     <>
@@ -179,8 +168,6 @@ export default function Main() {
           <Section
             onClick={() => {
               navigate("/write");
-              // ! 쓰기 페이지 넘어갔을 때 scroll Top 고정 필요
-              //   setTimeout(() => window.scrollTo(0, 0), 100);
             }}
             backgroundColor="dark"
           >
@@ -201,13 +188,13 @@ export default function Main() {
           <h2>모의법안 둘러보기</h2>
           <img src="/images/binocularsIcon.png" alt="Binoculars Icon" />
         </Section>
-        {/* // ! 카테고리 선택 값 상태 끌어올리기 */}
         <Category
           allCategory={allCategory}
           clickedCategory={clickedCategory}
           onClick={(clickedItem) => {
             setCategory(clickedItem);
             handleCategoryValue("category")(clickedItem);
+            setPage(1);
           }}
         />
         <Section>
@@ -216,7 +203,12 @@ export default function Main() {
               type="text"
               onChange={handleInputValue("search")}
             ></SearchTab>
-            <SearchCategory onChange={handleInputValue("sortby")}>
+            <SearchCategory
+              onChange={() => {
+                handleInputValue("sortby");
+                setPage(0);
+              }}
+            >
               {viewList.map((el, idx) => (
                 <option key={idx} value={el}>
                   {el}
@@ -226,10 +218,15 @@ export default function Main() {
             <SearchButton onClick={handlePostInfo}>검색</SearchButton>
           </SearchWrap>
         </Section>
-
         <SearchExpireTap>
           {"마감된 모의법안"}
-          <input type="checkbox" onChange={handleCheckedValue("closed")} />
+          <input
+            type="checkbox"
+            onChange={() => {
+              handleCheckedValue("closed");
+              setPage(1);
+            }}
+          />
         </SearchExpireTap>
         {posts.length > 0 ? (
           <Section display="grid" list>
@@ -245,15 +242,6 @@ export default function Main() {
             </h3>
           </Section>
         )}
-        {update && !endUpdate ? (
-          <div className={"loading"}>
-            <FontAwesomeIcon
-              icon={faSpinner}
-              size={"3x"}
-              spin
-            ></FontAwesomeIcon>
-          </div>
-        ) : null}
       </MainSection>
     </>
   );

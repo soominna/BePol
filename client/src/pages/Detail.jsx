@@ -240,7 +240,6 @@ export default function Detail() {
           config
         )
         .then((result) => {
-          console.log("등록한 댓글", result.data);
           setCommentList([result.data.data, ...commentList]);
         });
     } else {
@@ -264,7 +263,6 @@ export default function Detail() {
       )
       .then((result) => {
         setTimeout(() => {
-          console.log("댓글 목록", result.data);
           if (!result.data.data.length) {
             isEndUpdate(true);
           } else {
@@ -285,7 +283,6 @@ export default function Detail() {
     axios
       .get(`${process.env.REACT_APP_API_URI}/posts/${postId}`, config)
       .then((result) => {
-        console.log("post 정보", result.data);
         setTimeout(() => {
           setPostInfo(result.data);
           isAgree(result.data.answer);
