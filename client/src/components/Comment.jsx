@@ -31,7 +31,7 @@ export default function Comment({ comment, idx, commentList, setCommentList }) {
   };
   const config = {
     headers: {
-      "access-token": accessToken,
+      authorization: accessToken,
     },
   };
   //  댓글 수정상태에서 확인버튼 눌렀을 때 함수
@@ -87,6 +87,7 @@ export default function Comment({ comment, idx, commentList, setCommentList }) {
       axios
         .post(
           `${process.env.REACT_APP_API_URI}/comments/likes/${comment._id}`,
+          "",
           config
         )
         .then((result) => {
@@ -119,7 +120,15 @@ export default function Comment({ comment, idx, commentList, setCommentList }) {
     <Container>
       <WriterInfo>
         <Writer>
-          <ProsAndCons background={"red"}></ProsAndCons>
+          <ProsAndCons
+            background={
+              comment.answer
+                ? "#FB7777"
+                : comment.answer === false
+                ? "#A5A5A5"
+                : "#FFFFFF"
+            }
+          ></ProsAndCons>
           <div>{comment.username}</div>
         </Writer>
         {userInfo.id === comment.userId ? (

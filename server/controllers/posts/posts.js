@@ -15,7 +15,10 @@ export const getPostsList = async (req, res, next) => {
    * 📍 page - 페이지당 게시물 개수 ✔︎
    *  📌 D-Day 계산 ✔︎
    */
-  const { category, sortby, search, closed, page } = req.query;
+  let { category, sortby, search, closed, page } = req.query;
+  category = decodeURIComponent(category);
+  // search = decodeURIComponent(search);
+
   let data;
   let dDayList = [];
   try {
@@ -56,7 +59,6 @@ export const getPostsList = async (req, res, next) => {
         });
       } else if (closed === "false") {
         // 마감 + 마감x 모두 포함
-        console.log(category);
         data = await postRepository.getAllByCategory(
           categoryArr,
           search,
@@ -68,7 +70,6 @@ export const getPostsList = async (req, res, next) => {
           return res.sendStatus(204);
         }
         postRepository.getDday(data[0], dDayList);
-
         return res.status(200).json({
           data: data[0],
           dDayList,
@@ -186,13 +187,15 @@ export const getPost = async (req, res) => {
    */
   try {
     const post = await postRepository.getPost(req.params.postId);
-    const { __v, updatedAt, userId, comments, ...postInfo } = post.toObject();
+    const { __v, updatedAt, comments, ...postInfo } = post.toObject();
+
     if (req.headers["authorization"]) {
       const user = verifyToken(req.headers["authorization"].split(" ")[1]);
       const answer = await postRepository.getPostAnswer(
-        user.id,
-        req.params.postId
+        req.params.postId,
+        user.id
       );
+
       if (answer !== undefined) {
         postInfo.answer = answer;
       }

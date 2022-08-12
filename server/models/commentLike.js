@@ -23,5 +23,5 @@ const newSchema = mongoose.Schema(
   }
 );
 
-const CommentLike = mongoose.model("CommentLike", newSchema);
-export default CommentLike;
+const Comment_likes = mongoose.model("Comment_likes", newSchema);
+export default Comment_likes;

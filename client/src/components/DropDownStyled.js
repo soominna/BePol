@@ -31,7 +31,7 @@ export const NotiList = styled.ul`
 export const Notify = styled.div`
   align-items: center;
   margin: 0.2rem;
-  padding: 0.8rem;
+  padding: 0.5rem;
   font-weight: normal;
   font-size: 0.8rem;
   border-radius: 10px;

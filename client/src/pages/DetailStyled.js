@@ -12,6 +12,7 @@ export const Title = styled.div`
     font-size: 35px;
     text-align: center;
     margin-top: 15px;
+    font-weight: bold;
   }
 `;
 
@@ -204,6 +205,7 @@ export const CommentsField = styled.div`
   margin: auto;
   margin-top: 30px;
   .loading {
+    margin-top: 20px;
     text-align: center;
   }
 `;

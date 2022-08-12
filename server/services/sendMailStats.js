@@ -29,7 +29,6 @@ export const sendMailStats = async () => {
    *
    */
   try {
-    console.log("here, too");
     let thirtyPercentOverPosts = [];
     const postsList = await Post.find(
       {},
@@ -80,7 +79,7 @@ export const sendMailStats = async () => {
             html: `${username}님이 작성하신 ${title}에 관한 투표가 내일 마감됩니다. 
                 <br><br>
                 <br><br>
-                <a href="http://localhost:3000/detail"> 바로 가기 링크 </a>
+                <a href=http://localhost:3000/detail/${_id}> 바로 가기 링크 </a>
                 <br>
                 <br>
                 <img src="cid:stats">
@@ -108,11 +107,10 @@ export const sendMailStats = async () => {
                 console.log(err);
               });
           } else if (!fileName && sendEmailStatus === false && email) {
-            console.log("here");
             puppeteer.launch().then(async (browser) => {
               return browser.newPage().then(async (page) => {
                 return page
-                  .goto(`http://localhost:3000/${captureStatsClient}`)
+                  .goto(`http://localhost:3000/${captureStatsClient}/${_id}`)
                   .then(async () => {
                     await page.screenshot({
                       fullPage: true, // 전체페이지 캡쳐 옵션

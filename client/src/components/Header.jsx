@@ -38,7 +38,7 @@ export default function Header() {
     axios
       .post(`${process.env.REACT_APP_API_URI}/users/logout`, {
         headers: {
-          "access-token": `${accessToken}`,
+          Authorization: `${accessToken}`,
         },
       })
       .then(() => {
@@ -69,7 +69,7 @@ export default function Header() {
       </Link>
       {isLogin ? (
         <Buttons>
-          <span>{user.userInfo.username}님</span>
+          <span>{user.username}님</span>
           <img
             src="/images/writeHeaderIcon.png"
             alt="writing Icon"

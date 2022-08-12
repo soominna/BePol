@@ -14,8 +14,6 @@ export default function SocketContainer() {
   const notif = useSelector((state) => state.notification.notifications);
   let socketRef = useRef(null);
 
-  console.log(notif);
-
   const addNotif = (postId, title) => {
     const newNotif = { postId: postId, title: title, isChecked: false };
 
@@ -25,7 +23,6 @@ export default function SocketContainer() {
 
   useEffect(() => {
     let socket;
-    console.log(socketId);
     if (isLogin) {
       socketRef.current = io(process.env.REACT_APP_API_URI, {
         transports: ["websocket"],
@@ -37,7 +34,6 @@ export default function SocketContainer() {
       });
 
       socket.on("connect", () => {
-        console.log(socket);
         dispatch(socketConnect(socket.id));
         const userId = "62eb19eec68ed76ba371a228";
         socket.emit("userId", userId);

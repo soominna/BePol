@@ -38,24 +38,24 @@ export default function BarGraphModal({ voteCount, statistic }) {
                     {
                       name: "반대",
                       data: [
-                        male["10"].disagree,
-                        male["20"].disagree,
-                        male["30"].disagree,
-                        male["40"].disagree,
-                        male["50"].disagree,
-                        male["60"].disagree,
+                        male["10"].disagrees,
+                        male["20"].disagrees,
+                        male["30"].disagrees,
+                        male["40"].disagrees,
+                        male["50"].disagrees,
+                        male["60"].disagrees,
                       ],
                       color: "#A5A5A5",
                     },
                     {
                       name: "찬성",
                       data: [
-                        male["10"].agree,
-                        male["20"].agree,
-                        male["30"].agree,
-                        male["40"].agree,
-                        male["50"].agree,
-                        male["60"].agree,
+                        male["10"].agrees,
+                        male["20"].agrees,
+                        male["30"].agrees,
+                        male["40"].agrees,
+                        male["50"].agrees,
+                        male["60"].agrees,
                       ],
                       color: "#FB7777",
                     },
@@ -109,24 +109,24 @@ export default function BarGraphModal({ voteCount, statistic }) {
                     {
                       name: "찬성",
                       data: [
-                        female["10"].agree,
-                        female["20"].agree,
-                        female["30"].agree,
-                        female["40"].agree,
-                        female["50"].agree,
-                        female["60"].agree,
+                        female["10"].agrees,
+                        female["20"].agrees,
+                        female["30"].agrees,
+                        female["40"].agrees,
+                        female["50"].agrees,
+                        female["60"].agrees,
                       ],
                       color: "#FB7777",
                     },
                     {
                       name: "반대",
                       data: [
-                        female["10"].disagree,
-                        female["20"].disagree,
-                        female["30"].disagree,
-                        female["40"].disagree,
-                        female["50"].disagree,
-                        female["60"].disagree,
+                        female["10"].disagrees,
+                        female["20"].disagrees,
+                        female["30"].disagrees,
+                        female["40"].disagrees,
+                        female["50"].disagrees,
+                        female["60"].disagrees,
                       ],
                       color: "#A5A5A5",
                     },
@@ -172,7 +172,7 @@ export default function BarGraphModal({ voteCount, statistic }) {
           <NoData>
             <div>통계를 위한 투표수가 부족합니다.</div>
             <div>투표에 참여해보세요!</div>
-            <img src={"images/vote.png"} alt={"투표마크"}></img>
+            <img src={"/images/vote.png"} alt={"투표마크"}></img>
           </NoData>
         )}
       </Container>

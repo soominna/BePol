@@ -57,19 +57,23 @@ export default function LoginModal() {
         .post(`${process.env.REACT_APP_API_URI}/users/signup`, {
           gender: loginInfo.gender,
           age: loginInfo.age,
-          subId: userInfo.userInfo.id,
-          username: userInfo.userInfo.username,
+          subId: userInfo.id,
+          username: userInfo.username,
         })
         .then((result) => {
+          // let data = {
+          //   userInfo: {
+          //     id: result.data.data.id,
+          //     username: result.data.data.username,
+          //   },
+          // };
           let data = {
-            userInfo: {
-              id: result.data.data.id,
-              username: result.data.data.username,
-            },
+            id: result.data.data.id,
+            username: result.data.data.username,
           };
           //응답 받은 유저 정보 상태로 저장
           dispatch(getUserInfo(data));
-          dispatch(login(result.headers["authorization"]));
+          dispatch(login(result.headers.authorization));
           dispatch(showLoginModal(false));
         });
     }

@@ -23,8 +23,8 @@ export const ProsAndCons = styled.span`
   width: 12px;
   height: 12px;
   border-radius: 100%;
-  background: #fb7777;
-  /* background: ${(props) => props.background} */
+  background: ${(props) => props.background};
+  border: 1px solid black;
   margin-right: 10px;
 `;
 

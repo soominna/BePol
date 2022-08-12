@@ -17,6 +17,10 @@ export const Section = styled.section`
     height: 2.5rem;
     margin-top: 1rem;
   }
+  .loading {
+    margin-top: 20px;
+    text-align: center;
+  }
   ${(props) => {
     if (props.display === "grid") {
       //grid일때

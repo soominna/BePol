@@ -51,7 +51,6 @@ export const AgeField = styled.div`
 `;
 
 export const NoData = styled.div`
-  border: 1px solid red;
   min-height: 480px;
   min-width: 1300px;
   display: flex;

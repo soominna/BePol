@@ -37,7 +37,6 @@ export const patchComment = async (req, res) => {
       req.params.commentId,
       req.body.commentContent
     );
-
     if (updatedComment) {
       res.json({
         message: "Comment modified!",
@@ -49,6 +48,7 @@ export const patchComment = async (req, res) => {
       res.status(500).json();
     }
   } catch (err) {
+    console.log(err);
     res.status(500).json(err);
   }
 };
@@ -83,7 +83,9 @@ export const getComments = async (req, res) => {
    */
 
   try {
-    const user = verifyToken(req.headers["authorization"].split(" ")[1]); //access token 해독해서 사용할 예정
+    const user = req.headers["authorization"]
+      ? verifyToken(req.headers["authorization"].split(" ")[1])
+      : {}; //access token 해독해서 사용할 예정
 
     const commentList = await commentRepository.getCommentList(
       user.id,
@@ -92,7 +94,11 @@ export const getComments = async (req, res) => {
       req.query.page
     );
 
-    res.json({ data: commentList });
+    if (commentList) {
+      res.json({ data: commentList });
+    } else {
+      res.sendStatus(500);
+    }
   } catch (err) {
     res.status(500).json(err);
   }

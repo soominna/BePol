@@ -10,7 +10,6 @@ export default function DropDown() {
   const maxWord = 10;
 
   const handleClick = (postId) => {
-    console.log("click", postId);
     navigate(`/detail/${postId}`);
   };
 
@@ -30,10 +29,12 @@ export default function DropDown() {
                   onClick={() => handleClick(notification.postId)}
                   key={idx}
                 >
-                  {notification.title.length > maxWord
-                    ? `"${sliceTitleStr(notification.title)}..."`
-                    : `"${notification.title}"`}
-                  에 새 댓글이 달렸습니다
+                  <div>✉️ 새 댓글</div>
+                  <div>
+                    {notification.title.length > maxWord
+                      ? `${sliceTitleStr(notification.title)}...`
+                      : `${notification.title}`}
+                  </div>
                 </Notify>
               ) : (
                 <></>

@@ -20,17 +20,10 @@ export const voteToPost = async (req, res) => {
    */
   try {
     const { agree } = req.body;
-    const { accesstoken } = req.headers;
     const { postId } = req.params;
     const user = verifyToken(req.headers["authorization"].split(" ")[1]);
-
     const votedUser = await postAnswerRepository.getUserIdAnswered(user.id);
-    if (!accesstoken) {
-      // user 정보 불일치시 error
-      return res.status(401).json({
-        message: "Unauthorized user",
-      });
-    } else if (votedUser) {
+    if (votedUser) {
       // 이미 투표한 경우
       return res.status(403).json({
         message: "Already voted user!",
@@ -80,21 +73,14 @@ export const voteDeleteToPost = async (req, res) => {
    */
 
   try {
-    const { accesstoken } = req.headers;
     const { postId } = req.params;
     const user = verifyToken(req.headers["authorization"].split(" ")[1]);
-
     const userPostAnswer = await postAnswerRepository.findUserAnswer(user.id);
     const votedUser = await postAnswerRepository.getUserIdAnswered(
       user.id,
       postId
     );
-    if (!accesstoken) {
-      // user 정보 불일치시 error
-      res.status(401).json({
-        message: "Unauthorized user",
-      });
-    } else if (!votedUser) {
+    if (!votedUser) {
       // 투표 안한 경우
       return res.status(403).json({
         message: "No vote record of this user!!",
