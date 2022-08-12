@@ -29,11 +29,15 @@ export default function Login() {
         // 이미 가입한 회원
         if (result.data.isUser === true) {
           //응답 받은 회원 정보를 dispatch를 이용해 userInfo state에 저장
+          // let userData = {
+          //   userInfo: {
+          //     id: result.data.data.id,
+          //     username: result.data.data.username,
+          //   },
+          // };
           let userData = {
-            userInfo: {
-              id: result.data.data.id,
-              username: result.data.data.username,
-            },
+            id: result.data.data.id,
+            username: result.data.data.username,
           };
           dispatch(getUserInfo(userData));
           //서버에서 보내준 header의 accessToken 값 dispatch로 login 상태 업데이트
@@ -42,10 +46,8 @@ export default function Login() {
         // 아직 가입하지 않은 회원 -> 추가 입력 로그인 모달
         else if (result.data.isUser === false) {
           let userData = {
-            userInfo: {
-              id: result.data.data.subId, // 가입 전 유저는 임시로 subId값을 id로 가진다
-              username: result.data.data.username,
-            },
+            id: result.data.data.subId, // 가입 전 유저는 임시로 subId값을 id로 가진다
+            username: result.data.data.username,
           };
           dispatch(getUserInfo(userData));
           //메인페이지로 돌아간 후 로그인 모달창 띄우기
@@ -54,8 +56,7 @@ export default function Login() {
         }
       })
       .catch((err) => {
-        // 에러 -> 추후 lib 사용
-        console.log("ERROR");
+        console.log(err);
       });
   };
   handleKakaoLogin();

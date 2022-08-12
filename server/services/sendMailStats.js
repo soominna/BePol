@@ -29,7 +29,6 @@ export const sendMailStats = async () => {
    *
    */
   try {
-    console.log("here, too");
     let thirtyPercentOverPosts = [];
     const postsList = await Post.find(
       {},
@@ -108,7 +107,6 @@ export const sendMailStats = async () => {
                 console.log(err);
               });
           } else if (!fileName && sendEmailStatus === false && email) {
-            console.log("here");
             puppeteer.launch().then(async (browser) => {
               return browser.newPage().then(async (page) => {
                 return page

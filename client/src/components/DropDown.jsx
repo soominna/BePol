@@ -10,7 +10,6 @@ export default function DropDown() {
   const maxWord = 10;
 
   const handleClick = (postId) => {
-    console.log("click", postId);
     navigate(`/detail/${postId}`);
   };
 

@@ -2,7 +2,6 @@ import { verifyToken } from "../controllers/functions/authentication.js";
 
 export const checkAuth = (req, res, next) => {
   const accessToken = req.headers["authorization"];
-  console.log(req.headers);
   if (!accessToken) {
     res.status(401).send({ message: "Unauthorized user" });
   } else {

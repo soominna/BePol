@@ -14,7 +14,6 @@ export default function ListCard({ info }) {
   const maxWord = 50;
 
   const handleGetCardId = (e) => {
-    console.log(e.currentTarget.id);
     navigate(`/detail/${e.currentTarget.id}`);
   };
   const sliceTitleStr = (str) => {

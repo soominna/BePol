@@ -4,7 +4,7 @@ export const Body = styled.div`
   width: 50%;
   min-width: 880px;
   margin: auto;
-  margin-top: 120px;
+  margin-top: 30px;
 `;
 
 export const Title = styled.div`
