@@ -18,8 +18,10 @@ export const Container = styled.div`
 export const Logo = styled.div`
   display: flex;
   padding: 1rem;
-  width: 5vw;
-  height: 5vh;
+  img {
+    width: 200px;
+    height: 50px;
+  }
 `;
 
 export const Buttons = styled.div`
