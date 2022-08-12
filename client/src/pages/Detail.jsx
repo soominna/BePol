@@ -276,6 +276,7 @@ export default function Detail() {
 
   // 페이지 이동시 처음 post와 통계 정보 가져오기
   useEffect(() => {
+    dispatch(showStatisticsModal(false));
     window.scrollTo(0, 0);
     window.onbeforeunload = function pushRefresh() {
       window.scrollTo(0, 0);
