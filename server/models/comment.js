@@ -33,5 +33,5 @@ const newSchema = mongoose.Schema(
   }
 );
 
-const Comment = mongoose.model("Comment", newSchema);
-export default Comment;
+const Comments = mongoose.model("Comments", newSchema);
+export default Comments;
