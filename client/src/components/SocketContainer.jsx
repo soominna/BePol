@@ -10,8 +10,7 @@ import {
 export default function SocketContainer() {
   const dispatch = useDispatch();
   const isLogin = useSelector((state) => state.login.isLogin);
-  const socketId = useSelector((state) => state.notification.socketId);
-  const notif = useSelector((state) => state.notification.notifications);
+  const user = useSelector((state) => state.user.userInfo);
   let socketRef = useRef(null);
 
   const addNotif = (postId, title) => {
@@ -35,7 +34,7 @@ export default function SocketContainer() {
 
       socket.on("connect", () => {
         dispatch(socketConnect(socket.id));
-        const userId = "62eb19eec68ed76ba371a228";
+        const userId = user.id;
         socket.emit("userId", userId);
       });
 

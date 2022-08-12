@@ -57,8 +57,8 @@ export default function LoginModal() {
         .post(`${process.env.REACT_APP_API_URI}/users/signup`, {
           gender: loginInfo.gender,
           age: loginInfo.age,
-          subId: userInfo.userInfo.id,
-          username: userInfo.userInfo.username,
+          subId: userInfo.id,
+          username: userInfo.username,
         })
         .then((result) => {
           // let data = {
