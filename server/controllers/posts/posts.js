@@ -213,9 +213,7 @@ export const downloadFile = async (req, res) => {
       Number(req.query.fileIndex)
     );
     if (fileName) {
-      const fileStream = downloadS3File(res, fileName);
-      fileStream.pipe(res);
-      res.status(200).json({ message: "File downloaded successfully" });
+      downloadS3File(res, fileName);
     } else res.sendStatus(500);
   } catch (err) {
     console.log(err);
