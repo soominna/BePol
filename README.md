@@ -1,6 +1,8 @@
 <div align="center">
 
-# BePol
+![image](https://user-images.githubusercontent.com/73332608/184276171-b0787160-bb15-4799-8ad5-0f2dd7f0a94e.png)
+
+---
 
   <p>
     <img src="https://img.shields.io/badge/JavaScript-%23F7DF1E?style=flat&logo=JavaScript&logoColor=white"/>
@@ -16,6 +18,8 @@
     <img src="https://img.shields.io/badge/Mongoose-%2347A248?style=flat&logo=MongoDB&logoColor=white"/>    
     <img src="https://img.shields.io/badge/AWS%20Multer-%23569A31?style=flat&logo=AMAZON%20AWS&logoColor=white"/>
   </p>
+  
+---
   
   ## Team members
   
