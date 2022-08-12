@@ -340,8 +340,11 @@ export const deleteAnswerTransaction = async (postId, userId, answer) => {
 
 export const getPostStatistics = async (postId) => {
   // 통계 조회
-  return Post_statistics.findOne(
-    { postId },
-    { _id: 0, postId: 0, createdAt: 0, updatedAt: 0, __v: 0 }
-  );
+  try {
+    const record = await Post_statistics.findOne(
+      { postId },
+      { _id: 0, postId: 0, createdAt: 0, updatedAt: 0, __v: 0 }
+    );
+    return record;
+  } catch (err) {}
 };

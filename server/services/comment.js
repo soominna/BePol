@@ -80,13 +80,15 @@ export const deleteCommentTransaction = async (userId, commentId) => {
 
 export const getCommentList = async (userId, postId, sortby, page) => {
   try {
-    const pageSize = 3;
+    const pageSize = 10;
     const sortOptions = sortby === "likes" ? { likes: -1 } : { createdAt: -1 };
 
-    const commentList = await Comment.find({ postId })
-      .sort(sortOptions)
-      .skip(pageSize * (Number(page ? page : 1) - 1))
-      .limit(pageSize);
+    const comments = await Comment.find({ postId }).sort(sortOptions);
+
+    const commentList = comments.slice(
+      pageSize * (Number(page ? page : 1) - 1),
+      pageSize * (Number(page ? page : 1) - 1) + pageSize
+    );
 
     if (!userId) {
       return Promise.all(

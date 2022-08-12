@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 const newSchema = mongoose.Schema(
   {
     postId: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: String,
       required: true,
     },
     male: {
