@@ -27,5 +27,5 @@ export const downloadS3File = (res, filename) => {
   };
 
   res.attachment(filename);
-  return s3.getObject(options).createReadStream();
+  s3.getObject(options).createReadStream().pipe(res);
 };

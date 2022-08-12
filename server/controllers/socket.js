@@ -17,9 +17,11 @@ export const socketServer = (socket, io) => {
     changeStream.on("change", async (next) => {
       switch (next.operationType) {
         case "insert":
-          const userIdToNotify = next.fullDocument.userId.toString();
+          const post = await postRepository.getPost(next.fullDocument.postId);
+          const userIdToNotify = post.userId.toString();
+
           if (socket.data.userId === userIdToNotify) {
-            const post = await postRepository.getPost(next.fullDocument.postId);
+            console.log(post.title);
             socket.emit("newComment", post._id, post.title);
           }
 

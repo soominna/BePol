@@ -203,12 +203,7 @@ export default function Main() {
               type="text"
               onChange={handleInputValue("search")}
             ></SearchTab>
-            <SearchCategory
-              onChange={() => {
-                handleInputValue("sortby");
-                setPage(0);
-              }}
-            >
+            <SearchCategory onChange={handleInputValue("sortby")}>
               {viewList.map((el, idx) => (
                 <option key={idx} value={el}>
                   {el}
@@ -220,13 +215,7 @@ export default function Main() {
         </Section>
         <SearchExpireTap>
           {"마감된 모의법안"}
-          <input
-            type="checkbox"
-            onChange={() => {
-              handleCheckedValue("closed");
-              setPage(1);
-            }}
-          />
+          <input type="checkbox" onChange={handleCheckedValue("closed")} />
         </SearchExpireTap>
         {posts.length > 0 ? (
           <Section display="grid" list>
