@@ -126,8 +126,10 @@ export const SearchButton = styled.button`
   background-color: #dfdfdf;
   border-radius: 4px;
   border: none;
+  /*
   @import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
   font-family: "Open Sans", sans-serif;
+  */
 `;
 
 export const SearchCategory = styled.select`
@@ -147,8 +149,10 @@ export const SearchCategory = styled.select`
   background-size: auto 50%;
 
   & > option {
+    /*
     @import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
     font-family: "Open Sans", sans-serif;
+    */
   }
 `;
 
