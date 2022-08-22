@@ -9,8 +9,10 @@ export const Container = styled.div`
   align-items: center;
   justify-content: space-between;
   box-shadow: 0px 4px 2px -2px rgba(0, 0, 0, 0.25);
+  /*
   @import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
   font-family: "Open Sans", sans-serif;
+  */
   font-weight: 900;
   font-size: 2rem;
 `;
